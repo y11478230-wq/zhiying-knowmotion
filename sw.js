@@ -1,5 +1,5 @@
-const CACHE = 'zhiying-shell-v17';
-const SHELL = ['/', '/index.html', '/app.js', '/brand.js', '/brand-camera.png', '/send.svg', '/settings.svg', '/community.js', '/renderer.js', '/styles.css', '/light.css', '/flow.css', '/community.css', '/manifest.webmanifest', '/icon.svg', '/vendor/capacitor-core.js'];
+const CACHE = 'zhiying-shell-v18';
+const SHELL = ['/', '/index.html', '/app.js', '/brand.js', '/particle-scene.js', '/particle-splash.css', '/brand-camera.png', '/send.svg', '/settings.svg', '/community.js', '/renderer.js', '/styles.css', '/light.css', '/flow.css', '/community.css', '/manifest.webmanifest', '/icon.svg', '/vendor/capacitor-core.js'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting())));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', event => {

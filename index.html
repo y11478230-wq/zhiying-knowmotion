@@ -15,14 +15,16 @@
   <link rel="stylesheet" href="/light.css?v=2.2.0" />
   <link rel="stylesheet" href="/community.css" />
   <link rel="stylesheet" href="/flow.css" />
+  <link rel="stylesheet" href="/particle-splash.css" />
   <script type="importmap">{"imports":{"@capacitor/core":"/vendor/capacitor-core.js"}}</script>
 </head>
 <body>
   <section id="brand-splash" class="brand-splash" aria-label="知映正在启动">
-    <div class="splash-orbit" aria-hidden="true"><i></i><i></i><i></i><span>知</span></div>
-    <div class="splash-copy"><strong>知映</strong><small>KNOWMOTION</small></div>
-    <p>让知识，变成看得见的创意</p>
-    <button id="splash-skip" type="button">跳过</button>
+    <canvas id="particle-canvas" class="particle-canvas" aria-hidden="true"></canvas>
+    <div class="particle-fallback" aria-hidden="true"></div>
+    <div class="splash-brand"><span class="splash-brand-symbol" aria-hidden="true">◈</span><strong>知映</strong><small>KnowMotion</small><p>用 AI，让知识生动成片</p></div>
+    <div class="splash-progress" aria-hidden="true"><span></span></div>
+    <button id="splash-skip" type="button">跳过动画</button>
   </section>
 
   <section id="welcome-screen" class="welcome-screen" aria-labelledby="welcome-title" hidden>
@@ -312,6 +314,7 @@
     <dialog id="server-dialog" class="app-dialog" aria-labelledby="server-dialog-title"><section class="dialog-card"><header class="dialog-header"><div><span class="eyebrow">连接设置</span><h2 id="server-dialog-title">连接你的创作服务</h2></div><button id="server-dialog-close" class="dialog-close" type="button" aria-label="关闭">×</button></header><p class="dialog-copy">输入运行知映后端的电脑地址。手机和电脑需在同一网络，例如 <code>http://192.168.100.200:4175</code>。</p><label class="field-label" for="server-url">服务地址</label><input id="server-url" class="dialog-input" type="url" inputmode="url" placeholder="http://电脑IPv4:4175" autocomplete="url"><p class="dialog-footnote">连接 USB 转发时可填 http://127.0.0.1:4175。地址仅保存在当前设备。</p><div id="server-test-status" class="dialog-status" aria-live="polite"></div><div class="dialog-actions"><button id="server-test-btn" class="ghost-btn" type="button">测试连接</button><button id="server-save-btn" class="primary-btn" type="button">保存并连接</button></div></section></dialog>
   <dialog id="update-dialog" class="app-dialog" aria-labelledby="update-dialog-title"><section class="dialog-card update-card"><header class="dialog-header"><div><span class="eyebrow">知映更新</span><h2 id="update-dialog-title">发现新版本</h2></div><span class="update-mark">↗</span></header><div class="version-compare"><div><small>当前版本</small><strong id="update-current-version">—</strong></div><span>→</span><div><small>可升级至</small><strong id="update-target-version">—</strong></div></div><p id="update-release-notes" class="dialog-copy"></p><p class="dialog-footnote">下载完成后会打开 Android 安装界面，请确认安装。</p><div class="dialog-actions"><button id="update-cancel-btn" class="ghost-btn" type="button">稍后</button><button id="update-install-btn" class="primary-btn" type="button">下载并安装</button></div></section></dialog>
   <div id="app-toast" class="app-toast" role="status" aria-live="polite"></div>
+  <script src="/particle-scene.js"></script>
   <script src="/brand.js?v=2.2.0"></script>
   <script type="module" src="/app.js?v=2.2.0"></script>
 </body>

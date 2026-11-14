@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const output = path.join(root, 'www');
-const files = ['index.html', 'app.js', 'brand.js', 'brand-camera.png', 'send.svg', 'settings.svg', 'community.js', 'renderer.js', 'styles.css', 'light.css', 'flow.css', 'community.css', 'video-lab.html', 'video-lab.js', 'video-lab.css', 'video-lab-sample.json', 'manifest.webmanifest', 'sw.js', 'icon.svg', 'examples/c-voice-sample.mp3', 'examples/demo-hello.mp4', 'examples/demo-sky.mp4', 'examples/video-lab/assets.json', 'examples/video-lab/cpu.jpg', 'examples/video-lab/gpu.jpg', 'examples/video-lab/math.jpg', 'examples/video-lab/photos.jpg'];
+const files = ['index.html', 'app.js', 'brand.js', 'particle-scene.js', 'particle-splash.css', 'brand-camera.png', 'send.svg', 'settings.svg', 'community.js', 'renderer.js', 'styles.css', 'light.css', 'flow.css', 'community.css', 'video-lab.html', 'video-lab.js', 'video-lab.css', 'video-lab-sample.json', 'manifest.webmanifest', 'sw.js', 'icon.svg', 'examples/c-voice-sample.mp3', 'examples/demo-hello.mp4', 'examples/demo-sky.mp4', 'examples/video-lab/assets.json', 'examples/video-lab/cpu.jpg', 'examples/video-lab/gpu.jpg', 'examples/video-lab/math.jpg', 'examples/video-lab/photos.jpg'];
 await fs.rm(output, { recursive: true, force: true });
 for (const file of files) {
   const target = path.join(output, file);
