@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>知映 KnowMotion · AI 知识视频创作</title>
+  <meta name="description" content="用一句话，生成有趣、可编辑的知识视频。" />
+  <meta name="theme-color" content="#f4fbf7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/icon.svg" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/light.css" />
+  <link rel="stylesheet" href="/community.css" />
+  <script type="importmap">{"imports":{"@capacitor/core":"/vendor/capacitor-core.js"}}</script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button id="history-open-btn" class="brand-trigger" type="button" aria-label="打开创作历史">
+          <span class="brand-mark">知</span>
+          <span class="brand-copy"><strong>知映</strong><small>创作历史 ⌄</small></span>
+        </button>
+        <div class="topbar-actions">
+          <button id="top-library-btn" class="top-library-btn" type="button">作品库</button>
+          <span id="api-pill" class="status-pill"><span class="status-dot"></span>正在连接服务…</span>
+          <button id="server-settings-btn" class="icon-button" type="button" aria-label="服务连接设置" title="服务连接设置">⚙</button>
+          <button id="app-update-btn" class="quiet-button" type="button" hidden>更新</button>
+          <button id="install-app-btn" class="quiet-button" type="button" hidden>安装 App</button>
+          <button id="profile-quick-btn" class="avatar-button" type="button" aria-label="打开本地个人设置">我</button>
+        </div>
+      </div>
+    </header>
+
+    <div id="message" class="global-message" role="status" aria-live="polite"></div>
+
+    <main id="view-home" class="screen home-screen">
+      <section class="home-content">
+        <div class="home-hero">
+          <h1>让知识，<em>动起来</em></h1>
+          <p>输入一个问题，做成知识视频</p>
+        </div>
+
+        <section class="composer-card" aria-label="开始创作">
+          <div id="reference-list" class="reference-list" aria-live="polite" hidden></div>
+          <label class="sr-only" for="topic">你想创作什么知识视频？</label>
+          <textarea id="topic" rows="3" maxlength="500" placeholder="请输入你想制作的知识视频，描述得越具体，生成效果越好。"></textarea>
+          <button id="restore-original-btn" class="restore-original" type="button" hidden>↶ 恢复优化前的原文</button>
+          <div class="composer-footer">
+            <div class="composer-tools">
+              <div class="reference-picker-wrap"><button id="add-reference-btn" class="tool-chip" type="button" aria-label="添加资料" aria-expanded="false"><span>＋</span><span class="compact-label">添加资料</span></button>
+                <div id="reference-menu" class="reference-menu" hidden><button type="button" data-accept=".png,.jpg,.jpeg,.webp,.gif">上传图片</button><button type="button" data-accept=".pdf">上传 PDF</button><button type="button" data-accept=".docx">上传 Word（DOCX）</button><button type="button" data-accept=".txt,.md">上传 TXT / Markdown</button><small>最多 4 份；图片由 AI 识别，文档提取文字。</small></div>
+                <input id="reference-file-input" type="file" multiple hidden></div>
+              <details id="home-settings" class="settings-popover">
+                <summary class="tool-chip" aria-label="创作设置"><span>☷</span><span class="compact-label">创作设置</span></summary>
+                <div class="settings-panel">
+                  <div class="settings-panel-heading"><strong>创作设置</strong><span>可随时修改</span></div>
+                  <div class="settings-grid">
+                    <label class="setting-field" for="audience"><span>目标观众</span><select id="audience"><option>普通大众</option><option>小学生</option><option selected>初中生</option><option>高中生</option></select></label>
+                    <label class="setting-field" for="target-duration"><span>视频时长</span><select id="target-duration"><option value="30">30 秒</option><option value="60" selected>1 分钟</option><option value="90">1.5 分钟</option></select></label>
+                    <label class="setting-field" for="style"><span>讲解方式</span><select id="style"><option>清晰讲解</option><option>专业教学</option><option>趣味提问</option><option>直观实验</option></select></label>
+                    <label class="setting-field voice-field" for="voice"><span>配音音色</span><div class="voice-row"><select id="voice"><option value="windows" selected>本机中文 · 慧慧</option><option value="windows-kangkang">本机中文 · 康康</option><option value="windows-yaoyao">本机中文 · 瑶瑶</option><optgroup label="在线预设音色"><option value="zh-CN-YunyangNeural">专业讲解 · 云扬</option><option value="zh-CN-YunjianNeural">沉稳叙述 · 云健</option><option value="zh-CN-XiaoxiaoNeural">亲切讲解 · 晓晓</option></optgroup></select><button id="voice-test-btn" class="mini-button" type="button">试听</button></div></label>
+                  </div>
+                  <label class="rate-label" for="voice-rate">语速 <span id="voice-rate-label">标准</span></label>
+                  <input id="voice-rate" type="range" min="-20" max="20" step="5" value="0">
+                  <p class="voice-hint">离线配音由运行后端的 Windows 电脑生成；在线音色需要网络。</p>
+                </div>
+              </details>
+              <button id="optimize-btn" class="optimize-chip" type="button" disabled><span aria-hidden="true">✦</span>AI 优化</button>
+            </div>
+            <button id="generate-btn" class="send-button" type="button" aria-label="生成视频"><span>↑</span></button>
+          </div>
+        </section>
+
+        <div class="composer-actions"><button id="sample-btn" class="sample-link" type="button">查看示例</button></div>
+
+        <section id="home-resume" class="resume-card" hidden>
+          <div class="resume-icon">▶</div>
+          <div class="resume-copy"><span class="eyebrow">继续创作</span><strong id="resume-title">上次编辑的作品</strong><small id="resume-meta"></small></div>
+          <button id="resume-project-btn" class="resume-action" type="button" aria-label="继续编辑">→</button>
+        </section>
+
+      </section>
+    </main>
+
+    <main id="view-generation" class="screen generation-screen" hidden>
+      <section class="generation-card">
+        <div class="generation-mark"><span class="generation-spinner"></span><span class="generation-clapper">▶</span></div>
+        <h1>正在生成你的视频方案</h1>
+        <p id="generation-topic" class="generation-topic"></p>
+        <p class="generation-description">AI 正在整理讲解内容并规划分镜，请稍候。</p>
+        <div class="generation-state"><span class="state-pulse"></span><span>正在生成分镜与旁白</span></div>
+        <button id="generation-back-btn" class="text-button" type="button">回到首页（生成仍会继续）</button>
+      </section>
+    </main>
+
+    <main id="view-workshop" class="screen workshop-screen" hidden>
+      <div class="workshop-heading">
+        <button id="workshop-back-btn" class="back-button" type="button"><span>‹</span>返回首页</button>
+        <div class="workshop-title"><span class="eyebrow">视频工坊</span><h1 id="workshop-heading-title">编辑知识视频</h1></div>
+        <span id="workshop-save-state" class="save-state">已保存在本机</span>
+      </div>
+      <div class="workspace">
+        <aside class="left-pane">
+          <div class="editor-head"><div class="section-heading compact"><div><h2>智能分镜</h2><p>编辑旁白与画面，内容自动保存在本机。</p></div></div><span id="scene-count" class="count">0 幕</span></div>
+          <div id="scene-list" class="scene-list"></div>
+          <details id="script-panel" class="script-panel"><summary>查看完整文字稿</summary><pre id="script-text"></pre><button id="copy-script-btn" class="ghost-btn" type="button">复制文字稿</button></details>
+        </aside>
+        <section class="right-pane">
+          <div class="preview-header"><div><span class="eyebrow">实时预览</span><h2 id="project-title">一条会讲清楚的视频，从这里开始</h2></div><span id="duration-label" class="duration-label">00:00</span></div>
+          <div class="stage-wrap"><canvas id="stage" width="1280" height="720" aria-label="视频画面预览"></canvas></div>
+          <div class="player-bar"><button id="play-btn" class="round-btn" aria-label="播放预览">▶</button><div class="timeline-box"><div class="timeline-label"><span id="time-current">00:00</span><span id="time-total">00:00</span></div><div class="timeline-track"><div id="timeline-fill" class="timeline-fill"></div><input id="timeline-seek" class="timeline-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="拖动视频进度" disabled></div></div><span id="play-state" class="player-status">待预览</span></div>
+          <div id="player-progress" class="player-progress" role="status" aria-live="polite" hidden><span id="player-progress-label" class="player-progress-label">正在生成配音</span><span class="player-progress-track"><span id="player-progress-fill"></span></span><span id="player-progress-count" class="player-progress-count"></span></div>
+          <div class="under-preview"><div class="hint"><span class="hint-icon">✳</span><div><strong>创作提示</strong><p>视频里的文字、配音与画面会随分镜内容更新。</p></div></div><button id="export-btn" class="export-btn" type="button">导出 MP4 <span>↗</span></button></div>
+        </section>
+      </div>
+    </main>
+
+    <main id="view-inspiration" class="screen secondary-screen" hidden>
+      <section class="secondary-content community-content">
+        <div class="community-heading"><div><span class="page-kicker">KNOWLEDGE COMMUNITY</span><h1>灵感</h1><p class="page-subtitle">发现值得讲清楚的知识</p></div><button id="community-notifications" class="community-icon-button" type="button" aria-label="消息通知">♧<i id="notification-dot" hidden></i></button></div>
+        <label class="community-search"><span>⌕</span><input id="community-search" type="search" placeholder="搜索视频、知识主题和创作者" autocomplete="off"></label>
+        <div class="community-tabs" role="tablist" aria-label="灵感内容"><button type="button" data-feed-tab="recommend" class="active">推荐</button><button type="button" data-feed-tab="following">关注</button><button type="button" data-feed-tab="category">分类</button><button type="button" data-feed-tab="topics">话题</button></div>
+        <div id="community-filter" class="community-filter" hidden></div>
+        <div class="community-feature"><div><small>本周知识主题 · 演示推荐</small><strong>一个好问题，可以成为一条好视频。</strong><span>从生活里的疑问出发，把知识讲给更多人听。</span></div><button id="feature-create-btn" type="button">开始创作 ↗</button></div>
+        <div class="community-section-title"><h2 id="feed-heading">为你推荐</h2><button id="community-publish-btn" type="button">＋ 发布作品</button></div>
+        <div id="community-feed" class="community-feed"></div>
+      </section>
+    </main>
+
+    <main id="view-library" class="screen secondary-screen" hidden>
+      <section class="secondary-content library-content"><div class="page-heading"><div><span class="page-kicker">YOUR WORK</span><h1>作品库</h1><p class="page-subtitle">管理保存在当前设备的创作项目。</p></div><button class="primary-btn compact-primary" type="button" data-open-home>新建</button></div>
+        <div id="library-summary" class="library-summary"></div>
+        <label class="community-search"><span>⌕</span><input id="library-search" type="search" placeholder="搜索作品标题" autocomplete="off"></label>
+        <div class="library-toolbar"><div class="community-tabs" role="tablist" aria-label="作品状态"><button type="button" data-library-filter="all" class="active">全部</button><button type="button" data-library-filter="draft">草稿</button><button type="button" data-library-filter="generating">生成中</button><button type="button" data-library-filter="complete">已完成</button></div><select id="library-sort" aria-label="作品排序"><option value="updated">最近编辑</option><option value="created">创建时间</option></select></div>
+        <div id="project-library-list" class="project-library-list"></div>
+      </section>
+    </main>
+
+    <main id="view-profile" class="screen secondary-screen" hidden>
+      <section class="secondary-content profile-content"><span class="page-kicker">LOCAL PROFILE</span><h1>我的</h1><p class="page-subtitle">当前为本机创作模式，尚未接入账号和云同步。</p>
+        <section class="profile-card"><div id="profile-avatar" class="profile-avatar-large">我</div><div><strong id="profile-name">本机创作者</strong><span id="profile-bio">作品和互动保存在此设备</span></div><button id="profile-edit-btn" class="row-action" type="button">编辑</button></section>
+        <div id="profile-stats" class="profile-stats"></div>
+        <h2 class="profile-group-title">我的创作</h2><div class="profile-grid"><button type="button" data-profile-panel="published">◫<span>我的发布</span></button><button type="button" data-profile-panel="saved">♡<span>我的收藏</span></button><button type="button" data-profile-panel="downloads">⇩<span>我的下载</span></button><button type="button" data-profile-panel="analytics">▥<span>创作数据</span></button></div>
+        <h2 class="profile-group-title">社区互动</h2><div class="profile-grid"><button type="button" data-profile-panel="received">✧<span>赞与收藏</span></button><button type="button" data-profile-panel="comments">▤<span>我的评论</span></button><button type="button" data-profile-panel="following">♧<span>我的关注</span></button><button type="button" data-profile-panel="notifications">♢<span>消息</span></button></div>
+        <div id="profile-panel" class="profile-panel" hidden></div>
+        <h2 class="profile-group-title">设置与帮助</h2><section class="profile-list"><div class="profile-row"><span class="profile-row-icon">⌁</span><div><strong>服务连接</strong><small id="profile-service-detail">正在读取服务状态…</small></div><button id="profile-server-btn" class="row-action" type="button">设置</button></div><div class="profile-row"><span class="profile-row-icon">↻</span><div><strong>应用版本</strong><small>KnowMotion 2.1.0</small></div><button id="profile-update-btn" class="row-action" type="button">检查更新</button></div><div class="profile-row"><span class="profile-row-icon">▤</span><div><strong>本机数据</strong><small id="profile-project-count">已保存 0 个作品</small></div><button id="profile-library-btn" class="row-action" type="button">查看</button></div><div class="profile-row"><span class="profile-row-icon">?</span><div><strong>帮助与隐私</strong><small>本机数据说明与使用帮助</small></div><button id="profile-help-btn" class="row-action" type="button">查看</button></div></section>
+        <p class="profile-footnote">本地演示社区：资料与互动只保存在这台设备，不会同步到其他用户。</p>
+      </section>
+    </main>
+
+    <nav id="bottom-nav" class="bottom-nav" aria-label="主导航">
+      <button class="nav-item active" type="button" data-tab="home"><span class="nav-icon">⌂</span><span>首页</span></button>
+      <button class="nav-item" type="button" data-tab="inspiration"><span class="nav-icon">◉</span><span>灵感</span></button>
+      <button class="nav-item" type="button" data-tab="library"><span class="nav-icon">▣</span><span>作品库</span></button>
+      <button class="nav-item" type="button" data-tab="profile"><span class="nav-icon">♙</span><span>我的</span></button>
+    </nav>
+  </div>
+
+  <dialog id="history-dialog" class="drawer-dialog" aria-labelledby="history-title">
+    <aside class="history-drawer"><header class="drawer-header"><div class="drawer-brand"><span class="brand-mark small-mark">知</span><strong>知映</strong></div><button id="history-close-btn" class="icon-button" type="button" aria-label="关闭历史">×</button></header><button id="new-project-btn" class="new-chat-button" type="button"><span>＋</span>新建创作</button><label class="history-search"><span>⌕</span><input id="history-search-input" type="search" placeholder="搜索主题和作品…" autocomplete="off"></label><div class="history-title-row"><h2 id="history-title">创作历史</h2><span>本机</span></div><div id="history-list" class="history-list"></div><footer class="drawer-footer"><button id="clear-history-btn" class="text-button" type="button">清空历史记录</button><button id="history-profile-btn" class="drawer-profile" type="button"><span class="avatar-small">我</span><span>本机创作者</span><span>›</span></button></footer></aside>
+  </dialog>
+
+  <dialog id="rename-dialog" class="app-dialog" aria-labelledby="rename-title-heading"><section class="dialog-card"><header class="dialog-header"><div><span class="eyebrow">作品管理</span><h2 id="rename-title-heading">重命名作品</h2></div><button id="rename-close-btn" class="dialog-close" type="button" aria-label="关闭">×</button></header><label class="field-label" for="rename-input">作品名称</label><input id="rename-input" class="dialog-input" maxlength="50"><div class="dialog-actions"><button id="rename-cancel-btn" class="ghost-btn" type="button">取消</button><button id="rename-save-btn" class="primary-btn" type="button">保存名称</button></div></section></dialog>
+  <dialog id="action-dialog" class="app-dialog" aria-labelledby="action-title"><section class="dialog-card"><header class="dialog-header"><div><span class="eyebrow">请确认</span><h2 id="action-title">删除作品？</h2></div><button id="action-close-btn" class="dialog-close" type="button" aria-label="关闭">×</button></header><p id="action-description" class="dialog-copy"></p><div class="dialog-actions"><button id="action-cancel-btn" class="ghost-btn" type="button">取消</button><button id="action-confirm-btn" class="danger-button" type="button">确认</button></div></section></dialog>
+
+  <dialog id="community-detail-dialog" class="app-dialog community-dialog" aria-labelledby="community-detail-title"><section class="dialog-card community-detail-card"><button class="dialog-close community-close" type="button" data-close-dialog="community-detail-dialog" aria-label="关闭视频详情">×</button><div id="community-detail-body"></div></section></dialog>
+  <dialog id="community-creator-dialog" class="app-dialog community-dialog" aria-labelledby="creator-dialog-title"><section class="dialog-card community-sheet"><button class="dialog-close community-close" type="button" data-close-dialog="community-creator-dialog" aria-label="关闭创作者主页">×</button><div id="community-creator-body"></div></section></dialog>
+  <dialog id="community-publish-dialog" class="app-dialog community-dialog" aria-labelledby="publish-dialog-title"><form id="community-publish-form" class="dialog-card community-sheet"><header class="dialog-header"><div><span class="eyebrow">本地社区</span><h2 id="publish-dialog-title">发布知识视频</h2></div><button class="dialog-close" type="button" data-close-dialog="community-publish-dialog" aria-label="关闭发布窗口">×</button></header><p class="dialog-copy">选择已导出的视频作品，或上传本机 MP4 / WebM。发布内容只在当前设备可见。</p><label class="field-label" for="publish-project">从作品库选择</label><select id="publish-project" class="dialog-input"><option value="">选择已完成作品（可选）</option></select><label class="field-label" for="publish-video-file">或上传本机视频</label><input id="publish-video-file" class="dialog-input" type="file" accept="video/mp4,video/webm,.mp4,.webm"><label class="field-label" for="publish-title">标题</label><input id="publish-title" class="dialog-input" maxlength="60" required><label class="field-label" for="publish-description">简介</label><textarea id="publish-description" class="dialog-input" maxlength="300" rows="3" placeholder="用一两句话说清这条视频会讲什么"></textarea><label class="field-label" for="publish-cover">封面配色</label><select id="publish-cover" class="dialog-input"><option value="mint">薄荷绿</option><option value="blue">天空蓝</option><option value="sand">暖砂白</option></select><div class="publish-two-col"><label>分类<select id="publish-category" class="dialog-input"><option>科技</option><option>科普</option><option>历史</option><option>人文</option><option>生活</option></select></label><label>可见范围<select id="publish-visibility" class="dialog-input"><option value="public">公开（本机演示）</option><option value="private">仅自己可见</option></select></label></div><label class="field-label" for="publish-topics">话题</label><input id="publish-topics" class="dialog-input" maxlength="80" placeholder="例如 C 语言、人工智能，用逗号分隔"><p id="publish-status" class="dialog-status" aria-live="polite"></p><div class="dialog-actions"><button type="button" class="ghost-btn" data-close-dialog="community-publish-dialog">取消</button><button id="publish-submit-btn" type="submit" class="primary-btn">确认发布</button></div></form></dialog>
+  <dialog id="profile-edit-dialog" class="app-dialog" aria-labelledby="profile-edit-title"><form id="profile-edit-form" class="dialog-card"><header class="dialog-header"><div><span class="eyebrow">个人资料</span><h2 id="profile-edit-title">编辑资料</h2></div><button class="dialog-close" type="button" data-close-dialog="profile-edit-dialog" aria-label="关闭">×</button></header><label class="field-label" for="profile-avatar-input">头像字符或表情</label><input id="profile-avatar-input" class="dialog-input" maxlength="2" placeholder="我"><label class="field-label" for="profile-name-input">昵称</label><input id="profile-name-input" class="dialog-input" maxlength="24" required><label class="field-label" for="profile-bio-input">简介</label><textarea id="profile-bio-input" class="dialog-input" maxlength="100" rows="3"></textarea><div class="dialog-actions"><button type="button" class="ghost-btn" data-close-dialog="profile-edit-dialog">取消</button><button class="primary-btn" type="submit">保存资料</button></div></form></dialog>
+
+  <dialog id="server-dialog" class="app-dialog" aria-labelledby="server-dialog-title"><section class="dialog-card"><header class="dialog-header"><div><span class="eyebrow">连接设置</span><h2 id="server-dialog-title">连接你的创作服务</h2></div><button id="server-dialog-close" class="dialog-close" type="button" aria-label="关闭">×</button></header><p class="dialog-copy">输入运行知映后端的电脑地址。手机和电脑需在同一网络，例如 <code>http://192.168.1.23:4173</code>。</p><label class="field-label" for="server-url">服务地址</label><input id="server-url" class="dialog-input" type="url" inputmode="url" placeholder="http://电脑IPv4:4173" autocomplete="url"><p class="dialog-footnote">连接 USB 转发时可填 http://127.0.0.1:4173。地址仅保存在当前设备。</p><div id="server-test-status" class="dialog-status" aria-live="polite"></div><div class="dialog-actions"><button id="server-test-btn" class="ghost-btn" type="button">测试连接</button><button id="server-save-btn" class="primary-btn" type="button">保存并连接</button></div></section></dialog>
+  <dialog id="update-dialog" class="app-dialog" aria-labelledby="update-dialog-title"><section class="dialog-card update-card"><header class="dialog-header"><div><span class="eyebrow">知映更新</span><h2 id="update-dialog-title">发现新版本</h2></div><span class="update-mark">↗</span></header><div class="version-compare"><div><small>当前版本</small><strong id="update-current-version">—</strong></div><span>→</span><div><small>可升级至</small><strong id="update-target-version">—</strong></div></div><p id="update-release-notes" class="dialog-copy"></p><p class="dialog-footnote">下载完成后会打开 Android 安装界面，请确认安装。</p><div class="dialog-actions"><button id="update-cancel-btn" class="ghost-btn" type="button">稍后</button><button id="update-install-btn" class="primary-btn" type="button">下载并安装</button></div></section></dialog>
+  <div id="app-toast" class="app-toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

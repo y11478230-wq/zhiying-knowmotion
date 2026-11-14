@@ -1,0 +1,20 @@
+{
+  "name": "zhiying-hackathon-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "mobile:copy": "node scripts/copy-mobile.mjs",
+    "mobile:sync": "npm run mobile:copy && cap sync android",
+    "mobile:open": "cap open android",
+    "mobile:publish": "node scripts/publish-apk.mjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2"
+  }
+}

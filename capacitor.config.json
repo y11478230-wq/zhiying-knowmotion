@@ -1,0 +1,8 @@
+{
+  "appId": "com.zhiying.education",
+  "appName": "知映",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true
+  }
+}

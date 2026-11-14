@@ -1,0 +1,14 @@
+{
+  "id": "/",
+  "name": "知映 2.1.0 · 知识视频创作",
+  "short_name": "知映",
+  "description": "从一个知识问题，到一条可编辑、可导出的知识视频。",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4fbf7",
+  "theme_color": "#f4fbf7",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
