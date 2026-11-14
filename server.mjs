@@ -31,7 +31,7 @@ function loadEnv(file) {
     if (!match) continue;
     let value = match[2].trim();
     if (value.length >= 2 && ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))) value = value.slice(1, -1);
-    if (!process.env[match[1]]) process.env[match[1]] = value;
+    if (process.env[match[1]] === undefined) process.env[match[1]] = value;
   }
 }
 loadEnv(envFile);
@@ -1126,7 +1126,6 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/api/creative') {
       if (req.method !== 'POST') throw new HttpError(405, '此接口只接受 POST');
       takeRateLimit(req, 'generate');
-      if (!process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY === 'your_key_here') throw new HttpError(503, '服务端尚未配置 DeepSeek API Key');
       const input = await readJson(req, maxReferenceBody);
       const topic = typeof input?.topic === 'string' ? input.topic.trim() : '';
       const audience = typeof input?.audience === 'string' ? input.audience.trim() : '普通大众';
@@ -1137,6 +1136,7 @@ const server = http.createServer(async (req, res) => {
       if (!topic || topic.length > 500) throw new HttpError(400, '请输入 1～500 字的知识问题');
       if (!audience || audience.length > 80 || !style || style.length > 80) throw new HttpError(400, '观众或讲解方式长度不合适');
       const references = normalizeReferences(input?.references);
+      if (!process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY === 'your_key_here') throw new HttpError(503, '服务端尚未配置 DeepSeek API Key');
       return send(res, 200, await runLimited('generate', () => generateCreativeDirections(topic, audience, style, targetDurationSec, references, previousTitles)));
     }
     if (url.pathname === '/api/optimize') {
