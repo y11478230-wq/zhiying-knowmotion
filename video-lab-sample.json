@@ -44,53 +44,72 @@
       "chapterId": "chapter-1",
       "chapterTitle": "从任务说起",
       "title": "两类计算任务",
-      "narration": "计算任务可以分成两类。一类像做一道多步数学题，每一步都要根据上一步的结果决定下一步，步骤少但每步复杂。另一类像给一叠照片逐张调色，每张都做同样的简单操作，操作简单但重复次数极多。这两类任务对处理器的要求完全不同。",
-      "caption": "两类任务：复杂少步骤 vs 简单多重复",
+      "narration": "计算任务可以从依赖关系来理解。一类像需要连续推理的数学题，每一步都要用到前一步的结果。另一类像给一批彼此独立的照片做同一种调色，单次操作简单，但可以把同一规则分别应用到很多张照片。并不是数学一定用 CPU、图片一定用 GPU，关键是任务能否独立并行。",
+      "caption": "串行依赖 vs 独立重复",
       "mode": "compare",
       "labels": [
         "多步数学题",
-        "一叠照片调色"
+        "批量照片调色"
       ],
       "icon": "🧮",
-      "imageHint": "左侧一个复杂流程图箭头，右侧一叠相同照片图标",
+      "imageHint": "CPU GPU chip",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "math",
+        "photos"
+      ],
+      "imagePurpose": "用步骤图解释串行推理，用照片前后对照示范可重复的调色操作",
+      "visualLink": "左侧步骤按顺序推进；右侧以单张前后对照示范一种可重复操作",
+      "fallbackVector": "左侧串行推导；右侧多张图片连接到同一调色操作"
     },
     {
       "id": "chapter-1-scene-2",
       "chapterId": "chapter-1",
       "chapterTitle": "从任务说起",
       "title": "复杂步骤的数学题",
-      "narration": "比如解一道需要多步推理的数学题，你得先读题、列式、计算、检验，每一步都依赖上一步的结果，顺序不能乱。这种任务步骤数量不多，但每一步的逻辑都很复杂，需要处理器能快速处理分支和逻辑判断。",
+      "narration": "比如解一道需要多步推理的数学题，你得先读题、列式并计算，最后检查结果；其中有些步骤要依赖前一步，顺序不能乱。这类任务需要处理器快速执行逻辑判断和分支。",
       "caption": "多步推理：顺序依赖，逻辑复杂",
       "mode": "flow",
       "labels": [
         "读题",
-        "列式",
-        "计算"
+        "列式计算",
+        "检验结果"
       ],
       "icon": "📝",
-      "imageHint": "数学题步骤流程图，箭头连接",
+      "imageHint": "mathematics equation",
       "accent": "green",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "math"
+      ],
+      "imagePurpose": "多步数学推导的具体对象",
+      "visualLink": "读题、列式和计算必须按依赖顺序完成",
+      "fallbackVector": "读题→列式计算→检验结果"
     },
     {
       "id": "chapter-1-scene-3",
       "chapterId": "chapter-1",
       "chapterTitle": "从任务说起",
       "title": "大量简单重复的照片调色",
-      "narration": "再比如给一叠照片逐张做同一种简单调色，每张照片的操作完全一样：调整亮度、对比度，然后保存。单次操作很简单，但照片可能有几百张，重复次数极多。这种任务不依赖复杂逻辑，而是需要同时处理大量相同操作。",
+      "narration": "再比如给一批彼此独立的照片做同一种简单调色：每张图片都执行相同的调整步骤。单次操作不复杂，但要在大量数据上反复进行。这类任务的关键是数据之间相互独立，因此有机会同时处理，而不是每张照片都必须等上一张完成。",
       "caption": "照片调色：操作相同，重复极多",
       "mode": "gallery",
       "labels": [
-        "照片1",
-        "照片2",
-        "照片3"
+        "原片",
+        "调色后",
+        "重复操作"
       ],
       "icon": "🖼️",
-      "imageHint": "一叠相同照片图标，每张上有调色滑块",
+      "imageHint": "photo editing",
       "accent": "orange",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "photos"
+      ],
+      "imagePurpose": "照片调色前后对照，说明重复处理",
+      "visualLink": "先看单张照片调整前后，再说明同一规则可用于一批独立照片",
+      "fallbackVector": "多张图片并行连接同一组调色参数"
     },
     {
       "id": "chapter-1-scene-4",
@@ -105,9 +124,16 @@
         "GPU"
       ],
       "icon": "⚙️",
-      "imageHint": "左右对比图：左侧CPU图标配复杂流程图，右侧GPU图标配多张相同照片",
+      "imageHint": "GPU graphics card",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "cpu",
+        "gpu"
+      ],
+      "imagePurpose": "CPU 芯片与 GPU 显卡的真实外观",
+      "visualLink": "左图为通用处理器，右图为并行计算显卡",
+      "fallbackVector": "少数复杂核心与大量并行核心对照"
     },
     {
       "id": "chapter-2-scene-1",
@@ -122,9 +148,15 @@
         "复杂逻辑"
       ],
       "icon": "🧠",
-      "imageHint": "几个大圆表示核心，每个大圆内画一个思考的人像",
+      "imageHint": "CPU chip",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "cpu"
+      ],
+      "imagePurpose": "CPU 芯片实物，作为处理器介绍的视觉锚点",
+      "visualLink": "照片只展示 CPU 实物；核心结构和能力仍由文字与矢量说明",
+      "fallbackVector": "CPU核心→复杂分支→任务结果"
     },
     {
       "id": "chapter-2-scene-2",
@@ -140,26 +172,36 @@
         "存储"
       ],
       "icon": "🔗",
-      "imageHint": "箭头连接三个步骤的流程图",
+      "imageHint": "computer processor",
       "accent": "green",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "cpu"
+      ],
+      "imagePurpose": "CPU 芯片实物，配合串行步骤解释",
+      "visualLink": "用连续步骤箭头表现先后依赖",
+      "fallbackVector": "步骤一→步骤二→步骤三，依赖关系清楚"
     },
     {
       "id": "chapter-2-scene-3",
       "chapterId": "chapter-2",
       "chapterTitle": "CPU 像少数专家",
       "title": "并行有限",
-      "narration": "团队人数有限，同时能处理的任务数也有限。如果突然涌来大量简单任务，专家们得排队一个个做。CPU 也是如此，核心数较少，并行能力有上限。",
+      "narration": "CPU 并不是只能一次做一件事：多个核心可以同时处理多个任务。但它可同时处理的任务规模通常小于 GPU；任务继续增加时，系统会安排等待和切换。可以把它想成少数专家分工处理，忙不过来时再排队，而不是所有工作永远只能串行。",
       "caption": "核心有限，并行有上限",
       "mode": "compare",
       "labels": [
         "少量核心",
-        "任务排队"
+        "任务等待"
       ],
       "icon": "⏳",
-      "imageHint": "左侧几个大圆，右侧一长串小方块排队",
+      "imageHint": "",
       "accent": "orange",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [],
+      "imagePurpose": "该幕强调顺序与分支关系，实物图无法解释任务调度",
+      "visualLink": "以串行步骤关系图说明限制，不把芯片照片当作调度示意",
+      "fallbackVector": "串行队列与等待任务示意"
     },
     {
       "id": "chapter-2-scene-4",
@@ -175,9 +217,13 @@
         "任务切换"
       ],
       "icon": "💻",
-      "imageHint": "电脑屏幕显示多个窗口，旁边有切换箭头",
+      "imageHint": "",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [],
+      "imagePurpose": "此处用矢量图表示任务切换过程",
+      "visualLink": "任务进入、等待与切换通过流程图解释",
+      "fallbackVector": "任务提交→CPU 调度→执行→完成"
     },
     {
       "id": "chapter-3-scene-1",
@@ -193,34 +239,46 @@
         "简单核心"
       ],
       "icon": "🔲",
-      "imageHint": "左侧少量大方块代表CPU核心，右侧密集小方块网格代表GPU核心",
+      "imageHint": "GPU chip",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "gpu"
+      ],
+      "imagePurpose": "GPU 显卡实物，说明并行计算硬件",
+      "visualLink": "GPU 外观对应硬件主题；核心阵列由右侧矢量图解说明",
+      "fallbackVector": "GPU并行核心网格与统一数据流"
     },
     {
       "id": "chapter-3-scene-2",
       "chapterId": "chapter-3",
       "chapterTitle": "GPU 像许多同工种工人",
       "title": "同时处理大量照片",
-      "narration": "比如给一批照片调色，每张照片都要进行同样的操作。GPU 可以让每个核心负责一张照片，同时开工。就像许多工人排成网格，每人面前放一张照片，统一执行调色步骤。",
+      "narration": "以照片调色为例，计算机通常会把图像拆成大量像素或数据块，对它们执行相似的运算。GPU 能让许多计算单元同时处理这些数据。这里不是一个核心负责一整张照片，而是许多小块并行计算，最后再组成完整图像。",
       "caption": "每人处理一张照片",
       "mode": "gallery",
       "labels": [
-        "照片1",
-        "照片2",
-        "照片3"
+        "像素数据块",
+        "相同运算",
+        "并行结果"
       ],
       "icon": "🖼️",
-      "imageHint": "网格状排列的照片图标，每个照片下方有一个工人图标，箭头统一指向调色工具",
+      "imageHint": "digital photography",
       "accent": "green",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "photos"
+      ],
+      "imagePurpose": "同一类图片被重复处理的具体示例",
+      "visualLink": "同一运算应用于大量像素块，再汇总为完整图像",
+      "fallbackVector": "图像拆分为数据块→并行运算→合成结果"
     },
     {
       "id": "chapter-3-scene-3",
       "chapterId": "chapter-3",
       "chapterTitle": "GPU 像许多同工种工人",
       "title": "任务独立且规则相同",
-      "narration": "这种高效来自任务彼此独立、规则相同。一张照片的调色不影响另一张，而且所有照片都使用相同的调色算法。GPU 正是为这种并行场景设计，能同时处理成千上万个简单步骤。",
+      "narration": "这种并行方式适合大量彼此独立、规则相同的数据。一个数据块的计算结果通常不会决定另一个数据块能否开始，因此可以同时推进许多运算。GPU 会把任务分配到多个计算单元，具体并行规模取决于程序和硬件。",
       "caption": "独立且规则相同",
       "mode": "flow",
       "labels": [
@@ -229,27 +287,37 @@
         "并行处理"
       ],
       "icon": "⚙️",
-      "imageHint": "多个相同箭头从不同照片指向同一个调色规则框，再指向同时处理结果",
+      "imageHint": "GPU parallel computing",
       "accent": "orange",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "photos"
+      ],
+      "imagePurpose": "图片素材展示规则相同的批量处理对象",
+      "visualLink": "数据块彼此独立并执行同一规则，多个单元并行推进",
+      "fallbackVector": "独立数据块→相同计算单元→并行完成"
     },
     {
       "id": "chapter-3-scene-4",
       "chapterId": "chapter-3",
       "chapterTitle": "GPU 像许多同工种工人",
       "title": "观察你的设备",
-      "narration": "你可以在任务管理器或活动监视器中查看 GPU 的核心数量。例如，许多独立显卡拥有数百到数千个流处理器。打开一个视频编辑或 3D 游戏，观察 GPU 使用率如何随并行任务波动。",
-      "caption": "查看GPU核心数",
+      "narration": "你可以在任务管理器或活动监视器中查看 GPU 的使用情况。不同设备、显卡型号和系统显示的指标会有差异；观察视频编辑或 3D 应用运行时 GPU 使用率的变化，比记住一个固定核心数更有帮助。",
+      "caption": "观察 GPU 使用率",
       "mode": "focus",
       "labels": [
         "任务管理器",
-        "GPU核心数",
+        "GPU状态",
         "使用率"
       ],
       "icon": "📊",
-      "imageHint": "任务管理器GPU选项卡截图，突出显示核心数量和利用率曲线",
+      "imageHint": "",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [],
+      "imagePurpose": "此处用矢量仪表表示 GPU 使用率随任务变化",
+      "visualLink": "矢量仪表盘模拟观察利用率与任务状态",
+      "fallbackVector": "利用率仪表、任务队列与处理状态"
     },
     {
       "id": "chapter-4-scene-1",
@@ -264,9 +332,16 @@
         "GPU 大量小核心"
       ],
       "icon": "⚖️",
-      "imageHint": "白底左右对比示意图：左侧少量大核心方块配复杂控制箭头，右侧密集小核心网格配统一数据流箭头",
+      "imageHint": "CPU GPU chips",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "cpu",
+        "gpu"
+      ],
+      "imagePurpose": "CPU 与 GPU 实物对照，支撑设计取舍说明",
+      "visualLink": "两种硬件对应不同的工作负载侧重",
+      "fallbackVector": "CPU复杂控制路径与GPU统一并行数据流"
     },
     {
       "id": "chapter-4-scene-2",
@@ -282,9 +357,13 @@
         "串行路径"
       ],
       "icon": "🗺️",
-      "imageHint": "白底任务地图：格子组成的网络中一条清晰的长路径，箭头逐格相连，可并行分支很少",
+      "imageHint": "",
       "accent": "green",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [],
+      "imagePurpose": "任务地图是抽象关系，采用矢量图表达",
+      "visualLink": "复杂串行任务与批量并行任务分别映射到 CPU 和 GPU",
+      "fallbackVector": "复杂任务路径与并行任务网格"
     },
     {
       "id": "chapter-4-scene-3",
@@ -300,9 +379,13 @@
         "GPU 网格"
       ],
       "icon": "🔲",
-      "imageHint": "白底网格图：大量相同颜色的小方格同时被统一箭头指向，表示并行处理",
+      "imageHint": "",
       "accent": "orange",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [],
+      "imagePurpose": "网格并行结构由矢量图直接说明",
+      "visualLink": "许多独立单元同时处理规则一致的数据",
+      "fallbackVector": "网格中的多个单元同时处理不同数据"
     },
     {
       "id": "chapter-4-scene-4",
@@ -318,16 +401,23 @@
         "任务结构"
       ],
       "icon": "🧩",
-      "imageHint": "白底中心构图：左侧一支连续箭头串联多个步骤，右侧多支平行箭头同时处理多个相同方块",
+      "imageHint": "parallel computing",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "cpu",
+        "gpu"
+      ],
+      "imagePurpose": "两类处理器对照，归纳各自擅长的任务",
+      "visualLink": "将两种硬件放在各自任务背景中比较",
+      "fallbackVector": "CPU处理逻辑分支，GPU处理重复计算"
     },
     {
       "id": "chapter-5-scene-1",
       "chapterId": "chapter-5",
       "chapterTitle": "各司其职与回顾",
       "title": "总结：分工协作",
-      "narration": "回顾这五章，我们明白了CPU和GPU是面向不同任务特点的两种设计。复杂逻辑交给CPU，大量重复计算交给GPU，它们常常协作完成整体任务。",
+      "narration": "回顾这五章，CPU 和 GPU 是面向不同任务特点优化的处理器。在常见系统中，CPU 更常负责控制和复杂逻辑，适合并行的数据运算则可能交给 GPU；实际任务会根据程序和设备分工，两者通常协作完成整体工作。",
       "caption": "CPU与GPU：分工协作",
       "mode": "compare",
       "labels": [
@@ -336,9 +426,16 @@
         "复杂逻辑"
       ],
       "icon": "🤝",
-      "imageHint": "白色背景，左侧CPU图标，右侧GPU图标，中间双向箭头连接，下方文字：复杂逻辑→CPU，大量重复计算→GPU",
+      "imageHint": "CPU GPU processor",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "cpu",
+        "gpu"
+      ],
+      "imagePurpose": "CPU 与 GPU 实物对照，展示协作双方",
+      "visualLink": "两类硬件通过数据与控制关系协同完成任务",
+      "fallbackVector": "CPU调度↔GPU并行处理↔结果返回"
     },
     {
       "id": "chapter-5-scene-2",
@@ -354,9 +451,15 @@
         "顺序执行"
       ],
       "icon": "🧠",
-      "imageHint": "CPU芯片图标，旁边有齿轮和流程图表示复杂逻辑，箭头表示顺序执行",
+      "imageHint": "CPU chip",
       "accent": "green",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "cpu"
+      ],
+      "imagePurpose": "CPU 芯片实物作为本节视觉锚点",
+      "visualLink": "实物作为章节引入，少数复杂核心由示意图说明",
+      "fallbackVector": "少数核心、复杂控制、顺序执行"
     },
     {
       "id": "chapter-5-scene-3",
@@ -372,16 +475,22 @@
         "并行计算"
       ],
       "icon": "⚙️",
-      "imageHint": "GPU芯片图标，旁边有许多小工人图标或网格表示并行处理，图像和矩阵符号",
+      "imageHint": "graphics card",
       "accent": "orange",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [
+        "gpu"
+      ],
+      "imagePurpose": "GPU 显卡实物作为本节视觉锚点",
+      "visualLink": "实物作为章节引入，大量并行单元由示意图说明",
+      "fallbackVector": "大量并行单元、规则数据、同时执行"
     },
     {
       "id": "chapter-5-scene-4",
       "chapterId": "chapter-5",
       "chapterTitle": "各司其职与回顾",
       "title": "协作完成整体任务",
-      "narration": "实际系统中，CPU和GPU各司其职又紧密配合。比如游戏中，CPU处理逻辑和物理，GPU渲染画面，两者协作让游戏流畅运行。",
+      "narration": "实际系统中，CPU 和 GPU 会按程序需要分工协作。以许多游戏为例，CPU 常处理游戏逻辑和部分物理计算，GPU 负责大量图形渲染；具体分工会因游戏引擎和硬件而不同。理解它们如何配合，比判断谁更强更重要。",
       "caption": "CPU与GPU协作示例",
       "mode": "flow",
       "labels": [
@@ -390,9 +499,13 @@
         "协作"
       ],
       "icon": "🎮",
-      "imageHint": "游戏场景示意图，左侧CPU处理逻辑（如角色移动），右侧GPU渲染画面（3D场景），中间箭头表示数据传递",
+      "imageHint": "",
       "accent": "blue",
-      "duration": 15
+      "duration": 15,
+      "imageKeys": [],
+      "imagePurpose": "游戏渲染过程由矢量数据流展示，避免无关硬件照片",
+      "visualLink": "矢量场景展示 CPU 准备任务、GPU 并行处理、结果回传",
+      "fallbackVector": "场景输入→CPU准备→GPU渲染→画面输出"
     }
   ]
 }

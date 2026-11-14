@@ -53,6 +53,7 @@ const capabilityTtlMs = 120_000;
 const maxStaticCacheEntries = 16;
 
 const speechCache = new Map();
+const videoLabImageCache = new Map();
 let speechCacheBytes = 0;
 const maxSpeechCacheEntries = 40;
 const maxSpeechCacheBytes = 32 * 1024 * 1024;
@@ -62,6 +63,7 @@ let rateChecks = 0;
 const ratePolicies = {
   generate: { count: 4, windowMs: 60_000 },
   longGenerate: { count: 12, windowMs: 60_000 },
+  imageSearch: { count: 30, windowMs: 60_000 },
   optimize: { count: 8, windowMs: 60_000 },
   reference: { count: 20, windowMs: 60_000 },
   speech: { count: 45, windowMs: 60_000 },
@@ -75,7 +77,7 @@ const jobQueues = { generate: [], optimize: [], reference: [], speech: [], conve
 const jobQueueLimits = { generate: 4, optimize: 4, reference: 6, speech: 12, convert: 2, updateDownload: 4 };
 const jobWaitMs = { generate: 20_000, optimize: 15_000, reference: 15_000, speech: 20_000, convert: 30_000, updateDownload: 8_000 };
 const neuralVoices = new Set(['zh-CN-YunyangNeural', 'zh-CN-YunjianNeural', 'zh-CN-XiaoxiaoNeural']);
-const publicFiles = new Set(['/index.html', '/app.js', '/community.js', '/renderer.js', '/styles.css', '/light.css', '/community.css', '/video-lab.html', '/video-lab.js', '/video-lab.css', '/video-lab-sample.json', '/manifest.webmanifest', '/sw.js', '/icon.svg', '/vendor/capacitor-core.js', '/examples/c-voice-sample.mp3', '/examples/demo-hello.mp4', '/examples/demo-sky.mp4']);
+const publicFiles = new Set(['/index.html', '/app.js', '/community.js', '/renderer.js', '/styles.css', '/light.css', '/community.css', '/video-lab.html', '/video-lab.js', '/video-lab.css', '/video-lab-sample.json', '/manifest.webmanifest', '/sw.js', '/icon.svg', '/vendor/capacitor-core.js', '/examples/c-voice-sample.mp3', '/examples/demo-hello.mp4', '/examples/demo-sky.mp4', '/examples/video-lab/assets.json', '/examples/video-lab/cpu.jpg', '/examples/video-lab/gpu.jpg', '/examples/video-lab/math.jpg', '/examples/video-lab/photos.jpg']);
 
 class HttpError extends Error {
   constructor(status, message, headers = {}) { super(message); this.status = status; this.headers = headers; }
@@ -543,11 +545,13 @@ async function generateVideoLabPlan(topic) {
 }
 async function generateVideoLabChapter(input) {
   const { topic, chapter, chapterIndex } = input;
+  const previousScenes = Array.isArray(input.previousScenes) ? input.previousScenes.slice(-8) : [];
+  const previousContext = previousScenes.map(scene => `- ${String(scene.title||'').slice(0,40)}：${String(scene.narration||'').slice(0,180)}`).join('\n');
   const data = await callDeepSeek({
     model: 'deepseek-flash',
     messages: [
-      { role: 'system', content: `你是中文知识视频导演。把 5 分钟课程中的一章展开成约 1 分钟，必须正好 4 个连续画面事件。每幕旁白约 70–95 个汉字，有清楚的事实解释、具体例子或观察任务；每幕画面都要与旁白有具体对应。画面采用白底、简短章节标题、图片/插画与矢量标注混排、底部短字幕。只输出 JSON：{"scenes":[{"title":"短标题","narration":"自然中文旁白","caption":"不超过20字字幕","mode":"gallery|compare|flow|focus|number","labels":["不超过8字的画面对象"],"icon":"一个相关emoji","accent":"green|blue|orange","imageHint":"这幕适合添加什么具体图片；不需要则留空"}]}。不能杜撰数字、实验结论、教材出处或代码执行结果。不要输出 Markdown。` },
-      { role: 'user', content: `全片主题：${topic}\n第 ${chapterIndex + 1}/5 章：${chapter.title}\n本章目标：${chapter.goal}\n具体例子：${chapter.example}\n建议画面：${chapter.visual}\n前面章节：${input.previousTitles.join('、') || '无'}\n请输出 JSON。` }
+      { role: 'system', content: `你是知识视频的教学导演和视觉编辑。把一章展开成正好 4 个连续画面事件，每幕旁白约 70–95 个汉字，必须服务本章目标，并依次推进“提出问题/解释概念/具体演示/归纳或迁移”，不要把同一结论换说法凑四幕。接续前文已有知识，不得重复整段内容或与前文矛盾；类比必须明确是类比，不能把类比说成硬件的真实工作方式。遇到依任务、设备或定义而变化的事实，用“通常/在这类场景下”等限定词，避免绝对化；不要编造数字、数据、实验结果、历史和出处。旁白、标题、字幕、标签、图片和箭头必须讲同一件事。流程图的标签要覆盖旁白中真正关键的先后步骤（最多3个，可合并步骤），箭头方向必须正确；比较图两边必须是同一维度的对象，避免错误对照；图片只展示旁白正在讲的对象，找不到准确图片就使用矢量图，不得用相关但不对应的图片充数。imageHint 用英文填写2–4个具体搜索词；纯抽象图解时留空。imagePurpose说明图片实际显示什么以及它支撑的知识点；visualLink写图片与标注之间的准确关系（最多32字）；fallbackVector写无图片时能独立讲清楚的矢量方案（最多48字）。采用白底、短标题、短字幕。输出前自查：四幕顺序合理、没有重复或矛盾、例子确实支撑结论、数字有依据、画面标签不超出旁白。只输出 JSON：{"scenes":[{"title":"短标题","narration":"自然中文旁白","caption":"不超过20字字幕","mode":"gallery|compare|flow|focus|number","labels":["不超过8字的画面对象"],"icon":"一个相关emoji","accent":"green|blue|orange","imageHint":"可留空；英文具体物体词","imagePurpose":"图片具体展示及其教学用途","visualLink":"图像与标注的关系","fallbackVector":"无合适照片时的矢量图方案"}]}。不要输出 Markdown。` },
+      { role: 'user', content: `全片主题：${topic}\n第 ${chapterIndex + 1}/5 章：${chapter.title}\n本章目标：${chapter.goal}\n具体例子：${chapter.example}\n建议画面：${chapter.visual}\n前面章节标题：${input.previousTitles.join('、') || '无'}\n前文已讲内容：\n${previousContext || '无'}\n请严格按前文衔接本章，并输出 JSON。` }
     ], response_format: { type: 'json_object' }, thinking: { type: 'disabled' }, max_tokens: 2800
   });
   let raw;
@@ -559,17 +563,81 @@ async function generateVideoLabChapter(input) {
     const title = String(scene.title || '').trim().slice(0, 16);
     const narration = String(scene.narration || '').trim().slice(0, 220);
     if (!title || narration.length < 35) throw new HttpError(502, `第 ${chapterIndex + 1} 章第 ${index + 1} 幕内容不完整`);
+    const imagePurpose=String(scene.imagePurpose||'').trim().slice(0,120);
+    const imageIsVectorOnly=/抽象关系|矢量图表达|用矢量|实物图无法|避免.*照片|不需要.*图片|无须.*图片|不要.*照片/i.test(imagePurpose);
     return { id: `chapter-${chapterIndex + 1}-scene-${index + 1}`, chapterId: `chapter-${chapterIndex + 1}`,
       chapterTitle: chapter.title, title, narration,
       caption: String(scene.caption || title).trim().slice(0, 28),
       mode: modes.has(scene.mode) ? scene.mode : 'focus',
       labels: Array.isArray(scene.labels) ? scene.labels.map(value => String(value).trim().slice(0, 16)).filter(Boolean).slice(0, 3) : [],
       icon: String(scene.icon || '✦').slice(0, 8),
-      imageHint: String(scene.imageHint || '').slice(0, 120),
+      imageHint: imageIsVectorOnly ? '' : String(scene.imageHint || '').slice(0, 120),
+      imagePurpose,
+      visualLink: String(scene.visualLink || '').trim().slice(0, 80),
+      fallbackVector: String(scene.fallbackVector || '').trim().slice(0, 100),
       accent: ['green', 'blue', 'orange'].includes(scene.accent) ? scene.accent : 'green',
       duration: 15 };
   });
   return { chapterId: `chapter-${chapterIndex + 1}`, scenes, usage: data.usage || null };
+}
+function cleanCommonsText(value, max = 180) {
+  return String(value || '').replace(/<[^>]*>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&#39;|&apos;/gi, "'").replace(/&quot;/gi, '"').replace(/\s+/g, ' ').trim().slice(0, max);
+}
+function commonsTitleRelevance(query,title,rank=0){
+  const stop=new Set(['photo','photos','image','images','picture','pictures','diagram','illustration','the','and','for','with']);
+  const terms=[...new Set(String(query).toLowerCase().match(/[\p{L}\p{N}]{2,}/gu)||[])].filter(term=>!stop.has(term));
+  if(!terms.length)return 0;
+  const titleTerms=String(title).toLowerCase().replace(/[_-]+/g,' ').match(/[\p{L}\p{N}]{2,}/gu)||[];
+  const matched=terms.filter(term=>titleTerms.some(candidate=>candidate===term||(term.length>=3&&candidate.startsWith(term))||(candidate.length>=4&&term.startsWith(candidate))));
+  const coverage=matched.length/terms.length;
+  const searchRank=Math.max(0,12-rank*1.5);
+  return {score:Math.round(Math.min(100,coverage*82+searchRank)),matched};
+}
+function downloadCommonsBytes(url, maxBytes) {
+  return new Promise((resolve, reject) => {
+    const command = process.platform === 'win32' ? 'curl.exe' : 'curl';
+    const child = spawnTracked(command, ['--fail', '--silent', '--show-error', '--location', '--proto-redir', '=https', '--max-redirs', '3', '--max-time', '20', '--max-filesize', String(maxBytes), '-A', 'KnowMotion/2.4 (educational-video-prototype)', '--', url], { stdio: ['ignore', 'pipe', 'pipe'] });
+    const chunks = []; let size = 0; let stderr = '';
+    child.stdout.on('data', chunk => {
+      size += chunk.length;
+      if (size > maxBytes) { child.kill(); reject(new HttpError(413, '图片超过 8 MB，换一张尺寸较小的图片')); return; }
+      chunks.push(chunk);
+    });
+    child.stderr.on('data', chunk => { if (stderr.length < 1000) stderr += chunk.toString(); });
+    child.once('error', error => reject(new HttpError(502, '本机缺少 curl，无法连接公共图片库')));
+    child.once('close', code => {
+      if (code !== 0) return reject(new HttpError(502, '图片库暂时无法访问，请稍后重试'));
+      resolve(Buffer.concat(chunks, size));
+    });
+  });
+}
+async function searchCommonsImages(query, allowShorterFallback = true) {
+  const url = new URL('https://commons.wikimedia.org/w/api.php');
+  url.search = new URLSearchParams({ action:'query', format:'json', generator:'search', gsrsearch:`filetype:bitmap ${query}`, gsrnamespace:'6', gsrlimit:'8', prop:'imageinfo|info', inprop:'url', iiprop:'url|size|mime|thumbmime|extmetadata', iiurlwidth:'1000' }).toString();
+  let data;
+  try { data = JSON.parse((await downloadCommonsBytes(url.toString(), 5 * 1024 * 1024)).toString('utf8')); }
+  catch (error) { if (error instanceof HttpError) throw error; throw new HttpError(502, '图片库返回了无法识别的内容'); }
+  const pages = Object.values(data?.query?.pages || {});
+  const results=[];
+  for (let rank=0;rank<pages.length;rank++) {
+    const page=pages[rank];
+    const info=page.imageinfo?.[0];
+    if (!info?.thumburl || !['image/jpeg','image/png','image/webp'].includes(info.thumbmime || info.mime)) continue;
+    const meta=info.extmetadata || {};
+    const license=cleanCommonsText(meta.LicenseShortName?.value || '请查看来源页授权', 40);
+    const artist=cleanCommonsText(meta.Artist?.value || meta.Credit?.value || '作者信息见来源页', 90);
+    const relevance=commonsTitleRelevance(query,page.title.replace(/^File:/,''),rank);
+    const id=crypto.randomUUID();
+    videoLabImageCache.set(id,{url:info.thumburl,mime:info.thumbmime || info.mime,createdAt:Date.now()});
+    results.push({id,title:page.title.replace(/^File:/,''),thumb:`/api/video-lab/image?id=${id}`,pageUrl:info.descriptionurl || page.fullurl || '',artist,license,licenseUrl:cleanCommonsText(meta.LicenseUrl?.value || '',200),width:info.width,height:info.height,relevance:relevance.score,matchedTerms:relevance.matched});
+  }
+  results.sort((a,b)=>b.relevance-a.relevance||b.width*b.height-a.width*a.height);
+  if(!results.length&&allowShorterFallback){
+    const shorter=query.split(/[\s,，;；]+/).filter(Boolean).slice(0,2).join(' ');
+    if(shorter&&shorter.toLowerCase()!==query.toLowerCase())return searchCommonsImages(shorter,false);
+  }
+  for (const [id,item] of videoLabImageCache) if (Date.now()-item.createdAt>30*60_000) videoLabImageCache.delete(id);
+  return results;
 }
 async function generateCreativeDirections(topic, audience, style, targetDurationSec = 60, references = [], previousTitles = []) {
   const avoid = previousTitles.length ? `\n以下标题已经出现，本批必须换用不同的知识切入点和叙事结构：${previousTitles.slice(-9).join('；')}` : '';
@@ -736,23 +804,28 @@ const offlineVoices = new Map([
   ['windows-kangkang', 'Microsoft Kangkang'],
   ['windows-yaoyao', 'Microsoft Yaoyao']
 ]);
-function synthesizeWindows(text, rate = 0, voice = 'windows') {
+function synthesizeWindows(text, rate = 0, voice = 'windows', withTimings = false) {
   return new Promise((resolve, reject) => {
     const speechRate = Math.max(-2, Math.min(2, Math.round(rate / 10)));
     const encodedText = Buffer.from(text, 'utf8').toString('base64');
-    const voiceName = offlineVoices.get(voice) || offlineVoices.get('windows');
-    const script = `$ErrorActionPreference='Stop'; Add-Type -AssemblyName System.Speech; $spoken=[System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('${encodedText}')); $s=[System.Speech.Synthesis.SpeechSynthesizer]::new(); try { $s.SelectVoice('${voiceName}') } catch { $s.SelectVoice('Microsoft Huihui Desktop') }; $s.Rate=${speechRate}; $m=[System.IO.MemoryStream]::new(); $s.SetOutputToWaveStream($m); $s.Speak($spoken); $s.Dispose(); [Console]::OpenStandardOutput().Write($m.ToArray(),0,[int]$m.Length); $m.Dispose()`;
+    const requestedVoice = offlineVoices.get(voice) || offlineVoices.get('windows');
+    const script = `$ErrorActionPreference='Stop'; Add-Type -AssemblyName System.Speech; $spoken=[System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('${encodedText}')); $s=[System.Speech.Synthesis.SpeechSynthesizer]::new(); $available=@($s.GetInstalledVoices() | Where-Object {$_.Enabled} | ForEach-Object {$_.VoiceInfo}); $selected=$available | Where-Object {$_.Name -eq '${requestedVoice}' -or $_.Name -like '${requestedVoice} *'} | Select-Object -First 1; if(-not $selected){$selected=$available | Where-Object {$_.Name -like 'Microsoft Huihui*'} | Select-Object -First 1}; if(-not $selected){$selected=$available | Where-Object {$_.Culture.Name -like 'zh-*'} | Select-Object -First 1}; if(-not $selected){throw '未找到可用的中文系统音色，请安装中文语音包或切换在线音色'}; $s.SelectVoice($selected.Name); $s.Rate=${speechRate}; $timings=[System.Collections.Generic.List[object]]::new(); $handler=[System.EventHandler[System.Speech.Synthesis.SpeakProgressEventArgs]]{ param($sender,$e); $part=$spoken.Substring($e.CharacterPosition,$e.CharacterCount); $timings.Add(@{offset=$e.AudioPosition.Ticks;text=$part}) }; $s.add_SpeakProgress($handler); $m=[System.IO.MemoryStream]::new(); $s.SetOutputToWaveStream($m); $s.Speak($spoken); $s.Dispose(); $meta=@{voice=$selected.Name;timings=@($timings)}; $metaBytes=[System.Text.Encoding]::UTF8.GetBytes((ConvertTo-Json -InputObject $meta -Compress)); [Console]::Error.WriteLine('__SPEECH_META_B64__'+[Convert]::ToBase64String($metaBytes)); [Console]::OpenStandardOutput().Write($m.ToArray(),0,[int]$m.Length); $m.Dispose()`;
     const child = spawnTracked('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', script], { stdio: ['ignore', 'pipe', 'pipe'] });
     const timedOut = setChildTimeout(child, 30_000, '本机配音');
     const out = [], err = [];
     child.stdout.on('data', c => out.push(c));
     child.stderr.on('data', c => err.push(c));
     child.on('error', reject);
-    child.on('close', code => timedOut() ? reject(timedOut()) : code === 0 ? resolve(Buffer.concat(out)) : reject(new Error(Buffer.concat(err).toString('utf8') || '语音合成失败')));
+    child.on('close', code => {
+      const stderr=Buffer.concat(err).toString('utf8'),marker='__SPEECH_META_B64__',markerIndex=stderr.lastIndexOf(marker);
+      if(timedOut())return reject(timedOut());if(code!==0)return reject(new Error(stderr||'语音合成失败'));
+      let meta={timings:[],voice:''};if(markerIndex>=0){try{meta=JSON.parse(Buffer.from(stderr.slice(markerIndex+marker.length).trim().split(/\r?\n/,1)[0],'base64').toString('utf8'));}catch{}}
+      resolve(withTimings?{audio:Buffer.concat(out),timings:Array.isArray(meta.timings)?meta.timings:[],voice:String(meta.voice||'')}:Buffer.concat(out));
+    });
   });
 }
 
-function synthesizeNeural(text, voice, rate) {
+function synthesizeNeural(text, voice, rate, withTimings = false) {
   return new Promise((resolve, reject) => {
     const child = spawnTracked(pythonExecutable, [path.join(root, 'tts.py')], { stdio: ['pipe', 'pipe', 'pipe'] });
     const timedOut = setChildTimeout(child, 45_000, '在线配音');
@@ -760,7 +833,13 @@ function synthesizeNeural(text, voice, rate) {
     child.stdout.on('data', c => out.push(c));
     child.stderr.on('data', c => err.push(c));
     child.on('error', reject);
-    child.on('close', code => timedOut() ? reject(timedOut()) : code === 0 && out.length ? resolve(Buffer.concat(out)) : reject(new Error(Buffer.concat(err).toString('utf8') || '神经配音失败')));
+    child.on('close', code => {
+      const stderr=Buffer.concat(err).toString('utf8'),marker='__CAPTION_TIMINGS__',markerIndex=stderr.lastIndexOf(marker);
+      if(timedOut())return reject(timedOut());
+      if(code!==0||!out.length)return reject(new Error(stderr||'神经配音失败'));
+      let timings=[];if(markerIndex>=0){try{timings=JSON.parse(stderr.slice(markerIndex+marker.length).trim().split(/\r?\n/,1)[0]);}catch{}}
+      resolve(withTimings?{audio:Buffer.concat(out),timings}:Buffer.concat(out));
+    });
     child.stdin.end(JSON.stringify({ text, voice, rate }));
   });
 }
@@ -781,7 +860,7 @@ function normalizeSpeech(audio, rate = 0) {
 }
 
 async function synthesize(text, voice, rate) {
-  if (offlineVoices.has(voice)) return { audio: await synthesizeWindows(text, rate, voice), engine: 'windows', contentType: 'audio/wav' };
+  if (offlineVoices.has(voice)) { const local=await synthesizeWindows(text,rate,voice,true);return {audio:local.audio,timings:local.timings,voice:local.voice,engine:'windows',contentType:'audio/wav'}; }
   try { return { audio: await normalizeSpeech(await synthesizeNeural(text, voice, rate)), engine: 'neural' }; }
   catch (e) {
     console.warn('[neural speech fallback]', e.message);
@@ -865,6 +944,7 @@ const server = http.createServer(async (req, res) => {
       if (crossOrigin && !allowedOrigins.has(origin)) throw new HttpError(403, '此网站来源未获准访问服务');
       if (crossOrigin) {
         res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Expose-Headers', 'X-Speech-Engine, X-Speech-Voice, X-Speech-Timings');
         res.setHeader('Vary', 'Origin');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -952,6 +1032,40 @@ const server = http.createServer(async (req, res) => {
       const parsed=await runLimited('reference',()=>parseReferenceDocument(bytes,extension));
       return send(res,200,{kind:'text',text:parsed.text,truncated:parsed.truncated,size:bytes.length});
     }
+    if (url.pathname === '/api/video-lab/images') {
+      if (req.method !== 'GET') throw new HttpError(405, '此接口只接受 GET');
+      takeRateLimit(req, 'imageSearch');
+      const query=String(url.searchParams.get('q') || '').trim();
+      if(query.length<2||query.length>120)throw new HttpError(400,'图片搜索词长度需为 2～120 字');
+      return send(res,200,{source:'Wikimedia Commons',results:await searchCommonsImages(query)});
+    }
+    if (url.pathname === '/api/video-lab/images/batch') {
+      if (req.method !== 'POST') throw new HttpError(405, '此接口只接受 POST');
+      takeRateLimit(req, 'imageSearch');
+      const input=await readJson(req), queries=Array.isArray(input?.queries)?input.queries:[];
+      if(!queries.length||queries.length>24||queries.some(query=>typeof query!=='string'||query.trim().length<2||query.trim().length>120))throw new HttpError(400,'图片关键词需为 2～120 字，最多一次处理 24 幕');
+      const results=Array(queries.length);let next=0;
+      const workers=Array.from({length:4},async()=>{while(next<queries.length){const index=next++;try{results[index]={query:queries[index],results:await searchCommonsImages(queries[index].trim())};}catch(error){results[index]={query:queries[index],results:[],error:error.message};}}});
+      await Promise.all(workers);
+      return send(res,200,{source:'Wikimedia Commons',results});
+    }
+    if (url.pathname === '/api/video-lab/image') {
+      if (req.method !== 'GET') throw new HttpError(405, '此接口只接受 GET');
+      const cached=videoLabImageCache.get(String(url.searchParams.get('id')||''));
+      if(!cached||Date.now()-cached.createdAt>30*60_000)throw new HttpError(404,'图片预览已过期，请重新搜索');
+      const remote=new URL(cached.url);
+      const safeWikimediaUrl=remote.protocol==='https:'&&!remote.port&&(
+        remote.hostname==='upload.wikimedia.org'||remote.hostname==='thumb.wikimedia.org'||
+        (remote.hostname==='commons.wikimedia.org'&&remote.pathname.startsWith('/wiki/Special:Redirect/file/'))
+      );
+      if(!safeWikimediaUrl){console.warn('[Commons] blocked thumbnail host',remote.hostname,remote.pathname);throw new HttpError(403,'图片来源地址不允许');}
+      let bytes;
+      try{bytes=await downloadCommonsBytes(remote.toString(),8*1024*1024);}catch(error){if(error instanceof HttpError)throw error;throw new HttpError(502,'图片下载失败，请换一张');}
+      const mime=cached.mime;
+      if(!['image/jpeg','image/png','image/webp'].includes(mime))throw new HttpError(415,'图片格式暂不支持');
+      if(!bytes.length||bytes.length>8*1024*1024)throw new HttpError(413,'图片超过 8 MB，换一张尺寸较小的图片');
+      res.writeHead(200,{'Content-Type':mime,'Content-Length':bytes.length,'Cache-Control':'private, max-age=1800','X-Content-Type-Options':'nosniff'});return res.end(bytes);
+    }
     if (url.pathname === '/api/video-lab/plan') {
       if (req.method !== 'POST') throw new HttpError(405, '此接口只接受 POST');
       takeRateLimit(req, 'generate');
@@ -969,7 +1083,8 @@ const server = http.createServer(async (req, res) => {
       const chapter = input?.chapter;
       if (!topic || topic.length > 160 || !Number.isInteger(chapterIndex) || chapterIndex < 0 || chapterIndex > 4 || !chapter || !String(chapter.title || '').trim() || !String(chapter.goal || '').trim()) throw new HttpError(400, '章节参数无效');
       const previousTitles = Array.isArray(input.previousTitles) ? input.previousTitles.map(value => String(value).slice(0, 24)).slice(0, 4) : [];
-      return send(res, 200, await runLimited('generate', () => generateVideoLabChapter({ topic, chapter, chapterIndex, previousTitles })));
+      const previousScenes = Array.isArray(input.previousScenes) ? input.previousScenes.slice(-8).map(scene => ({title:String(scene?.title||'').slice(0,40),narration:String(scene?.narration||'').slice(0,220)})) : [];
+      return send(res, 200, await runLimited('generate', () => generateVideoLabChapter({ topic, chapter, chapterIndex, previousTitles, previousScenes })));
     }
     if (url.pathname === '/api/knowledge/pilot') {
       if (req.method !== 'GET') throw new HttpError(405, '此接口只接受 GET');
@@ -1078,10 +1193,19 @@ const server = http.createServer(async (req, res) => {
       if (!text || text.length > 200) throw new HttpError(400, '配音文字长度不合适');
       if (!offlineVoices.has(voice) && !neuralVoices.has(voice)) throw new HttpError(400, '不支持的配音音色');
       const safeRate = Math.max(-20, Math.min(20, rate));
-      const key = JSON.stringify([text, voice, safeRate]);
+      const key = JSON.stringify([text, voice, safeRate, input?.requireNeural===true]);
       if (!speechCache.has(key)) takeRateLimit(req, 'speech');
-      const speech = await getCachedSpeech(key, () => runLimited('speech', () => synthesize(text, voice, safeRate)));
+      const requireNeural=input?.requireNeural===true&&neuralVoices.has(voice);
+      const speech = await getCachedSpeech(key, () => runLimited('speech', async () => {
+        if(requireNeural){
+          try{const neural=await synthesizeNeural(text,voice,safeRate,true);return {audio:await normalizeSpeech(neural.audio,safeRate),timings:neural.timings,engine:'neural',contentType:'audio/mpeg'};}
+          catch(error){throw new HttpError(503,`神经合成配音暂不可用：${String(error.message||'网络或语音服务异常').slice(0,120)}`);}
+        }
+        return synthesize(text, voice, safeRate);
+      }));
       res.setHeader('X-Speech-Engine', speech.engine);
+      if(speech.voice)res.setHeader('X-Speech-Voice',speech.voice);
+      if(speech.timings?.length)res.setHeader('X-Speech-Timings',Buffer.from(JSON.stringify(speech.timings),'utf8').toString('base64'));
       return send(res, 200, speech.audio, speech.contentType || 'audio/mpeg');
     }
     if (url.pathname === '/api/convert') {

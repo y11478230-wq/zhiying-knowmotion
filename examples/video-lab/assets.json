@@ -1,0 +1,44 @@
+{
+  "assets": [
+    {
+      "query": "CPU chip",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:A80386DX-25_SX218.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "key": "cpu",
+      "license": "CC BY-SA 4.0",
+      "artist": "Mister rf",
+      "src": "/examples/video-lab/cpu.jpg",
+      "title": "A80386DX-25 SX218.jpg"
+    },
+    {
+      "query": "GPU graphics card",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:ATI_Radeon_HD_5970_Graphics_Card-oblique_view.jpg",
+      "licenseUrl": "",
+      "key": "gpu",
+      "license": "Attribution",
+      "artist": "Advanced Micro Devices, Inc. (AMD)",
+      "src": "/examples/video-lab/gpu.jpg",
+      "title": "ATI Radeon HD 5970 Graphics Card-oblique view.jpg"
+    },
+    {
+      "query": "mathematics equation",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:EB1911_-_Equation_-_Fig._1.jpg",
+      "licenseUrl": "",
+      "key": "math",
+      "license": "Public domain",
+      "artist": "Anonymous Unknown author",
+      "src": "/examples/video-lab/math.jpg",
+      "title": "EB1911 - Equation - Fig. 1.jpg"
+    },
+    {
+      "query": "photo editing",
+      "pageUrl": "https://commons.wikimedia.org/wiki/File:2021_Southwark_Cathedral_-_image_editing_before_and_after.jpg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "key": "photos",
+      "license": "CC BY-SA 4.0",
+      "artist": "RCraig09",
+      "src": "/examples/video-lab/photos.jpg",
+      "title": "2021 Southwark Cathedral - image editing before and after.jpg"
+    }
+  ]
+}
