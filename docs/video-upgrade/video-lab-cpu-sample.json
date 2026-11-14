@@ -1,0 +1,398 @@
+{
+  "title": "CPU 和 GPU 有什么区别？",
+  "topic": "CPU 和 GPU 有什么区别？",
+  "chapters": [
+    {
+      "id": "chapter-1",
+      "title": "从任务说起",
+      "goal": "让零基础观众理解计算任务有“少量复杂步骤”和“大量简单重复”两类，引出两种处理器的设计取向",
+      "example": "做一道需要多步推理的数学题，与给一叠照片逐张做同一种简单调色，对比两种工作的特点",
+      "visual": "白底左右对比图：左侧一个复杂流程箭头图，右侧一叠相同的照片图标"
+    },
+    {
+      "id": "chapter-2",
+      "title": "CPU 像少数专家",
+      "goal": "说明 CPU 通常拥有较少但能力较强的核心，擅长处理逻辑复杂、依赖顺序的任务，避免给出具体核心数等可能过时的数字",
+      "example": "把 CPU 比作一个小团队，每位成员能独立处理复杂问题，但同一时间能并行处理的事情有限",
+      "visual": "矢量图：几个大圆表示核心，每个大圆连接多条分支路径，旁边配“复杂步骤”标签"
+    },
+    {
+      "id": "chapter-3",
+      "title": "GPU 像许多同工种工人",
+      "goal": "说明 GPU 通常拥有大量相对简单的核心，擅长同时处理大量彼此独立、规则相同的任务",
+      "example": "把 GPU 比作许多工人同时给每张照片做同样的调色操作，每人只做简单一步",
+      "visual": "矢量图：许多小方块排成网格，每个小方块对应一张照片图标，箭头统一指向“同时处理”"
+    },
+    {
+      "id": "chapter-4",
+      "title": "为什么擅长的事不同",
+      "goal": "解释差异来自设计取舍：核心数量与单核复杂度、控制逻辑与并行方式的侧重不同，而不是简单的好坏之分",
+      "example": "用同一张“任务地图”演示：复杂串行任务在 CPU 图上路径清晰，大量重复任务在 GPU 网格上铺满并行",
+      "visual": "白底对比示意图：CPU 侧为少量大核心加复杂控制箭头，GPU 侧为大量小核心加统一数据流箭头"
+    },
+    {
+      "id": "chapter-5",
+      "title": "各司其职与回顾",
+      "goal": "总结 CPU 与 GPU 是面向不同任务特点的两种设计，实际系统常让它们配合工作，并回顾四章要点",
+      "example": "回顾：复杂逻辑交给 CPU，大量重复计算交给 GPU，两者协作完成整体任务",
+      "visual": "白底总结图：CPU 图标与 GPU 图标用双向箭头连接，周围列出四个关键词“复杂、顺序、大量、并行”"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "chapter-1-scene-1",
+      "chapterId": "chapter-1",
+      "chapterTitle": "从任务说起",
+      "title": "两类计算任务",
+      "narration": "计算任务可以分成两类。一类像做一道多步数学题，每一步都要根据上一步的结果决定下一步，步骤少但每步复杂。另一类像给一叠照片逐张调色，每张都做同样的简单操作，操作简单但重复次数极多。这两类任务对处理器的要求完全不同。",
+      "caption": "两类任务：复杂少步骤 vs 简单多重复",
+      "mode": "compare",
+      "labels": [
+        "多步数学题",
+        "一叠照片调色"
+      ],
+      "icon": "🧮",
+      "imageHint": "左侧一个复杂流程图箭头，右侧一叠相同照片图标",
+      "accent": "blue",
+      "duration": 15
+    },
+    {
+      "id": "chapter-1-scene-2",
+      "chapterId": "chapter-1",
+      "chapterTitle": "从任务说起",
+      "title": "复杂步骤的数学题",
+      "narration": "比如解一道需要多步推理的数学题，你得先读题、列式、计算、检验，每一步都依赖上一步的结果，顺序不能乱。这种任务步骤数量不多，但每一步的逻辑都很复杂，需要处理器能快速处理分支和逻辑判断。",
+      "caption": "多步推理：顺序依赖，逻辑复杂",
+      "mode": "flow",
+      "labels": [
+        "读题",
+        "列式",
+        "计算"
+      ],
+      "icon": "📝",
+      "imageHint": "数学题步骤流程图，箭头连接",
+      "accent": "green",
+      "duration": 15
+    },
+    {
+      "id": "chapter-1-scene-3",
+      "chapterId": "chapter-1",
+      "chapterTitle": "从任务说起",
+      "title": "大量简单重复的照片调色",
+      "narration": "再比如给一叠照片逐张做同一种简单调色，每张照片的操作完全一样：调整亮度、对比度，然后保存。单次操作很简单，但照片可能有几百张，重复次数极多。这种任务不依赖复杂逻辑，而是需要同时处理大量相同操作。",
+      "caption": "照片调色：操作相同，重复极多",
+      "mode": "gallery",
+      "labels": [
+        "照片1",
+        "照片2",
+        "照片3"
+      ],
+      "icon": "🖼️",
+      "imageHint": "一叠相同照片图标，每张上有调色滑块",
+      "accent": "orange",
+      "duration": 15
+    },
+    {
+      "id": "chapter-1-scene-4",
+      "chapterId": "chapter-1",
+      "chapterTitle": "从任务说起",
+      "title": "设计取向的差异",
+      "narration": "面对这两类任务，处理器设计就有了不同取向：有的擅长快速执行复杂步骤和逻辑判断，有的擅长同时处理大量简单重复操作。这就是 CPU 和 GPU 设计思路的起点。观察你身边的任务，想想它更接近哪一类？",
+      "caption": "CPU 擅长复杂逻辑，GPU 擅长并行简单操作",
+      "mode": "compare",
+      "labels": [
+        "CPU",
+        "GPU"
+      ],
+      "icon": "⚙️",
+      "imageHint": "左右对比图：左侧CPU图标配复杂流程图，右侧GPU图标配多张相同照片",
+      "accent": "blue",
+      "duration": 15
+    },
+    {
+      "id": "chapter-2-scene-1",
+      "chapterId": "chapter-2",
+      "chapterTitle": "CPU 像少数专家",
+      "title": "核心如专家",
+      "narration": "想象一个小团队，每位成员都是训练有素的专家。他们能独立分析问题、制定步骤、解决复杂逻辑。就像 CPU 的核心，数量不多，但每个都能力全面，适合处理需要深思熟虑的任务。",
+      "caption": "CPU 核心：少而精的专家",
+      "mode": "focus",
+      "labels": [
+        "专家核心",
+        "复杂逻辑"
+      ],
+      "icon": "🧠",
+      "imageHint": "几个大圆表示核心，每个大圆内画一个思考的人像",
+      "accent": "blue",
+      "duration": 15
+    },
+    {
+      "id": "chapter-2-scene-2",
+      "chapterId": "chapter-2",
+      "chapterTitle": "CPU 像少数专家",
+      "title": "串行处理",
+      "narration": "但专家一次只能专注一件事。当任务必须按顺序进行，比如先读取数据、再计算、最后存储，CPU 的每个核心会一步步跟进。这种顺序依赖正是 CPU 擅长的场景。",
+      "caption": "顺序任务，步步为营",
+      "mode": "flow",
+      "labels": [
+        "读取",
+        "计算",
+        "存储"
+      ],
+      "icon": "🔗",
+      "imageHint": "箭头连接三个步骤的流程图",
+      "accent": "green",
+      "duration": 15
+    },
+    {
+      "id": "chapter-2-scene-3",
+      "chapterId": "chapter-2",
+      "chapterTitle": "CPU 像少数专家",
+      "title": "并行有限",
+      "narration": "团队人数有限，同时能处理的任务数也有限。如果突然涌来大量简单任务，专家们得排队一个个做。CPU 也是如此，核心数较少，并行能力有上限。",
+      "caption": "核心有限，并行有上限",
+      "mode": "compare",
+      "labels": [
+        "少量核心",
+        "任务排队"
+      ],
+      "icon": "⏳",
+      "imageHint": "左侧几个大圆，右侧一长串小方块排队",
+      "accent": "orange",
+      "duration": 15
+    },
+    {
+      "id": "chapter-2-scene-4",
+      "chapterId": "chapter-2",
+      "chapterTitle": "CPU 像少数专家",
+      "title": "观察任务",
+      "narration": "观察你的电脑：同时打开浏览器多个标签和文档，系统仍能流畅响应，这背后是 CPU 核心在快速切换复杂任务。但若同时运行大量简单计算，CPU 可能就不如 GPU 高效了。",
+      "caption": "复杂任务切换，CPU 的强项",
+      "mode": "gallery",
+      "labels": [
+        "浏览器",
+        "文档",
+        "任务切换"
+      ],
+      "icon": "💻",
+      "imageHint": "电脑屏幕显示多个窗口，旁边有切换箭头",
+      "accent": "blue",
+      "duration": 15
+    },
+    {
+      "id": "chapter-3-scene-1",
+      "chapterId": "chapter-3",
+      "chapterTitle": "GPU 像许多同工种工人",
+      "title": "GPU 的核心阵列",
+      "narration": "GPU 通常拥有大量相对简单的核心。与 CPU 的少数复杂核心不同，这些核心就像排列整齐的工人，每个都能执行基础运算，但数量众多，为同时处理大量任务做好准备。",
+      "caption": "大量简单核心",
+      "mode": "compare",
+      "labels": [
+        "CPU核心",
+        "GPU核心",
+        "简单核心"
+      ],
+      "icon": "🔲",
+      "imageHint": "左侧少量大方块代表CPU核心，右侧密集小方块网格代表GPU核心",
+      "accent": "blue",
+      "duration": 15
+    },
+    {
+      "id": "chapter-3-scene-2",
+      "chapterId": "chapter-3",
+      "chapterTitle": "GPU 像许多同工种工人",
+      "title": "同时处理大量照片",
+      "narration": "比如给一批照片调色，每张照片都要进行同样的操作。GPU 可以让每个核心负责一张照片，同时开工。就像许多工人排成网格，每人面前放一张照片，统一执行调色步骤。",
+      "caption": "每人处理一张照片",
+      "mode": "gallery",
+      "labels": [
+        "照片1",
+        "照片2",
+        "照片3"
+      ],
+      "icon": "🖼️",
+      "imageHint": "网格状排列的照片图标，每个照片下方有一个工人图标，箭头统一指向调色工具",
+      "accent": "green",
+      "duration": 15
+    },
+    {
+      "id": "chapter-3-scene-3",
+      "chapterId": "chapter-3",
+      "chapterTitle": "GPU 像许多同工种工人",
+      "title": "任务独立且规则相同",
+      "narration": "这种高效来自任务彼此独立、规则相同。一张照片的调色不影响另一张，而且所有照片都使用相同的调色算法。GPU 正是为这种并行场景设计，能同时处理成千上万个简单步骤。",
+      "caption": "独立且规则相同",
+      "mode": "flow",
+      "labels": [
+        "独立任务",
+        "相同规则",
+        "并行处理"
+      ],
+      "icon": "⚙️",
+      "imageHint": "多个相同箭头从不同照片指向同一个调色规则框，再指向同时处理结果",
+      "accent": "orange",
+      "duration": 15
+    },
+    {
+      "id": "chapter-3-scene-4",
+      "chapterId": "chapter-3",
+      "chapterTitle": "GPU 像许多同工种工人",
+      "title": "观察你的设备",
+      "narration": "你可以在任务管理器或活动监视器中查看 GPU 的核心数量。例如，许多独立显卡拥有数百到数千个流处理器。打开一个视频编辑或 3D 游戏，观察 GPU 使用率如何随并行任务波动。",
+      "caption": "查看GPU核心数",
+      "mode": "focus",
+      "labels": [
+        "任务管理器",
+        "GPU核心数",
+        "使用率"
+      ],
+      "icon": "📊",
+      "imageHint": "任务管理器GPU选项卡截图，突出显示核心数量和利用率曲线",
+      "accent": "blue",
+      "duration": 15
+    },
+    {
+      "id": "chapter-4-scene-1",
+      "chapterId": "chapter-4",
+      "chapterTitle": "为什么擅长的事不同",
+      "title": "设计取舍",
+      "narration": "CPU 和 GPU 的差别，不是谁更强，而是设计时做了不同取舍。CPU 把面积和功耗更多花在少量核心上，让每个核心拥有复杂的控制逻辑和缓存，善于快速处理前后依赖的串行步骤。GPU 则把资源铺在大量较简单的核心上，用统一的数据流让许多核心同时做相近的计算。",
+      "caption": "差别来自取舍，不是好坏",
+      "mode": "compare",
+      "labels": [
+        "CPU 少量大核心",
+        "GPU 大量小核心"
+      ],
+      "icon": "⚖️",
+      "imageHint": "白底左右对比示意图：左侧少量大核心方块配复杂控制箭头，右侧密集小核心网格配统一数据流箭头",
+      "accent": "blue",
+      "duration": 15
+    },
+    {
+      "id": "chapter-4-scene-2",
+      "chapterId": "chapter-4",
+      "chapterTitle": "为什么擅长的事不同",
+      "title": "任务地图",
+      "narration": "把一项任务画成地图：每个小格是一步计算，箭头表示先后依赖。图上的路径如果一步接一步、分叉很少，就是串行任务。观察这张图：大部分格子要等前面的结果才能开始，能同时动工的格子不多。这类任务更贴合 CPU 的强单核与复杂控制。",
+      "caption": "路径清晰的串行任务",
+      "mode": "flow",
+      "labels": [
+        "任务格子",
+        "依赖箭头",
+        "串行路径"
+      ],
+      "icon": "🗺️",
+      "imageHint": "白底任务地图：格子组成的网络中一条清晰的长路径，箭头逐格相连，可并行分支很少",
+      "accent": "green",
+      "duration": 15
+    },
+    {
+      "id": "chapter-4-scene-3",
+      "chapterId": "chapter-4",
+      "chapterTitle": "为什么擅长的事不同",
+      "title": "铺满网格",
+      "narration": "再看另一张任务地图：大量格子做的是相同或相似的运算，彼此之间几乎没有依赖。GPU 的众多小核心可以把这些格子铺满，一起推进。比如对一大批数据逐个做同样的加法或乘法，每个数据互不影响，正好适合这种并行方式。注意：这里说的是任务结构，不是某个实际程序的运行结果。",
+      "caption": "重复任务铺满并行网格",
+      "mode": "gallery",
+      "labels": [
+        "相同运算格子",
+        "并行数据流",
+        "GPU 网格"
+      ],
+      "icon": "🔲",
+      "imageHint": "白底网格图：大量相同颜色的小方格同时被统一箭头指向，表示并行处理",
+      "accent": "orange",
+      "duration": 15
+    },
+    {
+      "id": "chapter-4-scene-4",
+      "chapterId": "chapter-4",
+      "chapterTitle": "为什么擅长的事不同",
+      "title": "各有所长",
+      "narration": "所以，CPU 擅长依赖多、分支多的串行工作；GPU 擅长重复、独立的并行工作。这是侧重点不同，不是简单的好坏之分。观察你身边的任务：打开一个文档并逐段编辑，更像串行；把一批图片统一缩小，更像并行。你能再各举一个例子吗？",
+      "caption": "按任务结构选择，而非比高低",
+      "mode": "focus",
+      "labels": [
+        "串行任务",
+        "并行任务",
+        "任务结构"
+      ],
+      "icon": "🧩",
+      "imageHint": "白底中心构图：左侧一支连续箭头串联多个步骤，右侧多支平行箭头同时处理多个相同方块",
+      "accent": "blue",
+      "duration": 15
+    },
+    {
+      "id": "chapter-5-scene-1",
+      "chapterId": "chapter-5",
+      "chapterTitle": "各司其职与回顾",
+      "title": "总结：分工协作",
+      "narration": "回顾这五章，我们明白了CPU和GPU是面向不同任务特点的两种设计。复杂逻辑交给CPU，大量重复计算交给GPU，它们常常协作完成整体任务。",
+      "caption": "CPU与GPU：分工协作",
+      "mode": "compare",
+      "labels": [
+        "CPU",
+        "GPU",
+        "复杂逻辑"
+      ],
+      "icon": "🤝",
+      "imageHint": "白色背景，左侧CPU图标，右侧GPU图标，中间双向箭头连接，下方文字：复杂逻辑→CPU，大量重复计算→GPU",
+      "accent": "blue",
+      "duration": 15
+    },
+    {
+      "id": "chapter-5-scene-2",
+      "chapterId": "chapter-5",
+      "chapterTitle": "各司其职与回顾",
+      "title": "CPU：少数专家",
+      "narration": "CPU像少数专家，擅长处理复杂、顺序的任务。例如运行操作系统、处理用户输入，这些任务逻辑复杂且需要快速响应。",
+      "caption": "CPU：擅长复杂顺序任务",
+      "mode": "focus",
+      "labels": [
+        "CPU",
+        "复杂任务",
+        "顺序执行"
+      ],
+      "icon": "🧠",
+      "imageHint": "CPU芯片图标，旁边有齿轮和流程图表示复杂逻辑，箭头表示顺序执行",
+      "accent": "green",
+      "duration": 15
+    },
+    {
+      "id": "chapter-5-scene-3",
+      "chapterId": "chapter-5",
+      "chapterTitle": "各司其职与回顾",
+      "title": "GPU：许多工人",
+      "narration": "GPU像许多同工种工人，擅长大量、并行的计算。例如图像渲染、矩阵运算，这些任务数据量大且重复性高。",
+      "caption": "GPU：擅长大量并行计算",
+      "mode": "focus",
+      "labels": [
+        "GPU",
+        "大量数据",
+        "并行计算"
+      ],
+      "icon": "⚙️",
+      "imageHint": "GPU芯片图标，旁边有许多小工人图标或网格表示并行处理，图像和矩阵符号",
+      "accent": "orange",
+      "duration": 15
+    },
+    {
+      "id": "chapter-5-scene-4",
+      "chapterId": "chapter-5",
+      "chapterTitle": "各司其职与回顾",
+      "title": "协作完成整体任务",
+      "narration": "实际系统中，CPU和GPU各司其职又紧密配合。比如游戏中，CPU处理逻辑和物理，GPU渲染画面，两者协作让游戏流畅运行。",
+      "caption": "CPU与GPU协作示例",
+      "mode": "flow",
+      "labels": [
+        "CPU逻辑",
+        "GPU渲染",
+        "协作"
+      ],
+      "icon": "🎮",
+      "imageHint": "游戏场景示意图，左侧CPU处理逻辑（如角色移动），右侧GPU渲染画面（3D场景），中间箭头表示数据传递",
+      "accent": "blue",
+      "duration": 15
+    }
+  ]
+}

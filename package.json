@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
+    "test": "node --test tests/*.test.mjs",
     "mobile:copy": "node scripts/copy-mobile.mjs",
     "mobile:sync": "npm run mobile:copy && cap sync android",
     "mobile:open": "cap open android",

@@ -2,6 +2,8 @@
 
 ## 当前实现
 
+当前准备发布版本：**2.3.1（versionCode 18）**。优化初高中长视频课堂的章节生成与配音准备。App 遇到旧服务缺少新接口时，会尝试同主机后续本地端口（4174、4175）并记住可用的新版后端地址。发布前必须保留原电脑的 Android Debug Keystore；不要更换 `applicationId`。
+
 - App 设置里可以填写电脑后端地址，并检查电脑发布的最新 APK。
 - 服务端的 `GET /api/app-update` 提供版本号、升级说明与 SHA-256；`GET /api/app-update/apk` 流式提供 APK。
 - App 下载到私有缓存，校验 SHA-256 后交给 Android 安装器。用户需要在系统安装界面确认；Android 8 及以上首次可能要给“知映”打开“允许安装未知应用”。

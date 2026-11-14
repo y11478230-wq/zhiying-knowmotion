@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>知映 · 视频实验室</title><link rel="stylesheet" href="/video-lab.css"></head>
+<body>
+  <main class="shell">
+    <header><a href="/">← 知映首页</a><span>VIDEO LAB · 视频实验室</span></header>
+    <section class="intro"><p class="eyebrow">让知识在画面里发生</p><h1>试生成一条知识视频</h1><p>输入任意主题。DeepSeek 负责设计讲解和镜头，图片与矢量图形负责演示。生成后可给每幕上传图片，再预览和导出。</p></section>
+    <form id="form" class="prompt"><label for="topic">知识主题</label><div class="prompt-row"><input id="topic" maxlength="160" value="CPU 和 GPU 有什么区别？" placeholder="例如：为什么天空是蓝色的？" required><button id="generate" type="submit">生成 5 分钟课程 →</button></div><small>当前实验版约 5 分钟 · 5 章 × 4 个画面事件 · 图片可逐幕补充</small><button id="sample" class="sample-button" type="button">查看已生成的 CPU / GPU 示例</button></form>
+    <p id="status" role="status">准备就绪</p>
+    <section class="studio" id="studio" hidden>
+      <div class="preview"><canvas id="canvas" width="1280" height="720" aria-label="视频预览"></canvas><div class="controls"><button type="button" id="play">▶ 播放预览</button><input id="seek" type="range" min="0" max="1000" value="0" aria-label="拖动视频进度"><span id="clock">00:00 / 05:00</span><button type="button" id="export">导出 MP4</button></div></div>
+      <aside><div class="aside-head"><h2 id="plan-title">镜头与图片</h2><p>选择镜头上传图片；图形与字幕仍保持可编辑。</p></div><div id="scenes" class="scenes"></div><label class="upload">＋ 给当前镜头添加图片<input id="image" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><p class="tip">图片留在当前浏览器，不上传到模型。默认会使用图标与矢量示意。</p></aside>
+    </section>
+  </main><script type="module" src="/video-lab.js"></script>
+</body></html>

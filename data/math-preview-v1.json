@@ -1,0 +1,1139 @@
+{
+  "release": "V1.0-Preview",
+  "subject": "高中数学",
+  "textbookSystem": "人民教育出版社·人教A版",
+  "reviewStatus": "Draft",
+  "items": [
+    {
+      "id": "F001",
+      "title": "函数的概念",
+      "chapterId": "3.1.1",
+      "topicId": "functions",
+      "trustStatus": "Draft",
+      "content": "# F001 函数的概念｜v1.1 Draft\n\n教材定位：人教 A 版《普通高中教科书·数学（A版）必修第一册》，第三章「函数的概念」3.1.1。ISBN 9787107335655，人民教育出版社，2019。页码待实物核验。以下为原创讲解与例题，不是教材原文或教材例题。\n\n## 核心知识\n\n设 (A,B) 是非空数集。若存在对应关系 (f)，使得对每一个 (x\\in A)，在 (B) 中都有唯一确定的 (y) 与之对应，则称 (f:A\\to B) 为从 (A) 到 (B) 的函数，记作 (y=f(x))。(x) 是自变量，(f(x)) 是当自变量取 (x) 时唯一确定的函数值。\n\n- 定义域是所有允许输入组成的集合 (A)。\n- 陪域是定义时指定的目标集合 (B)。\n- 值域是实际输出集合 (f(A)=\\{f(x)\\mid x\\in A\\}\\)，因此值域是陪域的子集。\n- 函数三要素：定义域、对应关系、值域。写作 (f:A\\to B) 时，陪域 (B) 也须说明，但它不是上述三要素之一。\n- 唯一性约束的是每个输入只能有一个输出；不同输入可以对应同一个输出（多对一）。若同一输入对应多个输出，则不是函数。\n- 函数值 (f(a)) 通过把 (a) 代入对应关系求得；(f(x)) 表示函数值，不是 (f\\times x)。\n- 两个函数相同，要求定义域相同且对应关系相同；仅解析式形式相同不足以判定相同。\n- 函数可用解析式、图象、表格等表示，关键是明确输入集合以及每个输入的唯一输出。\n\n## 公式 / 表达\n\n1. (f:A\\to B\\)：(A,B) 为非空数集；每个 (x\\in A) 唯一对应一个 (y\\in B)。\n2. (y=f(x),\\quad x\\in A\\)：(x) 是自变量，(y) 是函数值。\n3. (x\\in A\\)：(A) 是定义域；须与陪域 (B) 区分。\n4. (f(A)=\\{f(x)\\mid x\\in A\\}\\subseteq B)：函数值的集合是值域，值域包含在陪域内。\n\n## 原创例题（答案已逐题复核）\n\n### L1 基础理解\n\n1. (A=\\{1,2,3\\},B=\\{a,b\\})，对应 (1\\mapsto a,2\\mapsto b,3\\mapsto a)。是否为函数？\n   - 思路：逐一检查定义域元素是否恰有一个像。\n   - 步骤：1、2、3 各有且仅有一个对应值，输出均在 (B)。\n   - 答案：是函数，值域为 \\(\\{a,b\\}\\)。\n   - 易错：不同输入共用输出不构成反例。\n   - 其他解法：列对应表逐项核对。\n\n2. (A=\\{1,2\\})，规定 (1\\mapsto a) 且 (1\\mapsto b)，(2\\mapsto a)。是否为函数？\n   - 思路：检查同一输入是否有多个像。\n   - 步骤：输入 1 同时对应两个不同输出，违反唯一性。\n   - 答案：不是函数。\n   - 易错：不能只看每个输出是否来自输入；唯一性方向是输入到输出。\n   - 其他解法：无。\n\n3. (f(x)=2x-3)，求 (f(4)) 与 (f(-1))。\n   - 思路：将自变量代入解析式。\n   - 步骤：(f(4)=2\\cdot4-3=5)；(f(-1)=2\\cdot(-1)-3=-5)。\n   - 答案：5，−5。\n   - 易错：括号和负号不可遗漏。\n   - 其他解法：无。\n\n### L2 熟练应用\n\n4. (f(x)=ax+1)，且 (f(2)=7)，求 (a)。\n   - 思路：代入已知函数值形成方程。\n   - 步骤：(2a+1=7\\Rightarrow a=3)。\n   - 答案：(a=3)。\n   - 易错：把 (f(2)) 当成 (f\\cdot2)。\n   - 其他解法：无。\n\n5. (A=\\{-1,0,1\\})，对应 (x\\mapsto x^2)。是否为函数？\n   - 思路：对定义域各元素求唯一像。\n   - 步骤：像依次为 1、0、1，均唯一。\n   - 答案：是函数；值域为 \\(\\{0,1\\}\\)。\n   - 易错：−1 与 1 同像仍合法。\n   - 其他解法：无。\n\n6. (A=\\{1,2\\},B=\\{0,1\\})，规定 (1\\mapsto1,2\\mapsto2)。是否为从 (A) 到 (B) 的函数？\n   - 思路：像必须唯一且属于指定陪域。\n   - 步骤：输入 2 的对应值 2 不属于 (B)，不满足映到 (B) 的要求。\n   - 答案：不是从 (A) 到 (B) 的函数。\n   - 易错：只检查唯一性，忽略输出必须落在陪域内。\n   - 其他解法：无。\n\n### L3 综合拓展\n\n7. 实数范围内比较 (f(x)=\\dfrac{x^2-1}{x-1}) 与 (g(x)=x+1)，判断是否为相同函数。\n   - 思路：先分别确定最大定义域，再比较对应关系。\n   - 步骤：(f) 要求 (x\\ne1)，故定义域为 \\(\\mathbb R\\setminus\\{1\\}\\)；因式分解得 (f(x)=x+1)（仅在 (x\\ne1) 时成立）。(g) 的定义域为 \\(\\mathbb R\\)。定义域不同。\n   - 答案：不是相同函数，尽管在 (f) 的定义域上解析式相同。\n   - 易错：约分不能补回原式中使分母为零的点。\n   - 其他解法：取 (x=1)，(g(1)=2)，而 (f(1)) 无定义，可直接说明不相同。\n\n## 易错点汇总\n\n1. 一个输入多个输出：不满足函数定义。2. 多个输入同一输出：允许。3. 定义域是输入集合，陪域是指定目标集合。4. 值域是实际输出，不一定等于陪域。5. 解析式相同但定义域不同，函数不同。6. (f(x)) 是函数值记号，不是乘法。7. 分母非零、根号内非负等限制决定定义域。\n\n## 关联建议\n\n前置：集合、数集、实数运算。后续：函数的表示法、函数的基本性质、基本初等函数。前置/后续关系属编辑规划字段，当前知识库 API 不存储。\n",
+      "formulas": [
+        {
+          "formulaId": "F001-FORMULA-001",
+          "packageId": "km-math-pepa-functions-v1",
+          "name": "函数对应记号",
+          "latex": "f:A\\to B",
+          "conditions": "A、B 为非空数集；A 中每个元素在 B 中恰有一个对应值。",
+          "explanation": "表示从定义域 A 到陪域 B 的函数。"
+        },
+        {
+          "formulaId": "F001-FORMULA-002",
+          "packageId": "km-math-pepa-functions-v1",
+          "name": "函数值记号",
+          "latex": "y=f(x),\\quad x\\in A",
+          "conditions": "x 属于定义域 A。",
+          "explanation": "x 为自变量，f(x) 为唯一确定的函数值。"
+        },
+        {
+          "formulaId": "F001-FORMULA-003",
+          "packageId": "km-math-pepa-functions-v1",
+          "name": "定义域元素",
+          "latex": "x\\in A",
+          "conditions": "A 为定义域。",
+          "explanation": "定义域是允许输入的集合。"
+        },
+        {
+          "formulaId": "F001-FORMULA-004",
+          "packageId": "km-math-pepa-functions-v1",
+          "name": "值域",
+          "latex": "f(A)=\\{f(x)\\mid x\\in A\\}\\subseteq B",
+          "conditions": "f:A→B。",
+          "explanation": "值域是实际函数值组成的集合，包含于陪域。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "F001-EXAMPLE-001",
+          "packageId": "km-math-pepa-functions-v1",
+          "question": "A={1,2,3}, B={a,b}，1→a,2→b,3→a。是否为函数？",
+          "difficulty": "L1",
+          "approach": "逐一检查定义域元素是否恰有一个像。",
+          "steps": "1、2、3 各有且仅有一个对应值，且像均属于 B。",
+          "answer": "是；值域={a,b}。",
+          "pitfalls": "不同输入同一输出合法。",
+          "otherSolutions": "逐项对应表核验。"
+        },
+        {
+          "exampleId": "F001-EXAMPLE-002",
+          "packageId": "km-math-pepa-functions-v1",
+          "question": "输入 1 同时对应 a、b，输入 2 对应 a，是否为函数？",
+          "difficulty": "L1",
+          "approach": "检查输入唯一性。",
+          "steps": "1 有两个不同的像，违反唯一对应要求。",
+          "answer": "不是函数。",
+          "pitfalls": "唯一性约束输入到输出。",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "F001-EXAMPLE-003",
+          "packageId": "km-math-pepa-functions-v1",
+          "question": "f(x)=2x−3，求 f(4), f(−1)。",
+          "difficulty": "L1",
+          "approach": "代入自变量。",
+          "steps": "f(4)=8−3=5；f(−1)=−2−3=−5。",
+          "answer": "5；−5。",
+          "pitfalls": "负数代入保留括号。",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "F001-EXAMPLE-004",
+          "packageId": "km-math-pepa-functions-v1",
+          "question": "f(x)=ax+1 且 f(2)=7，求 a。",
+          "difficulty": "L2",
+          "approach": "代入已知函数值列方程。",
+          "steps": "2a+1=7，故 a=3。",
+          "answer": "a=3。",
+          "pitfalls": "f(2) 是函数值。",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "F001-EXAMPLE-005",
+          "packageId": "km-math-pepa-functions-v1",
+          "question": "A={−1,0,1}，x→x² 是否为函数？",
+          "difficulty": "L2",
+          "approach": "逐个求像并检查唯一性。",
+          "steps": "像依次为 1,0,1，均唯一。",
+          "answer": "是函数，值域={0,1}。",
+          "pitfalls": "多对一允许。",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "F001-EXAMPLE-006",
+          "packageId": "km-math-pepa-functions-v1",
+          "question": "A={1,2}, B={0,1}，1→1,2→2，是否为从 A 到 B 的函数？",
+          "difficulty": "L2",
+          "approach": "检查每个像是否在指定陪域。",
+          "steps": "2 不属于 B，映射未落入陪域。",
+          "answer": "不是从 A 到 B 的函数。",
+          "pitfalls": "唯一对应之外还需像属于 B。",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "F001-EXAMPLE-007",
+          "packageId": "km-math-pepa-functions-v1",
+          "question": "实数范围比较 f(x)=(x²−1)/(x−1) 与 g(x)=x+1 是否为同一函数。",
+          "difficulty": "L3",
+          "approach": "比较最大定义域及对应关系。",
+          "steps": "f 的定义域 R\\{1}；约分后在该域上解析式为 x+1。g 的定义域为 R。定义域不同。",
+          "answer": "不是同一函数。",
+          "pitfalls": "约分不能补回 x=1。",
+          "otherSolutions": "x=1 时 g 有值而 f 无定义。"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "F001-SOURCE-001",
+          "packageId": "km-math-pepa-functions-v1",
+          "title": "教材书目信息（页码待核）",
+          "kind": "textbook",
+          "reference": "人民教育出版社，2019，《普通高中教科书·数学（A版）必修第一册》，第三章 3.1.1；页码待核。ISBN 9787107335655。",
+          "textbook": "人教 A 版 2019",
+          "volume": "必修第一册",
+          "chapter": "第三章 函数的概念与性质·3.1.1",
+          "pages": "",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "S001",
+      "title": "集合的概念",
+      "chapterId": "1.1",
+      "topicId": "sets-logic",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第一章 1.1；印刷页 2–6；topicId `sets-logic`。前置：初中数集与方程解集；关联：S002、S003。目标：理解集合与元素、使用属于符号、选择适当表示法并判断集合是否定义明确。\n\n### 核心定义与通俗解释\n\n把研究对象统称为元素，把一些元素组成的总体称为集合。集合元素应当确定且互不相同；元素的排列顺序不影响集合。只要两个集合的元素完全相同，它们相等。\n\n可以把集合想成一个有明确收纳规则的盒子：对给定对象能判断是否收纳；重复放入同一个对象不会增加新元素；改变摆放顺序不改变盒子里的内容。\n\n### 公式、符号和条件\n\n- `a∈A` 表示 a 属于 A；`a∉A` 表示 a 不属于 A。\n- 本册约定：`N={0,1,2,…}`，`N*={1,2,…}`；`Z`、`Q`、`R` 分别为整数、有理数、实数集。\n- 列举法逐一列出元素；描述法写作 `{x∈A | P(x)}`，必须交代论域 A 和条件 P。\n\n### L1 / L2 / L3\n\n- L1：辨认元素及 `∈/∉`，识别确定的集合。\n- L2：在列举法、描述法间转换，并表示方程或不等式解集。\n- L3：分析定义是否确定，辨析互异、无序及集合相等。\n\n### 解题方法与易错点\n\n方法：先确认研究范围，再检查对象归属是否可判定；有限集合用列举法，无限集合通常用描述法；判集合相等只比较元素。\n\n易错：把标准模糊的“较小的数”当成集合；漏掉 0∈N 的本册约定；把元素的顺序当成集合差别；混淆元素属于 `∈` 与集合包含 `⊆`。",
+      "formulas": [
+        {
+          "formulaId": "S001-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Membership",
+          "latex": "a\\in A",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "元素a属于A。"
+        },
+        {
+          "formulaId": "S001-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Nonmembership",
+          "latex": "a\\notin A",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "元素a不属于A。"
+        },
+        {
+          "formulaId": "S001-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Number sets",
+          "latex": "\\mathbb N=\\{0,1,2,\\ldots\\},\\quad \\mathbb N^*=\\{1,2,\\ldots\\}",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "本册约定N含0。"
+        },
+        {
+          "formulaId": "S001-FORMULA-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Set builder",
+          "latex": "\\{x\\in A\\mid P(x)\\}",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "A为论域，P为明确性质。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "S001-EXAMPLE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "写出 1 至 10 之间的偶数组成的集合。",
+          "difficulty": "L1",
+          "approach": "按确定范围逐个筛选偶数",
+          "steps": "从 1 到 10 检查，保留 2 的倍数",
+          "answer": "`{2,4,6,8,10}`。易错：不包含范围外的 0 和 12",
+          "pitfalls": "",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "S001-EXAMPLE-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "用列举法表示方程 `x²−5x+6=0` 的实数解集。",
+          "difficulty": "L1",
+          "approach": "因式分解求根",
+          "steps": "`x²−5x+6=(x−2)(x−3)=0`，所以 `x=2` 或 `x=3`",
+          "answer": "`{2,3}`。易错：集合写根，不写方程",
+          "pitfalls": "",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "S001-EXAMPLE-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "用描述法及列举法表示整数 x 满足 `−2≤x<3` 的集合。",
+          "difficulty": "L2",
+          "approach": "先限定整数论域，再按端点逐个列举",
+          "steps": "满足−2≤x的整数从−2开始，依次取−2、−1、0、1、2；因右端严格小于3，不再取3",
+          "answer": "`{x∈Z | −2≤x<3}={−2,−1,0,1,2}`。易错：右端点 3 不包含",
+          "pitfalls": "",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "S001-EXAMPLE-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "“身高较高的学生”能否定义集合？给出一个可确定的改写。",
+          "difficulty": "L3",
+          "approach": "检查规则能否判定每个对象的归属",
+          "steps": "对任意学生，检查题述规则是否能给出确定的“是/否”；原措辞无阈值而不能判定。加入身高≥170cm后，可按测量值作唯一判定",
+          "answer": "未给“较高”的标准，原表述不确定；可改为“身高不低于 170 cm 的学生”。易错：确定性指判定规则明确，不要求先列出所有元素",
+          "pitfalls": "",
+          "otherSolutions": ""
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "S001-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 集合的概念",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，集合的概念，印刷页 2-6。仅作来源定位。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第一章 集合与常用逻辑用语·集合的概念",
+          "pages": "2-6",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "S002",
+      "title": "集合间的基本关系",
+      "chapterId": "1.2",
+      "topicId": "sets-logic",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第一章 1.2；印刷页 7–9；topicId `sets-logic`。前置：S001；关联：S003。目标：辨认子集、真子集与相等，并能用元素法证明包含。\n\n### 核心定义与通俗解释\n\n若 A 中任意元素都是 B 的元素，称 A 为 B 的子集，记 `A⊆B`；若再有 `A≠B`，称 A 为 B 的真子集，记 `A⊊B`。当且仅当 `A⊆B` 且 `B⊆A` 时 `A=B`。空集是任何集合的子集。\n\n子集表示“盒 A 里的每样东西都能在盒 B 中找到”；真子集还要求 B 中至少多出一个元素。\n\n### 公式、定理和条件\n\n- `A⊆B ⇔ 对任意 x，若 x∈A 则 x∈B`。\n- `A=B ⇔ (A⊆B 且 B⊆A)`。\n- `A⊊B ⇔ A⊆B 且 A≠B`；对任意集合 A，`∅⊆A`。\n- 包含只比较元素归属；证明相等必须完成两个方向。\n\n### L1 / L2 / L3\n\n- L1：区分子集、真子集、相等及空集关系。\n- L2：用定义证明有限集合或描述集合的包含。\n- L3：用双向包含证明相等，或构造反例否定包含。\n\n### 解题方法与易错点\n\n方法：证 `A⊆B` 时任取 `x∈A` 并推出 `x∈B`；证相等分两向；证不包含只需找一个反例。\n\n易错：`A∈B` 与 `A⊆B` 不同；`A⊆A` 但 A 不是自身真子集；空集一定是子集但未必是集合的元素；只证单向不能判相等。",
+      "formulas": [
+        {
+          "formulaId": "S002-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Subset",
+          "latex": "A\\subseteq B\\iff \\forall x(x\\in A\\Rightarrow x\\in B)",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "逐个元素判断。"
+        },
+        {
+          "formulaId": "S002-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Equality",
+          "latex": "A=B\\iff A\\subseteq B\\land B\\subseteq A",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "双向包含。"
+        },
+        {
+          "formulaId": "S002-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Proper subset",
+          "latex": "A\\subsetneq B\\iff A\\subseteq B\\land A\\ne B",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "子集且不相等。"
+        },
+        {
+          "formulaId": "S002-FORMULA-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Empty set",
+          "latex": "\\varnothing\\subseteq A",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "任意集合A。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "S002-EXAMPLE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "`A={1,2}, B={1,2,3}`，判断包含关系。",
+          "difficulty": "L1",
+          "approach": "检查 A 中元素并找 B 的额外元素",
+          "steps": "1、2 均属于 B；且 3 属于 B 但不属于 A",
+          "answer": "`A⊊B`。易错：不能因 B 有额外元素就说 A 不是 B 的子集",
+          "pitfalls": "",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "S002-EXAMPLE-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "写出 `{a,b}` 的全部子集。",
+          "difficulty": "L1",
+          "approach": "分别考虑取 0、1、2 个元素",
+          "steps": "取0个元素得到空集；分别只取a、只取b；最后同时取a、b，列全且不重复",
+          "answer": "`∅,{a},{b},{a,b}`。易错：`{a}` 是子集，a 才是元素",
+          "pitfalls": "",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "S002-EXAMPLE-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "证明 `{x∈R | x²=1}={−1,1}`。",
+          "difficulty": "L2",
+          "approach": "解方程并说明元素恰好相同",
+          "steps": "`x²=1 ⇔ (x−1)(x+1)=0 ⇔ x=1 或 x=−1`",
+          "answer": "两集合相等。易错：注意论域是实数",
+          "pitfalls": "",
+          "otherSolutions": "分别证明两向包含"
+        },
+        {
+          "exampleId": "S002-EXAMPLE-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "`A={x∈Z | −1≤x≤2}, B={0,1,2}`，判断包含关系。",
+          "difficulty": "L3",
+          "approach": "列出 A 后双向核对",
+          "steps": "`A={−1,0,1,2}`，B 的元素均在 A 中，而 −1 不在 B 中",
+          "answer": "`B⊊A`，且 `A⊄B`。易错：只检查一个方向",
+          "pitfalls": "",
+          "otherSolutions": "用元素 −1 直接否定 `A⊆B`，再核对 `B⊆A`"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "S002-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 集合间的基本关系",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，集合间的基本关系，印刷页 7-9。仅作来源定位。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第一章 集合与常用逻辑用语·集合间的基本关系",
+          "pages": "7-9",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "S003",
+      "title": "集合的基本运算",
+      "chapterId": "1.3",
+      "topicId": "sets-logic",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第一章 1.3；印刷页 10–16；topicId `sets-logic`。前置：S001、S002；关联：L001、L002。目标：求并、交、补，理解补集依赖全集并正确处理区间端点。\n\n### 核心定义与通俗解释\n\n`A∪B` 收集属于 A 或 B 的元素；`A∩B` 收集同时属于 A 和 B 的元素。给定全集 U，A 的补集 `∁ᵤA` 由 U 中不属于 A 的元素组成。并集的“或”包含两者都属于的情况。\n\n### 公式、定理和条件\n\n- `A∪B={x | x∈A 或 x∈B}`。\n- `A∩B={x | x∈A 且 x∈B}`。\n- `∁ᵤA={x∈U | x∉A}`，要求 `A⊆U`。\n- `A∪∅=A`，`A∩∅=∅`，`A∪U=U`，`A∩U=A`。\n\n### L1 / L2 / L3\n\n- L1：求有限集合的并集、交集与补集。\n- L2：求实数区间的运算并正确判断端点。\n- L3：把复合条件转成集合运算，并用数轴或元素法核验。\n\n### 解题方法与易错点\n\n方法：先明确全集；将文字转成“或、且、不属于”；区间题画数轴并逐个检查端点。\n\n易错：补集不写全集；并集漏掉共有元素；把“或”误解成只能属于其一；忽略开闭区间端点。",
+      "formulas": [
+        {
+          "formulaId": "S003-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Union",
+          "latex": "A\\cup B=\\{x\\mid x\\in A\\lor x\\in B\\}",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "“或”含两者共有。"
+        },
+        {
+          "formulaId": "S003-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Intersection",
+          "latex": "A\\cap B=\\{x\\mid x\\in A\\land x\\in B\\}",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "同时属于A、B。"
+        },
+        {
+          "formulaId": "S003-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Complement",
+          "latex": "A^{c_U}=\\{x\\in U\\mid x\\notin A\\}",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "需A⊆U且U为全集。"
+        },
+        {
+          "formulaId": "S003-FORMULA-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Identities",
+          "latex": "A\\cup\\varnothing=A, A\\cap\\varnothing=\\varnothing",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "基本并交恒等式。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "S003-EXAMPLE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "`A={1,2,4}, B={2,3,4}`，求并集与交集。",
+          "difficulty": "L1",
+          "approach": "并集取至少属于一方的元素，交集取共同元素",
+          "steps": "合并两集合的元素并去重得1、2、3、4；同时出现在A、B中的只有2、4",
+          "answer": "`A∪B={1,2,3,4}`，`A∩B={2,4}`。易错：并集中元素不重复",
+          "pitfalls": "",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "S003-EXAMPLE-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "`U={1,2,3,4,5}, A={1,3,5}`，求 A 的补集。",
+          "difficulty": "L1",
+          "approach": "从 U 中去掉 A 的元素",
+          "steps": "全集元素依次为1、2、3、4、5；删除A中的1、3、5，余下2、4",
+          "answer": "`∁ᵤA={2,4}`。易错：补集必须相对于指定全集",
+          "pitfalls": "",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "S003-EXAMPLE-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "`A=[−2,3), B=(1,5]`，求交集与并集。",
+          "difficulty": "L2",
+          "approach": "在数轴上取重叠部分及总覆盖范围",
+          "steps": "交集须同时满足x>1及x<3；并集覆盖两段且相连，左端−2和右端5均属于并集",
+          "answer": "`A∩B=(1,3)`，`A∪B=[−2,5]`。易错：1 不在 B、3 不在 A，故不属于交集",
+          "pitfalls": "",
+          "otherSolutions": "区间端点逐一代入核验"
+        },
+        {
+          "exampleId": "S003-EXAMPLE-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "全集为 R，`A={x∈R | x²<4}`，求补集。",
+          "difficulty": "L3",
+          "approach": "先解不等式，再对 R 取补",
+          "steps": "`x²<4 ⇔ −2<x<2`",
+          "answer": "`A=(−2,2)`，`∁ᵣA=(−∞,−2]∪[2,∞)`。易错：边界点不在 A，却在补集中",
+          "pitfalls": "",
+          "otherSolutions": "数轴表示后取未涂部分"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "S003-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 集合的基本运算",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，集合的基本运算，印刷页 10-16。仅作来源定位。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第一章 集合与常用逻辑用语·集合的基本运算",
+          "pages": "10-16",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "L001",
+      "title": "充分条件与必要条件",
+      "chapterId": "1.4",
+      "topicId": "sets-logic",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第一章 1.4；印刷页 17–25；topicId `sets-logic`。前置：集合包含关系；关联：L002。目标：从蕴含方向判断充分、必要与充要，并能验证逆向命题。\n\n### 核心定义与通俗解释\n\n若 `p⇒q` 成立，称 p 是 q 的充分条件，q 是 p 的必要条件。若 `p⇒q` 与 `q⇒p` 都成立，则 p、q 互为充要条件。箭头方向是判断依据：p 足以保证 q，所以 p 充分；q 是 p 成立所必需的。\n\n### 公式、定理及条件\n\n- `p⇒q`：p 是 q 的充分条件；q 是 p 的必要条件。\n- `p⇔q ⇔ (p⇒q 且 q⇒p)`。\n- 若 P、Q 分别为命题 p、q 的真值集合，则 `p⇒q` 对应 `P⊆Q`。\n- 变量论域须固定；反例需满足前件而不满足后件。\n\n### L1 / L2 / L3\n\n- L1：识别简单命题中的条件方向。\n- L2：用解集包含判断单向推出。\n- L3：证明充要关系或用反例否定逆向。\n\n### 解题方法与易错点\n\n方法：明确 p、q，先证明 `p⇒q`；充要性还须单独证明 `q⇒p`。不成立时寻找前件真而后件假的反例。\n\n易错：充分、必要方向倒置；只证一向就称充要；逆命题不自动成立；忽略变量范围。",
+      "formulas": [
+        {
+          "formulaId": "L001-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Implication",
+          "latex": "p\\Rightarrow q",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "p充分于q，q必要于p。"
+        },
+        {
+          "formulaId": "L001-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Equivalence",
+          "latex": "p\\Leftrightarrow q\\iff(p\\Rightarrow q)\\land(q\\Rightarrow p)",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "双向推出。"
+        },
+        {
+          "formulaId": "L001-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Set relation",
+          "latex": "P\\subseteq Q",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "对应真值集合的包含。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "L001-EXAMPLE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "实数 x，p：“x=2”，q：“x²=4”，判断条件关系。",
+          "difficulty": "L1",
+          "approach": "分别检查两个方向",
+          "steps": "x=2 可推出 x²=4；但 x=−2 满足 q 不满足 p",
+          "answer": "p 是 q 的充分不必要条件；q 是 p 的必要不充分条件。易错：平方会产生另一个根",
+          "pitfalls": "",
+          "otherSolutions": "比较解集 `{2}` 与 `{−2,2}`"
+        },
+        {
+          "exampleId": "L001-EXAMPLE-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "整数 n，p：“4|n”，q：“2|n”，判断条件关系。",
+          "difficulty": "L1",
+          "approach": "由整除定义推正向，并检验反向",
+          "steps": "设n=4k，则n=2(2k)，故4|n推出2|n；取整数n=2，2|n但4∤n，反向不成立",
+          "answer": "4|n 推出 2|n；反向由 n=2 否定。因此 p 是 q 的充分不必要条件。易错：论域是整数",
+          "pitfalls": "",
+          "otherSolutions": "比较整数解集 `4Z⊂2Z`"
+        },
+        {
+          "exampleId": "L001-EXAMPLE-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "实数 x，p：“x>3”，q：“x>1”，判断条件关系。",
+          "difficulty": "L2",
+          "approach": "比较解集 `(3,∞)` 与 `(1,∞)`",
+          "steps": "若x>3，则x>1；取x=2满足x>1但不满足x>3，故只有正向推出",
+          "answer": "p⇒q，反向取 x=2 不成立，故 p 是 q 的充分不必要条件。易错：一个反例即可否定反向",
+          "pitfalls": "",
+          "otherSolutions": "直接用不等式传递性"
+        },
+        {
+          "exampleId": "L001-EXAMPLE-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "实数 x，判断 `x²=1` 与 `|x|=1` 是否互为充要条件。",
+          "difficulty": "L3",
+          "approach": "化为同一解集",
+          "steps": "`x²=1 ⇔ x=±1 ⇔ |x|=1`",
+          "answer": "互为充要条件。易错：要证明双向",
+          "pitfalls": "",
+          "otherSolutions": "分别求两个方程的实数解集"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "L001-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 充分条件与必要条件",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，充分条件与必要条件，印刷页 17-25。仅作来源定位。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第一章 集合与常用逻辑用语·充分条件与必要条件",
+          "pages": "17-25",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "L002",
+      "title": "全称量词与存在量词",
+      "chapterId": "1.5",
+      "topicId": "sets-logic",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第一章 1.5；印刷页 26–32；topicId `sets-logic`。前置：集合与命题；关联：L001。目标：辨认量词、写出量词命题及其否定。\n\n### 核心定义与通俗解释\n\n“所有、任意”对应全称量词 `∀`；“存在、至少有一个”对应存在量词 `∃`。否定全称命题时要改为存在并否定谓词；否定存在命题时要改为全称并否定谓词。\n\n### 公式、定理和条件\n\n- `¬(∀x∈A, P(x)) ⇔ ∃x∈A, ¬P(x)`。\n- `¬(∃x∈A, P(x)) ⇔ ∀x∈A, ¬P(x)`。\n- 论域 A 必须保留；`¬(x>0)` 等价于 `x≤0`；`¬(a<x<b)` 等价于 `x≤a 或 x≥b`。\n\n### L1 / L2 / L3\n\n- L1：识别 ∀、∃及其自然语言表达。\n- L2：写出单量词命题的否定。\n- L3：否定区间或复合条件命题并核对边界。\n\n### 解题方法与易错点\n\n方法：先明确论域；互换量词；否定谓词；对“且/或”使用逻辑否定规则；检查边界。\n\n易错：“并非所有”不等于“所有都不”；否定存在不能仍写存在；否定后不能丢论域；`x>0` 的否定是 `x≤0`。",
+      "formulas": [
+        {
+          "formulaId": "L002-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Negated universal",
+          "latex": "\\neg(\\forall x\\in A,P(x))\\iff\\exists x\\in A,\\neg P(x)",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "论域A不变。"
+        },
+        {
+          "formulaId": "L002-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Negated existential",
+          "latex": "\\neg(\\exists x\\in A,P(x))\\iff\\forall x\\in A,\\neg P(x)",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "论域A不变。"
+        },
+        {
+          "formulaId": "L002-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Inequality negation",
+          "latex": "\\neg(x>0)\\iff x\\le 0",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "严格大于的否定。"
+        },
+        {
+          "formulaId": "L002-FORMULA-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Interval negation",
+          "latex": "\\neg(a<x<b)\\iff x\\le a\\lor x\\ge b",
+          "conditions": "变量论域和条件以知识内容正文为准。",
+          "explanation": "端点取等。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "L002-EXAMPLE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "将“每个正整数都是整数”写成量词命题。",
+          "difficulty": "L1",
+          "approach": "明确论域与性质",
+          "steps": "把“每个”译为∀，变量取遍正整数N*；“都是整数”写作n∈Z",
+          "answer": "`∀n∈N*, n∈Z`。易错：写清量词范围",
+          "pitfalls": "",
+          "otherSolutions": "自然语言“任取正整数 n，n 属于 Z”"
+        },
+        {
+          "exampleId": "L002-EXAMPLE-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "写出“存在实数 x 使 x²<0”的否定。",
+          "difficulty": "L1",
+          "approach": "存在改全称，谓词 `<0` 改 `≥0`",
+          "steps": "将∃x∈R改成∀x∈R；将谓词x²<0改成其否定x²≥0",
+          "answer": "`∀x∈R，x²≥0`。易错：这是正确的否定形式，虽原命题为假",
+          "pitfalls": "",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "L002-EXAMPLE-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "写出“对所有实数 x，都有 x²+1>0”的否定。",
+          "difficulty": "L2",
+          "approach": "∀改∃，严格大于改小于等于",
+          "steps": "将“对所有”改为“存在”；将x²+1>0取反为x²+1≤0",
+          "answer": "`∃x∈R，使 x²+1≤0`。原命题真，否定命题假。易错：写否定形式与判断真假是两件事",
+          "pitfalls": "",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "L002-EXAMPLE-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "否定“存在实数 x 满足 −1<x≤2”。",
+          "difficulty": "L3",
+          "approach": "∃改∀，并否定区间内条件",
+          "steps": "先把∃改为∀；区间内条件−1<x且x≤2的否定是x≤−1或x>2",
+          "answer": "`∀x∈R，x≤−1 或 x>2`。易错：−1 包含在否定中，2 不包含；“且”否定成“或”",
+          "pitfalls": "",
+          "otherSolutions": "用数轴表示区间外部分"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "L002-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 全称量词与存在量词",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，全称量词与存在量词，印刷页 26-32。仅作来源定位。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第一章 集合与常用逻辑用语·全称量词与存在量词",
+          "pages": "26-32",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "Q001",
+      "title": "等式性质与不等式性质",
+      "chapterId": "2.1",
+      "topicId": "quadratic-inequalities",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第二章 2.1；印刷页 37–43；topicId `quadratic-inequalities`。前置：实数运算与整式；关联：Q002、Q003。目标：正确应用等式和不等式性质，特别注意不等式乘除负数时改变方向。\n\n### 核心定义与通俗解释\n\n等式两边加、减同一个数，仍相等；两边乘同一个数仍相等，除以非零数仍相等。不等式两边加减同数、乘除正数，方向保持；乘除负数，方向反转。实数大小也可通过差判断：`a>b ⇔ a−b>0`。\n\n像天平两边同时加减相同重量，平衡不变；不等式乘以负数相当于数轴方向翻转，因此大小方向反转。\n\n### 公式、定理及条件\n\n- `a=b ⇒ a+c=b+c`；`a=b ⇒ ac=bc`；`a=b,c≠0 ⇒ a/c=b/c`。\n- `a>b ⇒ a+c>b+c`。\n- `a>b,c>0 ⇒ ac>bc`；`a>b,c<0 ⇒ ac<bc`。除法需除数非零，方向由其正负决定。\n- `a>b ⇔ a−b>0`。\n\n### L1 / L2 / L3\n\n- L1：用等式性质解一元一次方程；识别同加数对不等式的影响。\n- L2：连续变形一元一次不等式，判断每一步是否保持方向。\n- L3：组合多个不等关系，或通过差的符号比较代数式。\n\n### 解题方法与易错点\n\n方法：记录每一步操作；乘除之前先判断因数符号；比较 A、B 可研究 A−B；涉及未知数符号不定时，先分类讨论。\n\n易错：乘除负数忘记反向；除以可能为零的式子；平方或开方未核验条件；移项本质是两边加减同一式，不能无条件改变方向。",
+      "formulas": [
+        {
+          "formulaId": "Q001-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Equal translation",
+          "latex": "a=b\\Rightarrow a+c=b+c",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "等式两边同加同一数。"
+        },
+        {
+          "formulaId": "Q001-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Inequality addition",
+          "latex": "a>b\\Rightarrow a+c>b+c",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "不等式两边同加同一数。"
+        },
+        {
+          "formulaId": "Q001-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Multiply positive",
+          "latex": "a>b,c>0\\Rightarrow ac>bc",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "乘正数保向。"
+        },
+        {
+          "formulaId": "Q001-FORMULA-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Multiply negative",
+          "latex": "a>b,c<0\\Rightarrow ac<bc",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "乘负数反向。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "Q001-E01",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "求实数 x。",
+          "difficulty": "L1",
+          "approach": "等式两边依次减 3、除以 2。",
+          "steps": "两边减 3 得 `2x=8`；两边除以非零数 2，得 `x=4`。",
+          "answer": "`x=4`。",
+          "pitfalls": "等式两边必须执行相同运算。",
+          "otherSolutions": "把 4 代回原式核验 `8+3=11`。"
+        },
+        {
+          "exampleId": "Q001-E02",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "判断两式大小。",
+          "difficulty": "L1",
+          "approach": "先乘正数，再同减 2。",
+          "steps": "由 `a>b` 且 `3>0`，得 `3a>3b`；两边减 2，得 `3a−2>3b−2`。",
+          "answer": "`3a−2>3b−2`。",
+          "pitfalls": "乘正数不改变方向。",
+          "otherSolutions": "作差为 `3(a−b)>0`。"
+        },
+        {
+          "exampleId": "Q001-E03",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "求解集。",
+          "difficulty": "L2",
+          "approach": "两边减 3，再除以负数 −2。",
+          "steps": "得 `−2x>4`；两边除以 −2 并反向，得 `x<−2`。",
+          "answer": "`(−∞,−2)`。",
+          "pitfalls": "除以负数必须改变不等号方向。",
+          "otherSolutions": "移项后用数轴检验边界。"
+        },
+        {
+          "exampleId": "Q001-E04",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "利用不等式性质证明。",
+          "difficulty": "L3",
+          "approach": "分别加上另一条不等式的相关项。",
+          "steps": "由 `a>b` 两边加 c 得 `a+c>b+c`；由 `c>d` 两边加 b 得 `b+c>b+d`；由传递性得 `a+c>b+d`。",
+          "answer": "命题成立。",
+          "pitfalls": "传递性要求不等方向一致。",
+          "otherSolutions": "`(a+c)−(b+d)=(a−b)+(c−d)>0`。"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "Q001-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 2.1 等式性质与不等式性质",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，2.1 等式性质与不等式性质，印刷页 37-43。只登记书目定位，不复制教材正文。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第二章 一元二次函数、方程和不等式·2.1",
+          "pages": "37-43",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "Q002",
+      "title": "基本不等式",
+      "chapterId": "2.2",
+      "topicId": "quadratic-inequalities",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第二章 2.2；印刷页 44–49；topicId `quadratic-inequalities`。前置：平方非负、算术平方根；关联：Q001、Q003。目标：掌握正数基本不等式、等号条件，并用于最值问题。\n\n### 核心定义与通俗解释\n\n对正数 a、b，算术平均数不小于几何平均数：`(a+b)/2 ≥ √(ab)`，等号当且仅当 `a=b`。它把“和”与“积”联系起来：和固定时积有上界，积固定时和有下界；使用时必须核对正数条件和等号能否取到。\n\n### 公式、定理及条件\n\n- `a,b>0 ⇒ (a+b)/2 ≥ √(ab)`，等号当且仅当 `a=b`。\n- 等价形式：`a+b≥2√(ab)`，适用于正数 a、b。\n- 常见最值：`x+c/x≥2√c`，条件 `x>0,c>0`；等号需 `x=√c`。\n\n### L1 / L2 / L3\n\n- L1：辨认正数条件及等号条件。\n- L2：求和或积固定时的最值。\n- L3：重组目标式配成基本不等式并验证等号点在定义域内。\n\n### 解题方法与易错点\n\n方法：先确认参与平均的量为正；配成 `u+v` 且乘积易算；写出下界/上界后检查等号条件是否可实现。\n\n易错：非正数直接套用；只写不等式不写等号条件；目标表达式的等号条件与约束矛盾；最小值/最大值不能仅凭下界/上界声称取到。",
+      "formulas": [
+        {
+          "formulaId": "Q002-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "AM-GM",
+          "latex": "\\frac{a+b}{2}\\ge\\sqrt{ab}",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "a,b>0，等号当且仅当a=b。"
+        },
+        {
+          "formulaId": "Q002-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Sum-product bound",
+          "latex": "a+b\\ge2\\sqrt{ab}",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "a,b>0。"
+        },
+        {
+          "formulaId": "Q002-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Minimum form",
+          "latex": "x+\\frac{c}{x}\\ge2\\sqrt c",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "x,c>0；等号x=√c。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "Q002-E01",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "求和的最小值并说明取等条件。",
+          "difficulty": "L1",
+          "approach": "用基本不等式将和下界化为积。",
+          "steps": "`a+b≥2√(ab)=2√9=6`；当且仅当 `a=b`；结合 `ab=9` 得 `a=b=3`，此值可取到。",
+          "answer": "最小值为 6，在 `a=b=3` 时取得。",
+          "pitfalls": "须检查等号条件与乘积约束兼容。",
+          "otherSolutions": "`(a−b)²≥0 ⇒ (a+b)²≥4ab=36`，且 a+b>0。"
+        },
+        {
+          "exampleId": "Q002-E02",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "求函数值域下界及取等点。",
+          "difficulty": "L2",
+          "approach": "对 x 与 4/x 使用基本不等式。",
+          "steps": "两项均正，故 `x+4/x≥2√(x·4/x)=4`；等号需 `x=4/x`，正数范围内得 `x=2`。",
+          "answer": "最小值为 4，在 x=2 处取得。",
+          "pitfalls": "不能忽略 x>0；若 x<0，所用结论不适用。",
+          "otherSolutions": "`x+4/x−4=(x−2)²/x≥0`。"
+        },
+        {
+          "exampleId": "Q002-E03",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "求积的最大值。",
+          "difficulty": "L2",
+          "approach": "对 x、y 的算术平均数与几何平均数应用基本不等式。",
+          "steps": "`(x+y)/2≥√(xy)`，故 `5≥√(xy)`；两边非负，平方得 `xy≤25`；x=y=5 满足约束。",
+          "answer": "最大值为 25，在 x=y=5 时取得。",
+          "pitfalls": "平方前确认两边非负。",
+          "otherSolutions": "`xy=x(10−x)=25−(x−5)²≤25`。"
+        },
+        {
+          "exampleId": "Q002-E04",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "给出最小值与取等条件。",
+          "difficulty": "L3",
+          "approach": "将 x 与 9/x 配对，并检验等号点。",
+          "steps": "`x+9/x≥2√9=6`；等号要求 `x=9/x`，解得 x=±3；定义域 x>0，因此 x=3 可取。",
+          "answer": "最小值为 6，在 x=3 处取得。",
+          "pitfalls": "等号方程的根须回到定义域筛选。",
+          "otherSolutions": "`x+9/x−6=(x−3)²/x≥0`。"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "Q002-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 2.2 基本不等式",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，2.2 基本不等式，印刷页 44-49。只登记书目定位，不复制教材正文。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第二章 一元二次函数、方程和不等式·2.2",
+          "pages": "44-49",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "Q003",
+      "title": "二次函数与一元二次方程、不等式",
+      "chapterId": "2.3",
+      "topicId": "quadratic-inequalities",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第二章 2.3；印刷页 50–55；topicId `quadratic-inequalities`。前置：二次函数图象、一元二次方程、不等式性质；关联：Q001、F002。目标：用抛物线与判别式联系方程根和一元二次不等式解集。\n\n### 核心定义与通俗解释\n\n对 `f(x)=ax²+bx+c (a≠0)`，方程 `f(x)=0` 的实根是抛物线与 x 轴的交点横坐标；不等式 `f(x)>0` 或 `<0` 的解集，是图象位于 x 轴上方或下方时对应的 x。判别式 `Δ=b²−4ac` 决定实根个数，开口方向由 a 的符号决定。\n\n### 公式、定理及条件\n\n- `Δ=b²−4ac`：Δ>0 两个不同实根，Δ=0 一个重根，Δ<0 无实根。\n- 设 a>0 且两根 `x₁<x₂`：`f(x)>0` 在 `x<x₁` 或 `x>x₂`；`f(x)<0` 在 `x₁<x<x₂`。\n- a>0 且 Δ=0：`f(x)≥0` 对所有实数成立，等号仅在重根处；Δ<0 时 `f(x)>0` 对所有实数成立。\n- a<0 时图象开口向下，上述正负结论相反。\n\n### L1 / L2 / L3\n\n- L1：由因式分解求二次方程根并联系图象交点。\n- L2：用根与开口方向求一元二次不等式解集。\n- L3：含参数时结合 Δ 和 a 的符号分类讨论根、符号及解集。\n\n### 解题方法与易错点\n\n方法：先检查 a≠0；计算 Δ 或因式分解；排列实根；结合开口方向画符号表；严格不等式端点不取，含等号则按题意纳入。\n\n易错：a<0 时照搬开口向上的符号表；Δ=0 时把重根当两个不同根；严格不等式误取根；判别式只决定根数，不单独决定函数值正负。",
+      "formulas": [
+        {
+          "formulaId": "Q003-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Discriminant",
+          "latex": "\\Delta=b^2-4ac",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "对于ax²+bx+c，a≠0。"
+        },
+        {
+          "formulaId": "Q003-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Root count",
+          "latex": "\\Delta>0:2;\\quad \\Delta=0:1;\\quad \\Delta<0:0",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "判断实根个数。"
+        },
+        {
+          "formulaId": "Q003-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Sign pattern",
+          "latex": "a>0,x_1<x_2:\\ f(x)>0\\text{ outside roots},\\ f(x)<0\\text{ between roots}",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "二次函数与x轴有两个交点时。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "Q003-E01",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "求实根及对应交点。",
+          "difficulty": "L1",
+          "approach": "因式分解并将根解释为零点。",
+          "steps": "`x²−5x+6=(x−2)(x−3)`；令两因式为零，得 x=2 或 x=3。",
+          "answer": "实根为 2、3；对应交点为 (2,0)、(3,0)。",
+          "pitfalls": "方程根是横坐标，交点写作有序数对。",
+          "otherSolutions": "求 `Δ=25−24=1` 后用求根公式。"
+        },
+        {
+          "exampleId": "Q003-E02",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "求实数解集。",
+          "difficulty": "L2",
+          "approach": "先找根，再由 a>0 判断根之间的符号。",
+          "steps": "因式分解得根 2、3；抛物线开口向上，在两根之间位于 x 轴下方，端点使函数值为 0，满足“≤0”。",
+          "answer": "`[2,3]`。",
+          "pitfalls": "等号成立时根要包含在解集中。",
+          "otherSolutions": "符号分解 `(x−2)(x−3)≤0`。"
+        },
+        {
+          "exampleId": "Q003-E03",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "确定函数为正的 x 范围。",
+          "difficulty": "L2",
+          "approach": "求零点并结合开口方向。",
+          "steps": "`f(x)=−(x−1)(x−3)`，零点为 1、3；a<0，图象开口向下，因此在两根之间函数值为正。",
+          "answer": "`(1,3)`。",
+          "pitfalls": "开口向下时根之间为正，根外为负。",
+          "otherSolutions": "用因式符号表逐区间判断。"
+        },
+        {
+          "exampleId": "Q003-E04",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "按实数参数 m 分类。",
+          "difficulty": "L3",
+          "approach": "计算判别式，注意参数消去。",
+          "steps": "a=1，b=−2m，c=m²−1；`Δ=b²−4ac=4m²−4(m²−1)=4>0`，对任意实数 m 均有两个不同实根。",
+          "answer": "任意实数 m，图象与 x 轴有两个不同交点。",
+          "pitfalls": "Δ 计算后要结合其恒定为正的结果。",
+          "otherSolutions": "配方 `f(x)=(x−m)²−1`，根为 m−1、m+1，始终不同。"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "Q003-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 2.3 二次函数与一元二次方程、不等式",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，2.3 二次函数与一元二次方程、不等式，印刷页 50-55。只登记书目定位，不复制教材正文。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第二章 一元二次函数、方程和不等式·2.3",
+          "pages": "50-55",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "F002",
+      "title": "函数的基本性质",
+      "chapterId": "3.2",
+      "topicId": "functions",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第三章 3.2；印刷页 76–88；topicId `functions`。前置：F001 函数的概念；关联：F003、Q003。目标：用定义判断单调性、求最大（小）值，并根据定义域对称性判断奇偶性。\n\n### 核心定义与通俗解释\n\n若区间 I 内任取 `x₁<x₂` 都有 `f(x₁)<f(x₂)`，函数在 I 上单调递增；若总有 `f(x₁)>f(x₂)`，则单调递减。若对定义域内所有 x，`f(x)≤M` 且存在 x₀ 使 `f(x₀)=M`，M 是最大值；最小值类似。定义域关于原点对称且 `f(−x)=f(x)` 时为偶函数；`f(−x)=−f(x)` 时为奇函数。\n\n单调性描述一个区间内的整体升降；最大（小）值要求函数实际取到边界值；奇偶性是图象关于 y 轴或原点的对称规律。\n\n### 公式、定理及条件\n\n- 单调递增：`x₁<x₂ ⇒ f(x₁)<f(x₂)`（对区间 I 内任意两点）。单调递减将函数值不等号反向。\n- 最大值 M：对所有 x∈D 有 `f(x)≤M`，且存在 x₀∈D 使 `f(x₀)=M`；最小值反向。\n- 偶函数：定义域 D 关于原点对称，且 `f(−x)=f(x)`；奇函数：D 关于原点对称，且 `f(−x)=−f(x)`。\n- 奇偶性判断前必须检查定义域对称；函数可既非奇又非偶。\n\n### L1 / L2 / L3\n\n- L1：从图象识别区间升降、对称性及极值点。\n- L2：用定义证明简单函数的单调性或奇偶性，求二次函数最值。\n- L3：结合定义域、参数和图象结构分段研究性质。\n\n### 解题方法与易错点\n\n方法：单调性用任取 `x₁<x₂` 比较 `f(x₁)−f(x₂)`；二次函数配方找顶点并结合开口；奇偶性先查定义域，再比较 `f(−x)` 与 `±f(x)`。\n\n易错：只凭几个点断言单调；单调区间必须是定义域的区间；上界不一定是最大值（需取到）；不先检查定义域关于原点对称；将奇函数误认为图象经过原点而忽略定义域/函数值条件。",
+      "formulas": [
+        {
+          "formulaId": "F002-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Monotone increasing",
+          "latex": "x_1<x_2\\Rightarrow f(x_1)<f(x_2)",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "x1,x2取自同一指定区间。"
+        },
+        {
+          "formulaId": "F002-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Even function",
+          "latex": "f(-x)=f(x)",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "定义域关于原点对称。"
+        },
+        {
+          "formulaId": "F002-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Odd function",
+          "latex": "f(-x)=-f(x)",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "定义域关于原点对称。"
+        },
+        {
+          "formulaId": "F002-FORMULA-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Maximum",
+          "latex": "f(x)\\le M,\\ f(x_0)=M",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "x均在定义域内，且最大值须取到。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "F002-E01",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "用函数图象与代数性质说明。",
+          "difficulty": "L1",
+          "approach": "比较区间内任意两点的函数值。",
+          "steps": "任取 `0≤x₁<x₂`，则 `x₂²−x₁²=(x₂−x₁)(x₂+x₁)>0`，故 `f(x₁)<f(x₂)`。",
+          "answer": "在 `[0,+∞)` 上单调递增。",
+          "pitfalls": "x² 在全体实数上并非单调递增。",
+          "otherSolutions": "观察抛物线在 y 轴右侧从左向右上升。"
+        },
+        {
+          "exampleId": "F002-E02",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "求最小值及取值点。",
+          "difficulty": "L2",
+          "approach": "配方并利用平方非负。",
+          "steps": "`f(x)=(x−2)²−1≥−1`；当 x=2 时平方项为 0，函数取到 −1。",
+          "answer": "最小值 −1，在 x=2 处取得；无最大值。",
+          "pitfalls": "开口向上只保证有最小值，不保证有最大值。",
+          "otherSolutions": "由顶点坐标 (2,−1) 直接判断。"
+        },
+        {
+          "exampleId": "F002-E03",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "在其自然定义域内判断。",
+          "difficulty": "L2",
+          "approach": "检查定义域对称并计算 f(−x)。",
+          "steps": "定义域 R 关于原点对称；`f(−x)=−x³+x=−(x³−x)=−f(x)`。",
+          "answer": "f 为奇函数。",
+          "pitfalls": "不能只看解析式奇次项；须满足定义域对称。",
+          "otherSolutions": "观察图象关于原点中心对称。"
+        },
+        {
+          "exampleId": "F002-E04",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "分析全域与分段单调性。",
+          "difficulty": "L3",
+          "approach": "写出分段表达式，分别研究左右区间。",
+          "steps": "x≤0 时 `f(x)=−x`，在 (−∞,0] 上递减；x≥0 时 `f(x)=x`，在 [0,+∞) 上递增；跨过 0 时函数值先降后升，故全 R 不单调。且 `|x|≥0`，x=0 取等。",
+          "answer": "全 R 不单调；在 (−∞,0] 递减、[0,+∞) 递增；最小值 0。",
+          "pitfalls": "两个分段区间的单调性不能推出全域单调。",
+          "otherSolutions": "结合 V 形图象判断。"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "F002-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 3.2 函数的基本性质",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，3.2 函数的基本性质，印刷页 76-88。只登记书目定位，不复制教材正文。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第三章 函数的概念与性质·3.2",
+          "pages": "76-88",
+          "sourceType": "textbook"
+        }
+      ]
+    },
+    {
+      "id": "F003",
+      "title": "幂函数",
+      "chapterId": "3.3",
+      "topicId": "functions",
+      "trustStatus": "Draft",
+      "content": "基础信息：高中数学；必修第一册第三章 3.3；印刷页 89–92；topicId `functions`。前置：函数定义域、图象、单调性与奇偶性；关联：F001、F002、E001。目标：识别幂函数模型，分析书中五个典型指数的定义域、值域、奇偶性和单调性。\n\n### 核心定义与通俗解释\n\n形如 `y=x^α` 的函数称为幂函数，其中 x 是自变量，α 为常数。教材本节集中研究 `α=1,2,3,1/2,−1` 的情况，对应 `y=x`、`y=x²`、`y=x³`、`y=√x`、`y=1/x`。指数变化会改变定义域、对称性和图象，不能只凭“都是 x 的幂”推断相同性。\n\n### 公式、定理及条件\n\n- 一般形式：`y=x^α`，α 为常数；本节典型模型：`x、x²、x³、√x、x⁻¹`。\n- `y=x`：定义域和值域 R，奇函数，递增。\n- `y=x²`：定义域 R，值域 `[0,+∞)`，偶函数；在 `(−∞,0]` 递减、`[0,+∞)` 递增。\n- `y=x³`：定义域和值域 R，奇函数，递增。\n- `y=√x`：定义域和值域 `[0,+∞)`，在定义域上递增，非奇非偶（定义域不关于原点对称）。\n- `y=x⁻¹=1/x`：定义域和值域 `R\\{0}`，奇函数；在 `(−∞,0)` 和 `(0,+∞)` 分别递减。\n\n### L1 / L2 / L3\n\n- L1：识别幂函数形式并确定常见模型的定义域。\n- L2：比较五类典型函数的奇偶性、值域与单调区间。\n- L3：根据模型结构区分相似解析式，并结合定义域判断可否使用性质。\n\n### 解题方法与易错点\n\n方法：确认是否为单一幂 `x^α`；先由指数和根式/分母规则求定义域；再研究图象、值域和性质；写奇偶性前检查定义域对称。\n\n易错：把 `√x` 的定义域写成 R；把 `1/x` 在 x=0 处定义；把 x² 在全 R 上判为单调；把定义域非对称的函数判成偶函数；忽略本节仅系统研究指定典型指数。",
+      "formulas": [
+        {
+          "formulaId": "F003-FORMULA-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Power function",
+          "latex": "y=x^\\alpha",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "α为常数，定义域依α确定。"
+        },
+        {
+          "formulaId": "F003-FORMULA-002",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Square root power",
+          "latex": "y=x^{1/2}=\\sqrt{x}",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "实数范围x≥0。"
+        },
+        {
+          "formulaId": "F003-FORMULA-003",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Reciprocal power",
+          "latex": "y=x^{-1}=\\frac1x",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "x≠0。"
+        },
+        {
+          "formulaId": "F003-FORMULA-004",
+          "packageId": "km-math-pepa-required-1-v1",
+          "name": "Square power",
+          "latex": "y=x^2",
+          "conditions": "适用条件详见知识点内容中的定义与说明。",
+          "explanation": "定义域R，值域[0,+∞)。"
+        }
+      ],
+      "examples": [
+        {
+          "exampleId": "F003-E01",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "说明判断依据。",
+          "difficulty": "L1",
+          "approach": "比对 `x^α` 形式。",
+          "steps": "`x³` 是 `x^α` 中取 α=3 的情形；对任意实数 x，x³ 有意义。",
+          "answer": "是幂函数，定义域 R。",
+          "pitfalls": "幂函数只含一个底数 x 的固定实指数幂，不是任意含幂的多项式。",
+          "otherSolutions": ""
+        },
+        {
+          "exampleId": "F003-E02",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "在实数范围内分析。",
+          "difficulty": "L1",
+          "approach": "利用平方根的非负条件。",
+          "steps": "根号内 x 必须满足 x≥0；平方根值也非负；x 从 0 起可取任意非负数，函数值覆盖所有非负实数。",
+          "answer": "定义域 `[0,+∞)`，值域 `[0,+∞)`。",
+          "pitfalls": "定义域不关于原点对称，所以它不是奇函数也不是偶函数。",
+          "otherSolutions": "令 y=√x，则 x=y² 且 y≥0。"
+        },
+        {
+          "exampleId": "F003-E03",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "逐项判断。",
+          "difficulty": "L2",
+          "approach": "检查分母限制、代入 −x 并比较区间变化。",
+          "steps": "x≠0，定义域为 `R\\{0}`；`f(−x)=−1/x=−f(x)`，定义域关于原点对称；对任一同侧区间，若 `x₁<x₂`，则可由 `1/x₁−1/x₂=(x₂−x₁)/(x₁x₂)` 判其为负（同侧乘积为正）。",
+          "answer": "奇函数；在 `(−∞,0)`、`(0,+∞)` 分别单调递减。",
+          "pitfalls": "函数在跨过 0 的整个定义域上不构成单一区间，不能说在 `R\\{0}` 上递减。",
+          "otherSolutions": "观察双曲线两支分别从左向右下降。"
+        },
+        {
+          "exampleId": "F003-E04",
+          "packageId": "km-math-pepa-required-1-v1",
+          "question": "不能仅凭图象交点判断函数相同。",
+          "difficulty": "L3",
+          "approach": "比较定义域与对应关系。",
+          "steps": "二者定义域均为 R，但对应关系分别为 x² 与 x；例如 x=2 时 f(2)=4，而 g(2)=2。",
+          "answer": "不是同一个函数；f 的值域 `[0,+∞)`，g 的值域 R。",
+          "pitfalls": "定义域相同仍不够，对应关系也必须相同。",
+          "otherSolutions": "取任一使 x²≠x 的定义域元素作反例。"
+        }
+      ],
+      "sources": [
+        {
+          "sourceId": "F003-SOURCE-001",
+          "packageId": "km-math-pepa-required-1-v1",
+          "title": "人教A版必修第一册 3.3 幂函数",
+          "kind": "textbook-reference",
+          "reference": "人民教育出版社《普通高中教科书·数学（A版）必修第一册》，3.3 幂函数，印刷页 89-92。只登记书目定位，不复制教材正文。",
+          "textbook": "人教A版高中数学",
+          "volume": "必修第一册",
+          "chapter": "第三章 函数的概念与性质·3.3",
+          "pages": "89-92",
+          "sourceType": "textbook"
+        }
+      ]
+    }
+  ]
+}
