@@ -96,6 +96,7 @@ function notify(text, error = false) {
   toastTimer = setTimeout(() => toast.classList.remove('visible'), error ? 6000 : 3600);
 }
 function showPlayerProgress(label, ratio = null, count = '') {
+  if (document.body.dataset.flowStep === '4') $('export-status').textContent = `${label}${count ? ` · ${count}` : ''}`;
   const box = $('player-progress'); if (!box) return;
   clearTimeout(progressHideTimer); box.hidden = false; box.classList.remove('done', 'error');
   box.classList.toggle('indeterminate', ratio === null);
@@ -103,11 +104,13 @@ function showPlayerProgress(label, ratio = null, count = '') {
   $('player-progress-fill').style.width = ratio === null ? '' : `${Math.round(Math.max(0, Math.min(1, ratio)) * 100)}%`;
 }
 function updatePlayerProgress(ratio, count) {
+  if (document.body.dataset.flowStep === '4' && count !== undefined) $('export-status').textContent = `正在准备配音 · ${count}`;
   const box = $('player-progress'); if (!box || box.hidden) return;
   $('player-progress-fill').style.width = `${Math.round(Math.max(0, Math.min(1, ratio)) * 100)}%`;
   if (count !== undefined) $('player-progress-count').textContent = count;
 }
 function settlePlayerProgress(label, { error = false, hideAfter = 3200, fill = null } = {}) {
+  if (document.body.dataset.flowStep === '4') $('export-status').textContent = label;
   const box = $('player-progress'); if (!box) return;
   clearTimeout(progressHideTimer); box.hidden = false; box.classList.remove('indeterminate');
   box.classList.toggle('error', error); box.classList.toggle('done', !error);
@@ -118,6 +121,7 @@ function settlePlayerProgress(label, { error = false, hideAfter = 3200, fill = n
 function hidePlayerProgress() { clearTimeout(progressHideTimer); const box = $('player-progress'); if (box) box.hidden = true; }
 function setBusy(isBusy, label = '') {
   appBusy=isBusy;
+  $('export-start').disabled=isBusy;
   $('generate-btn').disabled = isBusy; $('export-btn').disabled = isBusy || !exportAvailable; $('play-btn').disabled = isBusy;
   $('voice').disabled = isBusy; $('voice-rate').disabled = isBusy; $('voice-test-btn').disabled = isBusy;
   $('timeline-seek').disabled=isBusy||!project;
@@ -181,10 +185,11 @@ function save() {
 }
 function showScreen(name) {
   if(name!=='home') $('home-settings').open=false;
-  const map = {home:'view-home',longVideo:'view-long-video',creative:'view-creative',generation:'view-generation',workshop:'view-workshop',videoWorkspace:'view-video-workspace',inspiration:'view-inspiration',library:'view-library',profile:'view-profile'};
+  const map = {home:'view-home',longVideo:'view-long-video',creative:'view-creative',generation:'view-generation',workshop:'view-workshop',videoWorkspace:'view-video-workspace',export:'view-export',inspiration:'view-inspiration',library:'view-library',profile:'view-profile'};
   Object.entries(map).forEach(([key,id]) => { $(id).hidden = key !== name; });
   document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === name || ((name === 'workshop'||name==='videoWorkspace'||name==='longVideo') && el.dataset.tab === 'home')));
   document.body.classList.toggle('home-active', name === 'home');
+  document.body.dataset.flowStep = name === 'creative' ? '1' : name === 'workshop' ? '2' : name === 'videoWorkspace' ? '3' : name === 'export' ? '4' : '';
   if(name==='library')renderLibrary();
   if(name==='inspiration'||name==='profile')community?.refresh();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -396,6 +401,7 @@ function loadProject(data, note = '') {
   $('target-duration').value = String(project.targetDurationSec || 60);
   $('voice').value = project.voice; $('voice-rate').value = project.rate; updateRateLabel();
   $('workshop-heading-title').textContent = project.title || '编辑知识视频';
+  $('workshop-duration-meta').textContent=`约 ${Math.round((project.scenes||[]).reduce((sum,scene)=>sum+(Number(scene.duration)||8),0))} 秒`;
   updateSummary(); renderCards(); updateScript(); redraw(); save(); message(note);
   if (project.scenes.length) void prefetchSpeech();
 }
@@ -403,6 +409,7 @@ function loadProject(data, note = '') {
 function renderCreativeDirections() {
   if(!project)return;
   $('creative-topic').textContent=project.originalPrompt||project.topic||'';
+  const creativeMeta=$('creative-meta-detail');if(creativeMeta)creativeMeta.textContent=`约 ${project.targetDurationSec||60} 秒 · ${project.audience||'普通大众'}`;
   const directions=Array.isArray(project.creativeDirections)?project.creativeDirections:[];
   $('creative-list').innerHTML=directions.map((item,index)=>{
     const selected=project.selectedDirectionId===item.id;
@@ -558,7 +565,7 @@ async function waitForLongSpeech(state){
 }
 async function playProject(exporting = false) {
   if (!project || playing) return;
-  if (exporting && (!window.MediaRecorder || !canvas.captureStream)) { message('当前浏览器不支持录制画布，请使用 Chrome 或 Edge。', true); return; }
+  if (exporting && (!window.MediaRecorder || !canvas.captureStream)) { notify('当前浏览器不支持录制画布，请使用 Chrome 或 Edge。', true); $('export-status').textContent='当前浏览器不支持视频录制。'; return; }
   cancelSpeechPrefetch(); playing = true; setBusy(true);
   showPlayerProgress(exporting ? '正在准备配音与录制' : '正在准备配音', null, `0 / ${project.scenes.length}`);
   let audioCtx, raf, recorder;
@@ -644,9 +651,8 @@ async function playProject(exporting = false) {
           if (!response.ok) throw new Error((await response.json()).error || 'MP4 转码失败');
           const mp4=await response.blob();
           download(mp4, `${project.title || '知识视频'}.mp4`);
-          settlePlayerProgress('MP4 已导出并保存到作品库', { hideAfter: 4200 });
-          try{const assetId=project.videoAssetId||projectId();await putVideo(assetId,mp4);project.videoAssetId=assetId;project.exportedAt=new Date().toISOString();save();community?.refresh();message('MP4 已导出并保存到本机作品库，可从作品库发布。');}
-          catch(storageError){message(`MP4 已下载，但无法保存在作品库：${storageError.message}`,true);}
+          try{const assetId=project.videoAssetId||projectId();await putVideo(assetId,mp4);project.videoAssetId=assetId;project.exportedAt=new Date().toISOString();save();community?.refresh();message('MP4 已导出并保存到本机作品库，可从作品库发布。');settlePlayerProgress('MP4 已下载并保存到作品库', { hideAfter: 4200 });$('export-heading').textContent='一个好问题，有了自己的画面。';$('export-description').textContent='视频已下载，也可以到作品库播放或发布。';$('export-start').textContent='查看作品库';$('export-start').dataset.complete='true';}
+          catch(storageError){message(`MP4 已下载，但无法保存在作品库：${storageError.message}`,true);settlePlayerProgress(`MP4 已下载，保存作品库失败：${storageError.message}`,{error:true,hideAfter:0});}
         } catch (e) { message(`转码失败，已提供 WebM：${e.message}`, true); settlePlayerProgress(`MP4 转码失败：${e.message}`, { error: true, hideAfter: 7000 }); download(new Blob(recorded,{type:'video/webm'}), '知识视频.webm'); }
         finally { setBusy(false); }
       } else if (!exporting) message(finished?'预览完成。修改任一分镜后可再次播放。':'已暂停，点击播放可从当前位置继续。');
@@ -943,9 +949,16 @@ $('long-plan-objectives').addEventListener('change',readLongPlanEdits);
 $('long-chapters').addEventListener('change',readLongPlanEdits);
 $('long-voice').addEventListener('change',()=>{if(longVideoState){longVideoState.voice=$('long-voice').value;saveLongDraft();}});
 $('creative-list').addEventListener('click',event=>{const more=event.target.closest('[data-creative-more]');if(more){const card=more.closest('.creative-card'),panel=card.querySelector('.creative-more');panel.hidden=!panel.hidden;more.textContent=panel.hidden?'了解方案':'收起方案';return;}const use=event.target.closest('[data-creative-use]');if(use)useCreativeDirection(use.dataset.creativeUse);});
+$('creative-list').addEventListener('click',event=>{if(event.target.closest('button'))return;const card=event.target.closest('.creative-card');if(!card||!project)return;project.selectedDirectionId=card.dataset.creativeId;renderCreativeDirections();save();});
 $('creative-refresh-btn').addEventListener('click',()=>requestCreativeDirections({refresh:true}));
 $('creative-retry-btn').addEventListener('click',()=>requestCreativeDirections({refresh:Boolean(project?.creativeDirections?.length)}));
 $('creative-back-btn').addEventListener('click',()=>{if(creativeRequest){creativeRequest.abort();creativeRequest=null;creativeRequestVersion++;}showScreen('home');});
+document.querySelectorAll('[data-flow-exit]').forEach(button=>button.addEventListener('click',()=>{if(playing||appBusy)return notify('正在处理视频，请等待导出完成。',true);showScreen('home');}));
+document.querySelector('[data-flow-primary="creative"]')?.addEventListener('click',()=>{
+  const selectedCard=document.querySelector('.creative-card.selected');
+  const button=selectedCard?.querySelector('[data-creative-use]')||document.querySelector('[data-creative-use]');
+  if(button)button.click();else notify('请先选择一个讲解方向。',true);
+});
 $('sample-btn').addEventListener('click', () => { loadProject({...structuredClone(sample),id:projectId(),createdAt:new Date().toISOString(),targetDurationSec:90}, '已载入示例项目，正在自动生成配音。'); showScreen('workshop'); });
 $('topic').addEventListener('input',()=>{resizeTopic();updateComposerControls();});
 $('restore-original-btn').addEventListener('click',()=>{
@@ -1071,11 +1084,14 @@ $('timeline-seek').addEventListener('pointercancel',()=>{scrubbing=false;});
 $('export-btn').addEventListener('click', () => playProject(true));
 $('open-video-workspace').addEventListener('click',openVideoWorkspace);
 $('workspace-back').addEventListener('click',()=>{stopWorkspacePlayback();renderCards();redraw();showTimeline(workspaceOffset(activeIndex),timelineScenes(),true);showScreen('workshop');});
-$('workspace-export').addEventListener('click',()=>{stopWorkspacePlayback();renderCards();redraw();showScreen('workshop');playProject(true);});
+$('workspace-export').addEventListener('click',()=>{stopWorkspacePlayback();$('export-title').textContent=project?.title||project?.topic||'知识视频';$('export-meta').textContent=`${$('video-ratio').value} · MP4 · ${project?.scenes?.length||0} 幕`;$('export-status').textContent='分镜和旁白仍可返回工作台修改。';$('export-heading').textContent='让知识，变成自己的画面。';$('export-description').textContent='确认内容后开始导出。完成时会自动下载视频。';$('export-start').innerHTML='导出视频 <span>→</span>';$('export-start').dataset.complete='false';showScreen('export');});
+$('export-back').addEventListener('click',()=>{if(playing||appBusy)return notify('正在处理视频，请等待导出结束。',true);showScreen('videoWorkspace');});
+$('export-edit').addEventListener('click',()=>{if(playing||appBusy)return notify('正在处理视频，请等待导出结束。',true);showScreen('videoWorkspace');});
+$('export-start').addEventListener('click',()=>{if($('export-start').dataset.complete==='true'){showScreen('library');return;}if(playing||appBusy)return;$('export-status').textContent='正在准备配音与录制…';playProject(true);});
 $('video-play').addEventListener('click',playWorkspace);
 $('video-replay').addEventListener('click',()=>{stopWorkspacePlayback();workspaceTime=0;renderWorkspaceFrame(0);playWorkspace();});
 $('video-seek').addEventListener('input',event=>{stopWorkspacePlayback();const total=workspaceDurations().reduce((a,b)=>a+b,0);const old=activeIndex;renderWorkspaceFrame(Number(event.target.value)/1000*total);if(old!==activeIndex){renderShotTimeline();renderWorkspaceEditor();}});
-$('video-ratio').addEventListener('change',event=>$('video-stage-wrap').dataset.ratio=event.target.value);
+$('video-ratio').addEventListener('change',event=>{$('video-stage-wrap').dataset.ratio=event.target.value;$('video-ratio-label').textContent=event.target.value;});
 $('shot-timeline').addEventListener('click',event=>{const card=event.target.closest('[data-shot-index]');if(card){stopWorkspacePlayback();selectWorkspaceScene(Number(card.dataset.shotIndex));}});
 $('refresh-shot-preview').addEventListener('click',()=>{const scene=currentScene();if(!scene)return;delete scene._pendingPreview;workspaceDirty.delete(scene.id);save();renderShotTimeline();renderWorkspaceEditor();renderWorkspaceFrame(workspaceOffset(activeIndex));$('video-workspace-state').textContent='预览已同步';$('workspace-action-status').textContent='所有修改已保存';notify(`第 ${activeIndex+1} 幕预览已刷新。`);});
 $('workspace-ai').addEventListener('click',()=>openSceneAi(activeIndex));

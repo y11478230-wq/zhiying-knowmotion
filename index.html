@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="/light.css?v=2.2.0" />
   <link rel="stylesheet" href="/community.css" />
+  <link rel="stylesheet" href="/flow.css" />
   <script type="importmap">{"imports":{"@capacitor/core":"/vendor/capacitor-core.js"}}</script>
 </head>
 <body>
@@ -46,13 +47,13 @@
     <header class="topbar">
       <div class="topbar-inner">
         <button id="history-open-btn" class="brand-trigger" type="button" aria-label="打开创作历史">
-          <span class="brand-mark">知</span>
+          <span class="brand-mark brand-mark-camera"><img src="/brand-camera.png" alt=""></span>
           <span class="brand-copy"><strong>知映</strong><small>创作历史 ⌄</small></span>
         </button>
         <div class="topbar-actions">
           <button id="top-library-btn" class="top-library-btn" type="button">作品库</button>
           <span id="api-pill" class="status-pill"><span class="status-dot"></span>正在连接服务…</span>
-          <button id="server-settings-btn" class="icon-button" type="button" aria-label="服务连接设置" title="服务连接设置">⚙</button>
+          <button id="server-settings-btn" class="icon-button" type="button" aria-label="服务连接设置" title="服务连接设置"><img src="/settings.svg" alt="" aria-hidden="true"></button>
           <button id="app-update-btn" class="quiet-button" type="button" hidden>更新</button>
           <button id="install-app-btn" class="quiet-button" type="button" hidden>安装 App</button>
           <button id="profile-quick-btn" class="avatar-button" type="button" aria-label="打开本地个人设置">我</button>
@@ -97,7 +98,7 @@
               </details>
               <button id="optimize-btn" class="optimize-chip" type="button" disabled><span aria-hidden="true">✦</span>AI 优化</button>
             </div>
-            <button id="generate-btn" class="send-button" type="button" aria-label="探索创意方向"><span>↑</span></button>
+            <button id="generate-btn" class="send-button" type="button" aria-label="探索创意方向"><img src="/send.svg" alt="" aria-hidden="true"></button>
           </div>
         </section>
 
@@ -177,35 +178,41 @@
 
     <main id="view-creative" class="screen creative-screen" hidden>
       <section class="creative-shell">
-        <nav class="creation-steps" aria-label="创作阶段">
-          <span class="active"><b>01</b>创意发现</span><span><b>02</b>导演方案</span><span><b>03</b>视频工作台</span><span><b>04</b>导出分享</span>
-        </nav>
+        <header class="flow-header">
+          <button id="creative-back-btn" class="flow-back" type="button" aria-label="返回首页">‹</button>
+          <div class="flow-page-title">选择讲解方向</div>
+          <button class="flow-exit" type="button" data-flow-exit>退出</button>
+        </header>
+        <nav class="creation-steps" aria-label="创作阶段"><span class="active"><b>1</b>选方向</span><i></i><span><b>2</b>分镜</span><i></i><span><b>3</b>预览</span><i></i><span><b>4</b>导出</span></nav>
         <header class="creative-heading">
-          <button id="creative-back-btn" class="back-button" type="button"><span>‹</span>修改主题</button>
-          <div><span class="eyebrow">CREATIVE DISCOVERY</span><h1>我为你发现了 3 种讲法</h1><p>每种方案从不同角度进入主题，选择喜欢的方向继续创作。</p></div>
+          <div class="flow-intro"><h1>先选一种，让人想看的讲法。</h1><p>同一个知识点，可以有不同的打开方式。</p></div>
           <span id="creative-save-state" class="save-state">已保存在本机</span>
         </header>
         <div class="creative-topic-card"><span>本次主题</span><strong id="creative-topic"></strong></div>
+        <div id="creative-meta-detail" class="flow-detail"></div>
         <div id="creative-loading" class="creative-loading" hidden><span class="generation-spinner"></span><strong>正在探索适合这个主题的表达方式……</strong></div>
         <div id="creative-error" class="creative-error" hidden><strong>创意方向生成失败</strong><p id="creative-error-text"></p><button id="creative-retry-btn" class="primary-btn" type="button">重新尝试</button></div>
         <div id="creative-list" class="creative-list"></div>
         <footer class="creative-actions"><button id="creative-refresh-btn" class="ghost-btn" type="button">换一批</button><small>换一批会保留主题、设置与已确认方向。</small></footer>
+        <footer class="flow-bottom"><button class="flow-primary" type="button" data-flow-primary="creative">用这个方向，生成分镜 <span>→</span></button><small>选中方向后继续；下一步仍可返回修改</small></footer>
       </section>
     </main>
 
     <main id="view-workshop" class="screen workshop-screen" hidden>
-      <nav class="creation-steps workshop-steps" aria-label="创作阶段">
-        <span class="done"><b>01</b>创意发现</span><span class="active"><b>02</b>导演方案</span><span><b>03</b>视频工作台</span><span><b>04</b>导出分享</span>
-      </nav>
+      <header class="flow-header">
+        <button id="workshop-back-btn" class="flow-back" type="button" aria-label="返回创意">‹</button>
+        <div class="flow-page-title">导演方案</div>
+        <button class="flow-exit" type="button" data-flow-exit>退出</button>
+      </header>
+      <nav class="creation-steps workshop-steps" aria-label="创作阶段"><span class="done"><b>1</b>选方向</span><i></i><span class="active"><b>2</b>分镜</span><i></i><span><b>3</b>预览</span><i></i><span><b>4</b>导出</span></nav>
       <div class="workshop-heading">
-        <button id="workshop-back-btn" class="back-button" type="button"><span>‹</span>返回创意</button>
         <div class="workshop-title"><span class="eyebrow">视频工坊</span><h1 id="workshop-heading-title">编辑知识视频</h1></div>
         <span id="workshop-save-state" class="save-state">已保存在本机</span>
       </div>
-      <div class="director-next"><button id="open-video-workspace" class="primary-btn" type="button">进入视频工作台 <span>→</span></button></div>
+      <div id="workshop-duration-meta" class="flow-detail"></div>
       <div class="workspace">
         <aside class="left-pane">
-          <div class="editor-head"><div class="section-heading compact"><div><h2>智能分镜</h2><p>编辑旁白与画面，内容自动保存在本机。</p></div></div><span id="scene-count" class="count">0 幕</span></div>
+          <div class="editor-head"><div class="section-heading compact"><div><h2>智能分镜</h2><p>编辑旁白与画面，内容自动保存在本机。</p></div></div></div>
           <div id="scene-list" class="scene-list"></div>
           <details id="script-panel" class="script-panel"><summary>查看完整文字稿</summary><pre id="script-text"></pre><button id="copy-script-btn" class="ghost-btn" type="button">复制文字稿</button></details>
         </aside>
@@ -217,14 +224,18 @@
           <div class="under-preview"><div class="hint"><span class="hint-icon">✳</span><div><strong>创作提示</strong><p>视频里的文字、配音与画面会随分镜内容更新。</p></div></div><button id="export-btn" class="export-btn" type="button">导出 MP4 <span>↗</span></button></div>
         </section>
       </div>
+      <footer class="flow-bottom"><button id="open-video-workspace" class="flow-primary" type="button">确认分镜，预览视频 <span>→</span></button><small>修改会自动保存，后续仍可返回继续编辑</small></footer>
     </main>
 
     <main id="view-video-workspace" class="screen video-workspace-screen" hidden>
-      <nav class="creation-steps video-workspace-steps" aria-label="创作阶段">
-        <span class="done"><b>01</b>创意发现</span><span class="done"><b>02</b>导演方案</span><span class="active"><b>03</b>视频工作台</span><span><b>04</b>导出分享</span>
-      </nav>
+      <header class="flow-header">
+        <button id="workspace-back" class="flow-back" type="button" aria-label="返回导演方案">‹</button>
+        <div class="flow-page-title">视频工作台</div>
+        <button class="flow-exit" type="button" data-flow-exit>退出</button>
+      </header>
+      <nav class="creation-steps video-workspace-steps" aria-label="创作阶段"><span class="done"><b>1</b>选方向</span><i></i><span class="done"><b>2</b>分镜</span><i></i><span class="active"><b>3</b>预览</span><i></i><span><b>4</b>导出</span></nav>
       <section class="video-workspace-shell">
-        <header class="video-workspace-heading"><div><span class="eyebrow">VIDEO WORKSPACE</span><h1 id="video-workspace-title">视频工作台</h1></div><span id="video-workspace-state" class="save-state">预览已同步</span></header>
+        <header class="video-workspace-heading"><strong id="video-workspace-title">视频工作台</strong><span class="ratio-badge" id="video-ratio-label">16:9</span><span id="video-workspace-state" class="save-state">预览已同步</span></header>
         <div class="video-stage-card">
           <div id="video-stage-wrap" class="video-stage-wrap"><canvas id="video-stage" width="1280" height="720" aria-label="Canvas 实时预览"></canvas><span>CANVAS 实时预览</span></div>
           <div class="video-controls"><button id="video-play" class="round-btn" type="button" aria-label="播放或暂停">▶</button><button id="video-replay" class="workspace-icon-btn" type="button" aria-label="重新播放">↺</button><div class="timeline-box"><div class="timeline-label"><span id="video-current">00:00</span><span id="video-total">00:00</span></div><input id="video-seek" type="range" min="0" max="1000" value="0" aria-label="视频工作台进度"></div><select id="video-ratio" aria-label="视频比例"><option value="16:9">16:9</option><option value="9:16">9:16</option></select></div>
@@ -232,7 +243,15 @@
         <section class="shot-timeline-card"><div class="workspace-section-title"><div><span>镜头时间轴</span><small>点击镜头定位 · 与播放进度同步</small></div><strong id="workspace-shot-count">0 幕</strong></div><div id="shot-timeline" class="shot-timeline"></div></section>
         <section class="shot-editor-card"><div class="workspace-section-title"><div><span id="shot-editor-title">当前镜头</span><small id="shot-editor-status">修改会自动保存，刷新后更新预览</small></div><button id="shot-history-open" class="ghost-btn" type="button">版本历史</button></div><div id="shot-editor-fields" class="shot-editor-fields"></div><div class="shot-editor-actions"><button id="workspace-ai" class="ghost-btn" type="button">✦ AI 修改</button><button id="refresh-shot-preview" class="primary-btn" type="button">刷新当前镜头预览</button></div></section>
       </section>
-      <footer class="video-workspace-actions"><button id="workspace-back" class="back-button" type="button"><span>‹</span>返回导演方案</button><span id="workspace-action-status">所有修改已保存</span><button id="workspace-export" class="export-btn" type="button">导出视频 <span>↗</span></button></footer>
+      <footer class="video-workspace-actions"><span id="workspace-action-status">所有修改已保存</span></footer>
+      <footer class="flow-bottom"><button id="workspace-export" class="flow-primary" type="button">完成预览，准备导出 <span>→</span></button><small>预览后导出视频，也可以返回继续调整</small></footer>
+    </main>
+
+    <main id="view-export" class="screen export-screen" hidden>
+      <header class="flow-header"><button id="export-back" class="flow-back" type="button" aria-label="返回视频工作台">‹</button><div class="flow-page-title">导出视频</div><button class="flow-exit" type="button" data-flow-exit>退出</button></header>
+      <nav class="creation-steps" aria-label="创作阶段"><span class="done"><b>1</b>选方向</span><i></i><span class="done"><b>2</b>分镜</span><i></i><span class="done"><b>3</b>预览</span><i></i><span class="active"><b>4</b>导出</span></nav>
+      <section class="export-content"><div id="export-symbol" class="export-symbol">↓</div><h1 id="export-heading">让知识，变成自己的画面。</h1><p id="export-description">确认内容后开始导出。完成时会自动下载视频。</p><div class="export-summary"><strong id="export-title">知识视频</strong><span id="export-meta">16:9 · MP4</span></div><div id="export-status" class="export-status" role="status" aria-live="polite">分镜和旁白仍可返回工作台修改。</div><button id="export-edit" class="export-edit" type="button">返回工作台，继续编辑 ↗</button></section>
+      <footer class="flow-bottom"><button id="export-start" class="flow-primary" type="button">导出视频 <span>→</span></button><small>导出进度取自真实配音、录制和转码过程</small></footer>
     </main>
 
     <main id="view-inspiration" class="screen secondary-screen" hidden>

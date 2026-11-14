@@ -25,9 +25,9 @@ async function startServer(t) {
   });
   t.after(() => child.kill());
   const base = `http://127.0.0.1:${port}`;
-  for (let attempt = 0; attempt < 40; attempt++) {
+  for (let attempt = 0; attempt < 100; attempt++) {
     try { if ((await fetch(`${base}/api/status`)).ok) return base; } catch {}
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
   throw new Error('测试服务未能启动');
 }
@@ -35,8 +35,8 @@ async function startServer(t) {
 test('创意发现页面和四阶段导航已进入静态入口', async () => {
   const html = await fs.readFile(path.join(root, 'index.html'), 'utf8');
   assert.match(html, /id="view-creative"/);
-  assert.match(html, /01<\/b>创意发现/);
-  assert.match(html, /04<\/b>导出分享/);
+  assert.match(html, /<b>1<\/b>选方向/);
+  assert.match(html, /<b>4<\/b>导出/);
 });
 
 test('导演方案包含镜头操作和确认式 AI 修改入口', async () => {
