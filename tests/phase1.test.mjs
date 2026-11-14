@@ -58,6 +58,15 @@ test('原有本地存储键保持兼容', async () => {
   assert.match(app, /zhiying-project-v1/);
 });
 
+test('编辑脚本引用的页面节点都存在', async () => {
+  const [html, app] = await Promise.all([
+    fs.readFile(path.join(root, 'index.html'), 'utf8'),
+    fs.readFile(path.join(root, 'app.js'), 'utf8')
+  ]);
+  const ids = [...app.matchAll(/\$\('([^']+)'\)/g)].map(match => match[1]);
+  for (const id of new Set(ids)) assert.match(html, new RegExp(`id="${id}"`), `缺少 ${id}`);
+});
+
 test('第三阶段视频工作台包含 Canvas、镜头时间轴与版本恢复', async () => {
   const [html, app, css] = await Promise.all([
     fs.readFile(path.join(root, 'index.html'), 'utf8'),

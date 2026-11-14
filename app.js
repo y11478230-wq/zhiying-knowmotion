@@ -61,7 +61,7 @@ let community = null, generationTask = null, libraryFilter = 'all';
 let creativeRequest = null, creativeRequestVersion = 0, directorRequest = null;
 let sceneAiIndex = -1, pendingSceneRevision = null, sceneAiRequest = null;
 let previewTime = 0, previewTotal = 0, previewDurations = null, seekPreview = null, scrubbing = false;
-let workspaceTime=0, workspacePlaying=false, workspaceFrame=0, workspaceStartedAt=0, workspaceDirty=new Set();
+let workspaceTime=0, workspacePlaying=false, workspaceFrame=0, workspaceStartedAt=0, workspaceSpeed=1, workspaceDirty=new Set();
 const references=[];
 let originalBeforeOptimize=null,optimizing=false,appBusy=false;
 let longVideoState=null,longVideoAbort=null,longVideoRunning=false,longVideoPauseRequested=false;
@@ -381,7 +381,7 @@ function renderWorkspaceEditor(){
 function openVideoWorkspace(){if(!project?.scenes?.length)return notify('请先完成导演方案。',true);if(playing)stopPlayback?.();workspacePlaying=false;cancelAnimationFrame(workspaceFrame);workspaceTime=workspaceOffset(activeIndex);$('video-workspace-title').textContent=project.title||project.topic||'视频工作台';renderShotTimeline();renderWorkspaceEditor();renderWorkspaceFrame(workspaceTime);showScreen('videoWorkspace');}
 function selectWorkspaceScene(index){activeIndex=Math.max(0,Math.min(index,project.scenes.length-1));workspaceTime=workspaceOffset(activeIndex);renderShotTimeline();renderWorkspaceEditor();renderWorkspaceFrame(workspaceTime);document.querySelector(`.shot-card[data-shot-index="${activeIndex}"]`)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}
 function stopWorkspacePlayback(){workspacePlaying=false;cancelAnimationFrame(workspaceFrame);$('video-play').textContent='▶';}
-function playWorkspace(){if(workspacePlaying)return stopWorkspacePlayback();const total=workspaceDurations().reduce((a,b)=>a+b,0);if(workspaceTime>=total-.05)workspaceTime=0;workspacePlaying=true;workspaceStartedAt=performance.now()-workspaceTime*1000;$('video-play').textContent='Ⅱ';const tick=now=>{if(!workspacePlaying)return;const next=(now-workspaceStartedAt)/1000;if(next>=total){workspaceTime=total;renderWorkspaceFrame(total);stopWorkspacePlayback();return;}const old=activeIndex;renderWorkspaceFrame(next);if(old!==activeIndex){renderShotTimeline();renderWorkspaceEditor();}workspaceFrame=requestAnimationFrame(tick);};workspaceFrame=requestAnimationFrame(tick);}
+function playWorkspace(){if(workspacePlaying)return stopWorkspacePlayback();const total=workspaceDurations().reduce((a,b)=>a+b,0);if(workspaceTime>=total-.05)workspaceTime=0;workspacePlaying=true;workspaceStartedAt=performance.now()-workspaceTime/workspaceSpeed*1000;$('video-play').textContent='Ⅱ';const tick=now=>{if(!workspacePlaying)return;const next=(now-workspaceStartedAt)/1000*workspaceSpeed;if(next>=total){workspaceTime=total;renderWorkspaceFrame(total);stopWorkspacePlayback();return;}const old=activeIndex;renderWorkspaceFrame(next);if(old!==activeIndex){renderShotTimeline();renderWorkspaceEditor();}workspaceFrame=requestAnimationFrame(tick);};workspaceFrame=requestAnimationFrame(tick);}
 function renderShotHistory(){const scene=currentScene(),list=$('shot-history-list');const history=scene?._history||[];list.innerHTML=history.length?history.map(item=>`<article><div><strong>${escapeHtml(item.summary)}</strong><time>${new Date(item.at).toLocaleString('zh-CN')}</time></div><button class="ghost-btn" type="button" data-restore-scene="${escapeHtml(item.id)}">恢复</button></article>`).join(''):'<p class="history-empty">当前镜头还没有历史版本。</p>';}
 function loadProject(data, note = '') {
   if (stopPlayback) stopPlayback();
@@ -1083,15 +1083,20 @@ $('timeline-seek').addEventListener('change',event=>{
 $('timeline-seek').addEventListener('pointercancel',()=>{scrubbing=false;});
 $('export-btn').addEventListener('click', () => playProject(true));
 $('open-video-workspace').addEventListener('click',openVideoWorkspace);
-$('workspace-back').addEventListener('click',()=>{stopWorkspacePlayback();renderCards();redraw();showTimeline(workspaceOffset(activeIndex),timelineScenes(),true);showScreen('workshop');});
-$('workspace-export').addEventListener('click',()=>{stopWorkspacePlayback();$('export-title').textContent=project?.title||project?.topic||'知识视频';$('export-meta').textContent=`${$('video-ratio').value} · MP4 · ${project?.scenes?.length||0} 幕`;$('export-status').textContent='分镜和旁白仍可返回工作台修改。';$('export-heading').textContent='让知识，变成自己的画面。';$('export-description').textContent='确认内容后开始导出。完成时会自动下载视频。';$('export-start').innerHTML='导出视频 <span>→</span>';$('export-start').dataset.complete='false';showScreen('export');});
+function leaveWorkspaceFullscreen(){const card=$('video-stage-card');card.classList.remove('fullscreen-fallback');if(document.fullscreenElement===card)document.exitFullscreen().catch(()=>{});}
+$('workspace-back').addEventListener('click',()=>{stopWorkspacePlayback();leaveWorkspaceFullscreen();showScreen('home');});
+$('workspace-step-back').addEventListener('click',()=>{stopWorkspacePlayback();leaveWorkspaceFullscreen();renderCards();redraw();showTimeline(workspaceOffset(activeIndex),timelineScenes(),true);showScreen('workshop');});
+$('workspace-export').addEventListener('click',()=>{stopWorkspacePlayback();leaveWorkspaceFullscreen();$('export-title').textContent=project?.title||project?.topic||'知识视频';$('export-meta').textContent=`16:9 · MP4 · ${project?.scenes?.length||0} 幕`;$('export-status').textContent='分镜和旁白仍可返回工作台修改。';$('export-heading').textContent='让知识，变成自己的画面。';$('export-description').textContent='确认内容后开始导出。完成时会自动下载视频。';$('export-start').innerHTML='导出视频 <span>→</span>';$('export-start').dataset.complete='false';showScreen('export');});
 $('export-back').addEventListener('click',()=>{if(playing||appBusy)return notify('正在处理视频，请等待导出结束。',true);showScreen('videoWorkspace');});
 $('export-edit').addEventListener('click',()=>{if(playing||appBusy)return notify('正在处理视频，请等待导出结束。',true);showScreen('videoWorkspace');});
 $('export-start').addEventListener('click',()=>{if($('export-start').dataset.complete==='true'){showScreen('library');return;}if(playing||appBusy)return;$('export-status').textContent='正在准备配音与录制…';playProject(true);});
 $('video-play').addEventListener('click',playWorkspace);
 $('video-replay').addEventListener('click',()=>{stopWorkspacePlayback();workspaceTime=0;renderWorkspaceFrame(0);playWorkspace();});
 $('video-seek').addEventListener('input',event=>{stopWorkspacePlayback();const total=workspaceDurations().reduce((a,b)=>a+b,0);const old=activeIndex;renderWorkspaceFrame(Number(event.target.value)/1000*total);if(old!==activeIndex){renderShotTimeline();renderWorkspaceEditor();}});
-$('video-ratio').addEventListener('change',event=>{$('video-stage-wrap').dataset.ratio=event.target.value;$('video-ratio-label').textContent=event.target.value;});
+$('video-speed').addEventListener('change',event=>{const next=Number(event.target.value)||1;if(workspacePlaying)workspaceStartedAt=performance.now()-workspaceTime/next*1000;workspaceSpeed=next;});
+const videoStageCard=$('video-stage-card');
+$('video-fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement===videoStageCard)await document.exitFullscreen();else if(videoStageCard.requestFullscreen)await videoStageCard.requestFullscreen();else videoStageCard.classList.toggle('fullscreen-fallback');}catch{videoStageCard.classList.toggle('fullscreen-fallback');}});
+document.addEventListener('fullscreenchange',()=>{$('video-fullscreen').setAttribute('aria-label',document.fullscreenElement===videoStageCard?'退出全屏':'全屏预览');});
 $('shot-timeline').addEventListener('click',event=>{const card=event.target.closest('[data-shot-index]');if(card){stopWorkspacePlayback();selectWorkspaceScene(Number(card.dataset.shotIndex));}});
 $('refresh-shot-preview').addEventListener('click',()=>{const scene=currentScene();if(!scene)return;delete scene._pendingPreview;workspaceDirty.delete(scene.id);save();renderShotTimeline();renderWorkspaceEditor();renderWorkspaceFrame(workspaceOffset(activeIndex));$('video-workspace-state').textContent='预览已同步';$('workspace-action-status').textContent='所有修改已保存';notify(`第 ${activeIndex+1} 幕预览已刷新。`);});
 $('workspace-ai').addEventListener('click',()=>openSceneAi(activeIndex));

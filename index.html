@@ -214,7 +214,7 @@
       <div id="workshop-duration-meta" class="flow-detail"></div>
       <div class="workspace">
         <aside class="left-pane">
-          <div class="editor-head"><div class="section-heading compact"><div><h2>智能分镜</h2><p>编辑旁白与画面，内容自动保存在本机。</p></div></div></div>
+          <div class="editor-head"><div class="section-heading compact"><div><h2>智能分镜</h2><p>编辑旁白与画面，内容自动保存在本机。</p></div></div><span id="scene-count" class="count">0 幕</span></div>
           <div id="scene-list" class="scene-list"></div>
           <details id="script-panel" class="script-panel"><summary>查看完整文字稿</summary><pre id="script-text"></pre><button id="copy-script-btn" class="ghost-btn" type="button">复制文字稿</button></details>
         </aside>
@@ -231,16 +231,16 @@
 
     <main id="view-video-workspace" class="screen video-workspace-screen" hidden>
       <header class="flow-header">
-        <button id="workspace-back" class="flow-back" type="button" aria-label="返回导演方案">‹</button>
+        <button id="workspace-back" class="flow-back" type="button" aria-label="返回首页">‹</button>
         <div class="flow-page-title">视频工作台</div>
-        <button class="flow-exit" type="button" data-flow-exit>退出</button>
+        <button id="workspace-step-back" class="flow-exit" type="button">返回上一步</button>
       </header>
       <nav class="creation-steps video-workspace-steps" aria-label="创作阶段"><span class="done"><b>1</b>选方向</span><i></i><span class="done"><b>2</b>分镜</span><i></i><span class="active"><b>3</b>预览</span><i></i><span><b>4</b>导出</span></nav>
       <section class="video-workspace-shell">
-        <header class="video-workspace-heading"><strong id="video-workspace-title">视频工作台</strong><span class="ratio-badge" id="video-ratio-label">16:9</span><span id="video-workspace-state" class="save-state">预览已同步</span></header>
-        <div class="video-stage-card">
+        <header class="video-workspace-heading"><strong id="video-workspace-title">视频工作台</strong><span id="video-workspace-state" class="save-state">预览已同步</span></header>
+        <div id="video-stage-card" class="video-stage-card">
           <div id="video-stage-wrap" class="video-stage-wrap"><canvas id="video-stage" width="1280" height="720" aria-label="Canvas 实时预览"></canvas><span>CANVAS 实时预览</span></div>
-          <div class="video-controls"><button id="video-play" class="round-btn" type="button" aria-label="播放或暂停">▶</button><button id="video-replay" class="workspace-icon-btn" type="button" aria-label="重新播放">↺</button><div class="timeline-box"><div class="timeline-label"><span id="video-current">00:00</span><span id="video-total">00:00</span></div><input id="video-seek" type="range" min="0" max="1000" value="0" aria-label="视频工作台进度"></div><select id="video-ratio" aria-label="视频比例"><option value="16:9">16:9</option><option value="9:16">9:16</option></select></div>
+          <div class="video-controls"><button id="video-play" class="round-btn" type="button" aria-label="播放或暂停">▶</button><button id="video-replay" class="workspace-icon-btn" type="button" aria-label="重新播放">↺</button><div class="timeline-box"><div class="timeline-label"><span id="video-current">00:00</span><span id="video-total">00:00</span></div><input id="video-seek" type="range" min="0" max="1000" value="0" aria-label="视频工作台进度"></div><select id="video-speed" aria-label="预览倍速"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select><button id="video-fullscreen" class="workspace-icon-btn" type="button" aria-label="全屏预览" title="全屏预览">⛶</button></div>
         </div>
         <section class="shot-timeline-card"><div class="workspace-section-title"><div><span>镜头时间轴</span><small>点击镜头定位 · 与播放进度同步</small></div><strong id="workspace-shot-count">0 幕</strong></div><div id="shot-timeline" class="shot-timeline"></div></section>
         <section class="shot-editor-card"><div class="workspace-section-title"><div><span id="shot-editor-title">当前镜头</span><small id="shot-editor-status">修改会自动保存，刷新后更新预览</small></div><button id="shot-history-open" class="ghost-btn" type="button">版本历史</button></div><div id="shot-editor-fields" class="shot-editor-fields"></div><div class="shot-editor-actions"><button id="workspace-ai" class="ghost-btn" type="button">✦ AI 修改</button><button id="refresh-shot-preview" class="primary-btn" type="button">刷新当前镜头预览</button></div></section>
