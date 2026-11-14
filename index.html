@@ -12,11 +12,36 @@
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/icon.svg" />
   <link rel="stylesheet" href="/styles.css" />
-  <link rel="stylesheet" href="/light.css" />
+  <link rel="stylesheet" href="/light.css?v=2.2.0" />
   <link rel="stylesheet" href="/community.css" />
   <script type="importmap">{"imports":{"@capacitor/core":"/vendor/capacitor-core.js"}}</script>
 </head>
 <body>
+  <section id="brand-splash" class="brand-splash" aria-label="知映正在启动">
+    <div class="splash-orbit" aria-hidden="true"><i></i><i></i><i></i><span>知</span></div>
+    <div class="splash-copy"><strong>知映</strong><small>KNOWMOTION</small></div>
+    <p>让知识，变成看得见的创意</p>
+    <button id="splash-skip" type="button">跳过</button>
+  </section>
+
+  <section id="welcome-screen" class="welcome-screen" aria-labelledby="welcome-title" hidden>
+    <div class="welcome-visual" aria-hidden="true">
+      <div class="welcome-brand"><span>知</span><b>KNOWMOTION</b></div>
+      <div class="idea-card card-formula"><small>核心公式</small><strong>F = ma</strong><i>从概念到画面</i></div>
+      <div class="idea-card card-video"><span>▶</span><strong>知识正在发生</strong><i></i><i></i><i></i></div>
+      <div class="idea-card card-note"><small>01 · 灵感</small><strong>为什么天空是蓝色？</strong></div>
+      <div class="visual-ring ring-one"></div><div class="visual-ring ring-two"></div>
+    </div>
+    <div class="welcome-panel">
+      <span class="welcome-kicker">WELCOME TO KNOWMOTION</span>
+      <h1 id="welcome-title">把一个好问题，<br>变成一条好视频。</h1>
+      <p>从知识检索、创意表达，到可编辑的视频与学习复盘，知映陪你把复杂内容讲清楚。</p>
+      <button id="welcome-enter" class="welcome-primary" type="button">开始体验 <span>→</span></button>
+      <button id="welcome-guide" class="welcome-secondary" type="button">先了解创作流程</button>
+      <small>当前为本机创作模式 · 无需注册，数据保存在此设备</small>
+    </div>
+  </section>
+
   <div class="app-shell">
     <header class="topbar">
       <div class="topbar-inner">
@@ -40,8 +65,9 @@
     <main id="view-home" class="screen home-screen">
       <section class="home-content">
         <div class="home-hero">
-          <h1>让知识，<em>动起来</em></h1>
-          <p>输入一个问题，做成知识视频</p>
+          <span class="home-kicker"><i></i> AI KNOWLEDGE STUDIO</span>
+          <h1>今天，想把什么<br><em>讲得更清楚？</em></h1>
+          <p>输入一个知识问题，知映会和你一起找到创意、设计分镜并生成视频。</p>
         </div>
 
         <section class="composer-card" aria-label="开始创作">
@@ -76,6 +102,16 @@
         </section>
 
         <div class="composer-actions"><button id="sample-btn" class="sample-link" type="button">查看示例</button></div>
+
+        <section class="inspiration-starters" aria-labelledby="starter-title">
+          <div class="starter-heading"><div><span>灵感起点</span><h2 id="starter-title">不知道从哪里开始？</h2></div><small>点击一个问题，立即开始创作</small></div>
+          <div class="starter-grid">
+            <button type="button" data-topic-starter="用一分钟讲清楚：函数到底是什么？"><span class="starter-icon violet">ƒ</span><span><b>用一分钟理解函数</b><small>数学 · 极简知识卡片</small></span><i>↗</i></button>
+            <button type="button" data-topic-starter="为什么掷六次骰子，不一定能集齐六个数字？"><span class="starter-icon orange">⚄</span><span><b>六次骰子能集齐六面吗？</b><small>概率 · 信息图表</small></span><i>↗</i></button>
+            <button type="button" data-topic-starter="用生活中的例子和动画解释牛顿第二定律"><span class="starter-icon blue">→</span><span><b>动画解释牛顿第二定律</b><small>物理 · 动态图解</small></span><i>↗</i></button>
+            <button type="button" data-topic-starter="三分钟了解人工智能的发展历程和关键节点"><span class="starter-icon green">✦</span><span><b>人工智能如何走到今天？</b><small>科技 · 时间叙事</small></span><i>↗</i></button>
+          </div>
+        </section>
 
         <button id="long-video-entry" class="long-video-entry" type="button">
           <span class="long-entry-icon">▤</span>
@@ -257,6 +293,7 @@
     <dialog id="server-dialog" class="app-dialog" aria-labelledby="server-dialog-title"><section class="dialog-card"><header class="dialog-header"><div><span class="eyebrow">连接设置</span><h2 id="server-dialog-title">连接你的创作服务</h2></div><button id="server-dialog-close" class="dialog-close" type="button" aria-label="关闭">×</button></header><p class="dialog-copy">输入运行知映后端的电脑地址。手机和电脑需在同一网络，例如 <code>http://192.168.100.200:4175</code>。</p><label class="field-label" for="server-url">服务地址</label><input id="server-url" class="dialog-input" type="url" inputmode="url" placeholder="http://电脑IPv4:4175" autocomplete="url"><p class="dialog-footnote">连接 USB 转发时可填 http://127.0.0.1:4175。地址仅保存在当前设备。</p><div id="server-test-status" class="dialog-status" aria-live="polite"></div><div class="dialog-actions"><button id="server-test-btn" class="ghost-btn" type="button">测试连接</button><button id="server-save-btn" class="primary-btn" type="button">保存并连接</button></div></section></dialog>
   <dialog id="update-dialog" class="app-dialog" aria-labelledby="update-dialog-title"><section class="dialog-card update-card"><header class="dialog-header"><div><span class="eyebrow">知映更新</span><h2 id="update-dialog-title">发现新版本</h2></div><span class="update-mark">↗</span></header><div class="version-compare"><div><small>当前版本</small><strong id="update-current-version">—</strong></div><span>→</span><div><small>可升级至</small><strong id="update-target-version">—</strong></div></div><p id="update-release-notes" class="dialog-copy"></p><p class="dialog-footnote">下载完成后会打开 Android 安装界面，请确认安装。</p><div class="dialog-actions"><button id="update-cancel-btn" class="ghost-btn" type="button">稍后</button><button id="update-install-btn" class="primary-btn" type="button">下载并安装</button></div></section></dialog>
   <div id="app-toast" class="app-toast" role="status" aria-live="polite"></div>
-  <script type="module" src="/app.js"></script>
+  <script src="/brand.js?v=2.2.0"></script>
+  <script type="module" src="/app.js?v=2.2.0"></script>
 </body>
 </html>
