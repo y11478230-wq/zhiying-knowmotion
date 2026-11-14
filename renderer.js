@@ -121,13 +121,22 @@ function drawProcess(ctx, scene, p) {
   const vals = ((scene.bullets || []).length ? scene.bullets : scene.keywords || []).filter(Boolean).slice(0, 4);
   while (vals.length < 2) vals.push(['先观察现象', '找到关键变化'][vals.length]);
   const n = vals.length, gap = 22, cardW = (1136 - gap * (n - 1)) / n;
+  const active = Math.min(n - 1, Math.floor(clamp(p) * n));
   for (let i = 0; i < n; i++) {
-    const x = 72 + i * (cardW + gap), q = ease(p * 2.3 - i * .18);
-    ctx.save(); ctx.globalAlpha = q; rounded(ctx, x, 285 + (1 - q) * 25, cardW, 194, 22, '#ffffff', '#b7d9d1');
-    rounded(ctx, x + 24, 306 + (1 - q) * 25, 48, 48, 14, i === 1 ? aqua : lime);
-    text(ctx, String(i + 1), x + 48, 330 + (1 - q) * 25, 22, '#ffffff', 800, 'center', mono);
-    lines(ctx, vals[i], x + 25, 397 + (1 - q) * 25, cardW - 50, n === 4 ? 25 : 31, ink, 700, n === 4 ? 32 : 39); ctx.restore();
-    if (i < n - 1) arrow(ctx, x + cardW + 3, 380, x + cardW + gap - 3, 380, lime, q, 3);
+    const x = 72 + i * (cardW + gap);
+    const progress = clamp(p * n - i);
+    const q = ease(progress * 1.35);
+    const isActive = i === active;
+    const y = 285 + (1 - q) * 18;
+    ctx.save(); ctx.globalAlpha = q;
+    rounded(ctx, x, y, cardW, 194, 22, isActive ? '#eff9f4' : '#ffffff', isActive ? '#62b99b' : '#d5e7e1');
+    rounded(ctx, x + 24, y + 21, 48, 48, 14, progress >= 1 ? lime : isActive ? aqua : '#dcebe6');
+    text(ctx, progress >= 1 ? '✓' : String(i + 1), x + 48, y + 45, 22, progress > 0 || isActive ? '#ffffff' : '#6d8780', 800, 'center', mono);
+    text(ctx, isActive ? '正在讲解' : progress >= 1 ? '已完成' : '接下来', x + cardW - 24, y + 43, 13, isActive ? lime : muted, 650, 'right');
+    lines(ctx, vals[i], x + 25, y + 119, cardW - 50, n === 4 ? 25 : 31, ink, 700, n === 4 ? 32 : 39);
+    if (isActive) rounded(ctx, x + 25, y + 169, Math.max(14, (cardW - 50) * progress), 5, 3, lime);
+    ctx.restore();
+    if (i < n - 1) arrow(ctx, x + cardW + 3, 380, x + cardW + gap - 3, 380, i < active ? lime : '#b8d7cf', ease(p * n - i - .35), 3);
   }
 }
 function drawRefraction(ctx, scene, p) {
@@ -149,8 +158,22 @@ function drawDiagram(ctx, scene, p) {
   const vals = [...(scene.keywords || []), ...(scene.bullets || [])].filter(Boolean).slice(0, 3);
   while (vals.length < 3) vals.push(['现象', '关键变化', '原理'][vals.length]);
   const pos = [[270, 398], [640, 335], [1010, 398]];
-  arrow(ctx, 385, 398, 518, 350, aqua, ease(p * 2), 5); arrow(ctx, 760, 350, 895, 398, aqua, ease((p - .22) * 2), 5);
-  pos.forEach(([x, y], i) => { const q = ease(p * 2.3 - i * .2); ctx.save(); ctx.globalAlpha = q; ctx.fillStyle = i === 1 ? lime : '#e6f3f5'; ctx.strokeStyle = i === 1 ? lime : aqua; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y, i === 1 ? 106 : 91, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); lines(ctx, vals[i], x, y - 9, i === 1 ? 175 : 150, 27, i === 1 ? '#ffffff' : ink, 800, 34, 'center'); ctx.restore(); });
+  const active = Math.min(2, Math.floor(clamp(p) * 3));
+  arrow(ctx, 385, 398, 518, 350, aqua, ease(p * 3 - .45), 5);
+  arrow(ctx, 760, 350, 895, 398, aqua, ease(p * 3 - 1.45), 5);
+  pos.forEach(([x, y], i) => {
+    const progress = clamp(p * 3 - i);
+    const q = ease(progress * 1.3);
+    const isActive = i === active;
+    ctx.save(); ctx.globalAlpha = q;
+    ctx.fillStyle = isActive ? lime : progress >= 1 ? '#dcefe8' : '#e6f3f5';
+    ctx.strokeStyle = isActive ? lime : aqua; ctx.lineWidth = isActive ? 4 : 2;
+    ctx.beginPath(); ctx.arc(x, y, isActive ? 99 : 91, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    if (isActive) { ctx.globalAlpha *= .36; ctx.beginPath(); ctx.arc(x, y, 112 + Math.sin(p * Math.PI * 8) * 3, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.globalAlpha = q;
+    lines(ctx, vals[i], x, y - 9, isActive ? 175 : 150, 27, isActive ? '#ffffff' : ink, 800, 34, 'center');
+    ctx.restore();
+  });
 }
 function drawSummary(ctx, scene, p) {
   text(ctx, '现在，你能解释了吗？', 72, 200, 32, lime, 700);

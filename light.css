@@ -137,3 +137,12 @@ body.home-active #app-update-btn[hidden]{display:none!important}
 @keyframes player-progress-slide{0%{margin-left:-40%}100%{margin-left:100%}}
 @media(prefers-reduced-motion:reduce){.player-progress,.player-progress-track>span{animation:none!important;transition:none!important}}
 @media(max-width:720px){.player-progress{gap:8px;margin-bottom:12px;padding:8px 10px;font-size:11px}.player-progress-count{display:none}}
+
+/* Sharpen focus and editor hierarchy without changing the mint theme. */
+.composer-card{transition:border-color .18s ease,box-shadow .18s ease}
+.composer-card:focus-within{border-color:#9bcfba;box-shadow:0 0 0 3px #dff3e9,0 12px 32px #153d430d}
+button:focus-visible,[role="button"]:focus-visible,summary:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #65b99b;outline-offset:3px}
+.scene-card.active{background:linear-gradient(180deg,#f5fbf8 0,#fff 68px);box-shadow:0 0 0 2px #d8f0e5,0 7px 20px #153d430a}
+.scene-top:hover .scene-title{color:#087f69}
+.player-progress{box-shadow:0 3px 12px #153d4308}
+@media(prefers-reduced-motion:reduce){.composer-card,.scene-card,.scene-top,.tool-chip,.send-button{transition:none!important}}
