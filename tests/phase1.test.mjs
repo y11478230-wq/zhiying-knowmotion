@@ -39,6 +39,35 @@ test('创意发现页面和四阶段导航已进入静态入口', async () => {
   assert.match(html, /<b>4<\/b>导出/);
 });
 
+test('创作流程使用统一步骤导航并移除页面级退出和上一步按钮', async () => {
+  const [html, app, css] = await Promise.all([
+    fs.readFile(path.join(root, 'index.html'), 'utf8'),
+    fs.readFile(path.join(root, 'app.js'), 'utf8'),
+    fs.readFile(path.join(root, 'flow.css'), 'utf8')
+  ]);
+  assert.equal((html.match(/data-step-target="[1-4]"/g) || []).length, 16);
+  assert.doesNotMatch(html, /data-flow-exit|workspace-step-back|id="export-edit"/);
+  assert.match(app, /function flowStepAccessible/);
+  assert.match(app, /Number\(project\.flowMaxStep \|\| 0\) >= 3/);
+  assert.match(app, /querySelectorAll\('\.flow-back'\).*returnToFlowHome/);
+  assert.match(css, /step-tap/);
+});
+
+test('首页入口对齐且视频实验室返回时不重复播放启动页', async () => {
+  const [html, brand, css] = await Promise.all([
+    fs.readFile(path.join(root, 'index.html'), 'utf8'),
+    fs.readFile(path.join(root, 'brand.js'), 'utf8'),
+    fs.readFile(path.join(root, 'light.css'), 'utf8')
+  ]);
+  assert.match(html, /<a class="long-video-entry lab-video-entry" href="\/video-lab\.html">/);
+  assert.match(await fs.readFile(path.join(root, 'video-lab.html'), 'utf8'), /href="\/\?from=video-lab"/);
+  assert.match(brand, /zhiying-splash-session-v1/);
+  assert.match(brand, /internalHomeReturn/);
+  assert.match(brand, /splash\.hidden = true/);
+  assert.match(css, /home-content>\.long-video-entry\{box-sizing:border-box;width:100%;max-width:none/);
+  assert.match(css, /text-decoration:none/);
+});
+
 test('导演方案包含镜头操作和确认式 AI 修改入口', async () => {
   const [html, app] = await Promise.all([
     fs.readFile(path.join(root, 'index.html'), 'utf8'),

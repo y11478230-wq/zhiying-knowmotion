@@ -192,7 +192,6 @@ function drawCodeLine(ctx, source, x, y, size = 27) {
   }
 }
 function drawCode(ctx, scene, p) {
-  text(ctx, scene.title, 72, 168, 45, ink, 800);
   rounded(ctx, 72, 226, 842, 337, 19, '#ffffff', '#accfc8');
   rounded(ctx, 72, 226, 842, 49, [19,19,0,0], '#e5f2ef');
   for (let i=0;i<3;i++){ctx.fillStyle=[coral,lime,aqua][i];ctx.beginPath();ctx.arc(98+i*22,251,6,0,Math.PI*2);ctx.fill();}
@@ -215,7 +214,6 @@ function drawCode(ctx, scene, p) {
   line(ctx, 84, 548, 84 + 812 * ease(p), 548, lime, 4);
 }
 function drawTerminal(ctx, scene, p) {
-  text(ctx, scene.title, 72, 168, 46, ink, 800);
   rounded(ctx, 72, 228, 1136, 333, 20, '#ffffff', '#accfc8');
   rounded(ctx, 72, 228, 1136, 50, [20,20,0,0], '#e5f2ef');
   for (let i=0;i<3;i++){ctx.fillStyle=[coral,lime,aqua][i];ctx.beginPath();ctx.arc(99+i*23,253,6,0,Math.PI*2);ctx.fill();}
@@ -230,18 +228,119 @@ function drawTerminal(ctx, scene, p) {
   rounded(ctx, 850, 486, 303, 42, 21, '#def1e9'); text(ctx, '编译  →  执行  →  验证', 1001, 507, 19, lime, 700, 'center');
   ctx.restore();
 }
-export function drawScene(canvas, scene, index = 0, count = 5, localTime = 0, duration = 8) {
-  const ctx = canvas.getContext('2d'); const p = clamp(localTime / Math.max(duration, 1));
-  ctx.clearRect(0, 0, W, H); background(ctx, localTime + index * 9); chrome(ctx, scene, index, count, localTime, duration);
-  if (scene.layout === 'intro') drawIntro(ctx, scene, p);
-  else if (scene.layout === 'contrast') drawContrast(ctx, scene, p);
-  else if (scene.layout === 'process') drawProcess(ctx, scene, p);
-  else if (scene.layout === 'diagram') scene.diagramKind === 'refraction' ? drawRefraction(ctx, scene, p) : drawDiagram(ctx, scene, p);
-  else if (scene.layout === 'code') drawCode(ctx, scene, p);
+function teachingBackground(ctx) {
+  ctx.fillStyle = '#fbfdfb'; ctx.fillRect(0, 0, W, H);
+  const glow = ctx.createRadialGradient(1050, 320, 20, 1050, 320, 440);
+  glow.addColorStop(0, '#d8f2e5a8'); glow.addColorStop(1, '#d8f2e500');
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+}
+function photoFrame(ctx, image, x, y, w, h, p, credit = null) {
+  if (!image?.width || !image?.height) return;
+  const reveal = ease(clamp((p - .18) / .18)) * (1 - ease(clamp((p - .78) / .16)));
+  if (reveal < .01) return;
+  ctx.save(); ctx.globalAlpha = reveal;
+  rounded(ctx, x, y, w, h, 22, '#ffffff', '#d7e8e0');
+  ctx.beginPath(); ctx.roundRect(x + 10, y + 10, w - 20, h - 20, 16); ctx.clip();
+  const scale = 1.025 + .025 * p, dw = w - 20, dh = h - 20;
+  const ratio = Math.min(dw / image.width, dh / image.height), iw = image.width * ratio * scale, ih = image.height * ratio * scale;
+  ctx.drawImage(image, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+  if (credit) {
+    const label = `${String(credit.artist || '作者信息见来源页').slice(0, 38)} · ${String(credit.license || '授权见来源页').slice(0, 24)}`;
+    rounded(ctx, x + 20, y + h - 38, w - 40, 24, 8, '#193940c9');
+    text(ctx, label, x + w / 2, y + h - 26, 11, '#ffffff', 550, 'center');
+  }
+  ctx.restore();
+}
+function drawTeachingVisual(ctx, scene, p, image) {
+  const labels = (scene.labels?.length ? scene.labels : [...(scene.keywords || []), ...(scene.bullets || [])]).filter(Boolean).slice(0, 3);
+  const photoAsset = image, photo = image?.image || image;
+  const withPhoto = Boolean(photo?.width && photo?.height);
+  const leftX = 82, leftW = withPhoto ? 510 : 660;
+  const visualX = withPhoto ? 650 : 760, visualW = withPhoto ? 548 : 430;
+  const mode = scene.mode || ({ intro: 'focus', contrast: 'compare', process: 'flow', diagram: 'flow', summary: 'flow' }[scene.layout] || 'focus');
+  if (mode === 'compare' && labels.length > 1) {
+    const gap = 18, cardW = (leftW - gap) / 2;
+    labels.slice(0, 2).forEach((label, i) => {
+      const active = p < .5 ? i === 0 : i === 1, q = ease(clamp((p * 2) - i));
+      ctx.save(); ctx.globalAlpha = .62 + q * .38;
+      rounded(ctx, leftX + i * (cardW + gap), 298, cardW, 176, 22, active ? '#e8f7f0' : '#ffffff', active ? '#66b99a' : '#d7e8e0');
+      rounded(ctx, leftX + i * (cardW + gap) + 20, 318, 42, 6, 3, active ? lime : '#bfd7ce');
+      lines(ctx, label, leftX + i * (cardW + gap) + 22, 382, cardW - 44, 30, ink, 750, 40);
+      text(ctx, active ? '当前讲解' : '对照观察', leftX + i * (cardW + gap) + 22, 445, 16, active ? lime : muted, 650);
+      ctx.restore();
+    });
+    text(ctx, 'VS', leftX + leftW / 2, 500, 20, aqua, 800, 'center', mono);
+  } else if (mode === 'flow' && labels.length > 1) {
+    const shown = labels.slice(0, 3), cardW = Math.min(190, (leftW - 64) / shown.length), gap = shown.length > 1 ? (leftW - cardW * shown.length) / (shown.length - 1) : 0;
+    const active = Math.min(shown.length - 1, Math.floor(p * shown.length));
+    shown.forEach((label, i) => {
+      const x = leftX + i * (cardW + gap), q = ease(clamp(p * shown.length - i));
+      ctx.save(); ctx.globalAlpha = .6 + q * .4;
+      rounded(ctx, x, 328, cardW, 126, 20, i === active ? '#e5f5ed' : '#ffffff', i === active ? '#54ae8d' : '#d7e8e0');
+      text(ctx, String(i + 1).padStart(2, '0'), x + 20, 355, 15, i === active ? lime : muted, 700, 'left', mono);
+      lines(ctx, label, x + cardW / 2, 399, cardW - 24, 23, ink, 700, 30, 'center');
+      if (i < shown.length - 1) arrow(ctx, x + cardW + 5, 390, x + cardW + gap - 5, 390, i < active ? lime : '#b8d7cf', ease(p * shown.length - i - .35), 3);
+      ctx.restore();
+    });
+  } else if (mode === 'number') {
+    const number = String(`${scene.caption || ''} ${scene.narration || ''}`).match(/\d[\d,.万亿%]*/)?.[0] || labels[0] || '重点';
+    text(ctx, number, leftX + leftW / 2, 380, 76, lime, 800, 'center');
+    if (labels.length > 1) text(ctx, labels[1], leftX + leftW / 2, 452, 22, muted, 600, 'center');
+  } else {
+    const label = labels[0] || scene.title;
+    const pulse = 96 + Math.sin(p * Math.PI * 5) * 3;
+    ctx.save(); ctx.globalAlpha = .25; ctx.strokeStyle = '#76c6a5'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(leftX + leftW / 2, 380, pulse + 18, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = '#e5f5ed'; ctx.beginPath(); ctx.arc(leftX + leftW / 2, 380, pulse, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#9ed5bd'; ctx.lineWidth = 2; ctx.stroke();
+    lines(ctx, label, leftX + leftW / 2, 380, leftW - 100, 34, ink, 800, 44, 'center');
+    if (labels[1]) { arrow(ctx, leftX + leftW / 2, 490, leftX + leftW / 2, 525, lime, ease(p * 1.4), 4); text(ctx, labels[1], leftX + leftW / 2, 542, 18, lime, 650, 'center'); }
+  }
+  if (withPhoto) {
+    const reveal = ease(clamp((p - .18) / .18)) * (1 - ease(clamp((p - .78) / .16)));
+    photoFrame(ctx, photo, visualX, 268 + (1 - reveal) * 14, visualW, 238, p, photoAsset?.credit);
+    if (reveal > .02 && scene.visualLink) {
+      const label = String(scene.visualLink).slice(0, 34);
+      rounded(ctx, visualX + 10, 516, visualW - 20, 42, 14, '#e8f5ef');
+      text(ctx, label, visualX + visualW / 2, 537, 16, '#286b59', 650, 'center');
+    }
+  } else {
+    const x = visualX + visualW / 2, y = 396;
+    if (mode === 'compare') {
+      rounded(ctx, x - 150, y - 112, 300, 224, 24, '#ffffff', '#cfe2db');
+      const words = labels.length > 1 ? labels : ['观察', scene.fallbackVector || '解释'];
+      text(ctx, words[0], x - 74, y, 24, lime, 750, 'center'); text(ctx, '→', x, y, 28, muted, 500, 'center'); text(ctx, words[1], x + 78, y, 22, aqua, 750, 'center');
+      text(ctx, '同一维度，逐项比较', x, y + 62, 16, muted, 550, 'center');
+    } else if (mode === 'flow' && labels.length > 1) {
+      const active = Math.min(labels.length - 1, Math.floor(p * labels.length));
+      labels.forEach((label, i) => { const yy = 292 + i * 84; rounded(ctx, x - 164, yy, 328, 62, 18, i === active ? '#e5f5ed' : '#ffffff', i === active ? '#69bf9e' : '#d7e8e0'); text(ctx, String(i + 1), x - 134, yy + 31, 18, lime, 700, 'center', mono); text(ctx, label, x - 106, yy + 31, 21, ink, 700); if (i < labels.length - 1) arrow(ctx, x, yy + 65, x, yy + 80, '#76b99f', ease(p * labels.length - i - .3), 3); });
+    } else {
+      ctx.strokeStyle = '#9bcfba'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y, 128, -.8, Math.PI * (1.15 + p * .05)); ctx.stroke();
+      ctx.fillStyle = '#eff8f3'; ctx.beginPath(); ctx.arc(x, y, 95, 0, Math.PI * 2); ctx.fill();
+      lines(ctx, labels[0] || scene.fallbackVector || scene.title, x, y, 220, 26, ink, 750, 34, 'center');
+      if (labels[1]) { arrow(ctx, x + 72, y + 74, x + 140, y + 122, aqua, ease(p * 1.5), 4); text(ctx, labels[1], x + 140, y + 145, 16, aqua, 650, 'center'); }
+    }
+  }
+}
+function drawTeachingScene(ctx, scene, index, count, localTime, duration, image) {
+  const p = clamp(localTime / Math.max(duration, 1)); teachingBackground(ctx);
+  rounded(ctx, 62, 40, 92, 32, 16, lime); text(ctx, '知映', 108, 56, 17, '#ffffff', 800, 'center');
+  text(ctx, String(scene.eyebrow || '知识现场'), 170, 56, 16, lime, 650);
+  text(ctx, `${String(index + 1).padStart(2, '0')} / ${String(count).padStart(2, '0')}`, 1218, 57, 16, muted, 500, 'right', mono);
+  const gap = 8, barW = (W - 124 - gap * (count - 1)) / count;
+  for (let i = 0; i < count; i++) { rounded(ctx, 62 + i * (barW + gap), 88, barW, 4, 2, i < index ? lime : i === index ? '#b5e0ce' : '#e0ece7'); if (i === index) rounded(ctx, 62 + i * (barW + gap), 88, barW * clamp(localTime / duration), 4, 2, lime); }
+  const titleSize = String(scene.title || '').length > 17 ? 40 : 47;
+  lines(ctx, scene.title || '继续探索', 80, 151, 1120, titleSize, ink, 800, titleSize * 1.25);
+  rounded(ctx, 80, 190, 72, 5, 3, lime);
+  if (scene.layout === 'code') drawCode(ctx, scene, p);
   else if (scene.layout === 'terminal') drawTerminal(ctx, scene, p);
-  else drawSummary(ctx, scene, p);
+  else drawTeachingVisual(ctx, scene, p, image);
   subtitle(ctx, scene.narration, localTime, duration);
-  if (localTime < .32) { ctx.save(); ctx.globalAlpha = 1 - ease(localTime / .32); ctx.fillStyle = '#f7fbf9'; ctx.fillRect(0, 0, W, H); ctx.restore(); }
+  if (localTime < .28) { ctx.save(); ctx.globalAlpha = 1 - ease(localTime / .28); ctx.fillStyle = '#fbfdfb'; ctx.fillRect(0, 0, W, H); ctx.restore(); }
+}
+export function drawScene(canvas, scene, index = 0, count = 5, localTime = 0, duration = 8, image = null) {
+  const ctx = canvas.getContext('2d'), scaleX=canvas.width/W, scaleY=canvas.height/H;
+  ctx.save();ctx.scale(scaleX,scaleY);ctx.clearRect(0, 0, W, H);
+  drawTeachingScene(ctx, scene, index, count, localTime, duration, image);ctx.restore();
 }
 export function drawWelcome(canvas) {
   const ctx = canvas.getContext('2d'); background(ctx, 0);

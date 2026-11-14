@@ -4,6 +4,14 @@
   const topic = document.getElementById('topic');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const shouldWelcome = !localStorage.getItem('zhiying-welcome-seen') || new URLSearchParams(location.search).has('welcome');
+  const splashSessionKey = 'zhiying-splash-session-v1';
+  const internalHomeReturn = new URLSearchParams(location.search).get('from') === 'video-lab';
+  let playSplash = !internalHomeReturn;
+  try {
+    const alreadyPlayed = sessionStorage.getItem(splashSessionKey) === 'played';
+    playSplash = !alreadyPlayed && !internalHomeReturn;
+    if (!alreadyPlayed) sessionStorage.setItem(splashSessionKey, 'played');
+  } catch {}
   let finished = false, scene = null;
   const timers = [];
   const later = (callback, delay) => timers.push(setTimeout(callback, delay));
@@ -39,12 +47,20 @@
     try { scene = globalThis.createFallbackParticleScene?.(document.getElementById('particle-fallback-canvas'), {reducedMotion:reduced}) || null; }
     catch (error) { console.warn('Canvas 粒子场不可用。', error); }
   };
-  if (reduced) { startFallback(); splash.classList.add('brand-visible'); later(finishSplash, 500); }
-  else {
-    try { scene = globalThis.createParticleScene?.(document.getElementById('particle-canvas')); if (!scene) startFallback(); }
-    catch (error) { console.warn('WebGL 不可用，已切换 Canvas 粒子场。', error); startFallback(); }
-    later(() => splash.classList.add('brand-visible'), 3050);
-    later(finishSplash, 5600);
+  if (playSplash) {
+    if (reduced) { startFallback(); splash.classList.add('brand-visible'); later(finishSplash, 500); }
+    else {
+      try { scene = globalThis.createParticleScene?.(document.getElementById('particle-canvas')); if (!scene) startFallback(); }
+      catch (error) { console.warn('WebGL 不可用，已切换 Canvas 粒子场。', error); startFallback(); }
+      later(() => splash.classList.add('brand-visible'), 3050);
+      later(finishSplash, 5600);
+    }
+  } else {
+    splash.hidden = true;
+    if (shouldWelcome) {
+      welcome.hidden = false;
+      requestAnimationFrame(() => welcome.classList.add('visible'));
+    } else welcome.hidden = true;
   }
   document.getElementById('welcome-enter').addEventListener('click', enter);
   document.getElementById('welcome-guide').addEventListener('click', () => {

@@ -3,7 +3,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>知映 · 视频实验室</title><link rel="stylesheet" href="/video-lab.css"></head>
 <body>
   <main class="shell">
-    <header><a href="/">← 知映首页</a><span>VIDEO LAB · 视频实验室</span></header>
+    <header><a href="/?from=video-lab">← 知映首页</a><span>VIDEO LAB · 视频实验室</span></header>
     <section class="intro"><p class="eyebrow">让知识在画面里发生</p><h1>生成一条五分钟讲解视频</h1><p>输入一句命题，系统规划课程、逐章生成讲解和画面，再准备配音并合成视频。你可以随时查看当前进度。</p></section>
     <form id="form" class="prompt"><label for="topic">知识主题</label><div class="prompt-row"><input id="topic" maxlength="160" value="CPU 和 GPU 有什么区别？" placeholder="例如：为什么天空是蓝色的？" required><button id="generate" type="submit">生成 5 分钟课程 →</button></div><small>约 5 分钟 · 5 章 × 4 个镜头 · 质量优先筛图，不合适时保留矢量图解 · 提供在线音色与三种本机快速配音</small><button id="sample" class="sample-button" type="button">查看 CPU / GPU 示例（含真实配图）</button></form>
     <p id="status" role="status">准备就绪</p>

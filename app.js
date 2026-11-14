@@ -20,7 +20,7 @@ async function apiFetch(path, options) {
     const current = new URL(configuredBase || window.location.origin);
     const originalPort = Number(current.port || (current.protocol === 'https:' ? 443 : 80));
     if (originalPort < 4173 || originalPort > 4175) return response;
-    for (let port = originalPort + 1; port <= 4176; port++) {
+    for (let port = originalPort + 1; port <= 4177; port++) {
       const fallbackUrl = new URL(current);
       fallbackUrl.port = String(port);
       let fallback;
@@ -57,6 +57,8 @@ async function probeBackend(base) {
 }
 const canvas = $('stage');
 let project = null, activeIndex = 0, playing = false, stopPlayback = null;
+const scenePhotoImages = new Map();
+let photoSearchKey = '';
 let community = null, generationTask = null, libraryFilter = 'all';
 let creativeRequest = null, creativeRequestVersion = 0, directorRequest = null;
 let sceneAiIndex = -1, pendingSceneRevision = null, sceneAiRequest = null;
@@ -190,9 +192,58 @@ function showScreen(name) {
   document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === name || ((name === 'workshop'||name==='videoWorkspace'||name==='longVideo') && el.dataset.tab === 'home')));
   document.body.classList.toggle('home-active', name === 'home');
   document.body.dataset.flowStep = name === 'creative' ? '1' : name === 'workshop' ? '2' : name === 'videoWorkspace' ? '3' : name === 'export' ? '4' : '';
+  updateFlowNavigation(name);
   if(name==='library')renderLibrary();
   if(name==='inspiration'||name==='profile')community?.refresh();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+function flowStepAccessible(step) {
+  if (!project || generationTask) return false;
+  if (step === 1) return true;
+  if (project.directorError) return false;
+  if (!Array.isArray(project.scenes) || project.scenes.length === 0) return false;
+  if (step === 4) return Number(project.flowMaxStep || 0) >= 3;
+  return step === 2 || step === 3;
+}
+function updateFlowNavigation(screen) {
+  const current = ({creative:1,workshop:2,videoWorkspace:3,export:4})[screen] || 0;
+  document.querySelectorAll('[data-flow-nav]').forEach(nav => {
+    nav.querySelectorAll('[data-step-target]').forEach(button => {
+      const step = Number(button.dataset.stepTarget);
+      const enabled = flowStepAccessible(step);
+      button.disabled = !enabled;
+      button.classList.toggle('active', step === current);
+      button.classList.toggle('done', current > 0 && step < current && enabled);
+      button.classList.remove('step-tap');
+      if (step === current) button.setAttribute('aria-current','step');
+      else button.removeAttribute('aria-current');
+    });
+  });
+}
+function returnToFlowHome() {
+  if (creativeRequest) { creativeRequest.abort(); creativeRequest = null; creativeRequestVersion++; }
+  if (directorRequest) {
+    directorRequest.abort(); directorRequest = null;
+    if (project) { project.stage = 'creative'; project.directorError = false; save(); }
+  }
+  stopWorkspacePlayback?.();
+  leaveWorkspaceFullscreen?.();
+  showScreen('home');
+}
+function navigateFlowStep(step) {
+  if (!flowStepAccessible(step)) {
+    notify(step >= 3 ? '请先完成导演方案，再按顺序进入预览和导出。' : '请先完成上一阶段。', true);
+    return;
+  }
+  document.querySelectorAll(`[data-step-target="${step}"]`).forEach(button => {
+    button.classList.remove('step-tap');
+    void button.offsetWidth;
+    button.classList.add('step-tap');
+  });
+  if (step === 1) { renderCreativeDirections(); showScreen('creative'); }
+  else if (step === 2) { renderCards(); redraw(); updateScript(); showScreen('workshop'); }
+  else if (step === 3) openVideoWorkspace();
+  else openExportScreen();
 }
 function startNewProject() {
   if (playing) stopPlayback?.();
@@ -338,11 +389,11 @@ function showTimeline(seconds,durations=timelineScenes(),draw=false) {
   $('timeline-fill').style.width=total?`${previewTime/total*100}%`:'0%';
   $('timeline-seek').value=total?String(Math.round(previewTime/total*1000)):'0';
   $('timeline-seek').setAttribute('aria-valuetext',`${fmt(previewTime)} / ${fmt(total)}`);
-  if(draw&&project?.scenes.length){const {index,local}=sceneAtTime(previewTime,durations);drawScene(canvas,project.scenes[index],index,project.scenes.length,local,durations[index]);}
+  if(draw&&project?.scenes.length){const {index,local}=sceneAtTime(previewTime,durations),scene=project.scenes[index];drawScene(canvas,scene,index,project.scenes.length,local,durations[index],scenePhotoImages.get(scene.id));}
 }
 function redraw() {
   if (!project?.scenes?.length) drawWelcome(canvas);
-  else drawScene(canvas, currentScene(), activeIndex, project.scenes.length, Math.max(1.5, currentScene().duration*.42), currentScene().duration);
+  else drawScene(canvas, currentScene(), activeIndex, project.scenes.length, Math.max(1.5, currentScene().duration*.42), currentScene().duration,scenePhotoImages.get(currentScene().id));
 }
 const sceneSnapshot=scene=>{const copy=structuredClone(scene);delete copy._history;delete copy._pendingPreview;return copy;};
 function recordSceneVersion(index,summary,before){
@@ -357,13 +408,13 @@ function workspaceOffset(index){return workspaceDurations().slice(0,index).reduc
 function renderWorkspaceFrame(time=workspaceTime){
   const target=$('video-stage');if(!target||!project?.scenes?.length)return;
   const durations=workspaceDurations(),position=sceneAtTime(time,durations);activeIndex=position.index;
-  drawScene(target,project.scenes[position.index],position.index,project.scenes.length,position.local,durations[position.index]);
+  drawScene(target,project.scenes[position.index],position.index,project.scenes.length,position.local,durations[position.index],scenePhotoImages.get(project.scenes[position.index].id));
   workspaceTime=Math.max(0,Math.min(time,durations.reduce((a,b)=>a+b,0)));
   $('video-current').textContent=fmt(workspaceTime);$('video-total').textContent=fmt(durations.reduce((a,b)=>a+b,0));
   $('video-seek').value=String(Math.round(workspaceTime/Math.max(1,durations.reduce((a,b)=>a+b,0))*1000));
   document.querySelectorAll('.shot-card').forEach((card,index)=>card.classList.toggle('active',index===activeIndex));
 }
-function thumbnailFor(scene,index){const thumb=document.createElement('canvas');thumb.width=320;thumb.height=180;drawScene(thumb,scene,index,project.scenes.length,Math.max(1,Number(scene.duration)*.4),Number(scene.duration)||8);return thumb.toDataURL('image/jpeg',.72);}
+function thumbnailFor(scene,index){const thumb=document.createElement('canvas');thumb.width=320;thumb.height=180;drawScene(thumb,scene,index,project.scenes.length,Math.max(1,Number(scene.duration)*.4),Number(scene.duration)||8,scenePhotoImages.get(scene.id));return thumb.toDataURL('image/jpeg',.72);}
 function renderShotTimeline(){
   const list=$('shot-timeline');if(!list||!project)return;
   $('workspace-shot-count').textContent=`${project.scenes.length} 幕`;
@@ -378,7 +429,13 @@ function renderWorkspaceEditor(){
   $('shot-editor-fields').querySelectorAll('[data-workspace-field]').forEach(input=>{let before;input.addEventListener('focus',()=>before=sceneSnapshot(scene),{once:true});input.addEventListener('change',()=>{const field=input.dataset.workspaceField;if(field==='bullets')scene[field]=input.value.split(/[，,]/).map(v=>v.trim()).filter(Boolean).slice(0,4);else if(field==='duration')scene[field]=Math.min(20,Math.max(4,Number(input.value)||8));else scene[field]=input.value;recordSceneVersion(activeIndex,`修改${field==='narration'?'旁白':field==='duration'?'时长':'镜头内容'}`,before);markWorkspaceDirty(scene);invalidateExport();save();renderShotTimeline();renderWorkspaceEditor();});});
   $('shot-editor-fields').querySelectorAll('[data-project-field]').forEach(input=>input.addEventListener('change',()=>{project[input.dataset.projectField]=input.dataset.projectField==='rate'?Number(input.value):input.value;markWorkspaceDirty(scene);invalidateExport();save();}));
 }
-function openVideoWorkspace(){if(!project?.scenes?.length)return notify('请先完成导演方案。',true);if(playing)stopPlayback?.();workspacePlaying=false;cancelAnimationFrame(workspaceFrame);workspaceTime=workspaceOffset(activeIndex);$('video-workspace-title').textContent=project.title||project.topic||'视频工作台';renderShotTimeline();renderWorkspaceEditor();renderWorkspaceFrame(workspaceTime);showScreen('videoWorkspace');}
+function openVideoWorkspace(){if(!project?.scenes?.length)return notify('请先完成导演方案。',true);if(playing)stopPlayback?.();workspacePlaying=false;cancelAnimationFrame(workspaceFrame);workspaceTime=workspaceOffset(activeIndex);project.flowMaxStep=Math.max(3,Number(project.flowMaxStep)||0);save();$('video-workspace-title').textContent=project.title||project.topic||'视频工作台';renderShotTimeline();renderWorkspaceEditor();renderWorkspaceFrame(workspaceTime);showScreen('videoWorkspace');}
+function openExportScreen(){
+  if(!project?.scenes?.length||Number(project.flowMaxStep||0)<3)return notify('请先完成分镜并进入视频预览，再继续导出。',true);
+  if(playing||appBusy)return notify('视频正在处理，完成后即可进入导出。',true);
+  stopWorkspacePlayback();leaveWorkspaceFullscreen();project.flowMaxStep=Math.max(4,Number(project.flowMaxStep)||0);save();
+  $('export-title').textContent=project.title||project.topic||'知识视频';$('export-meta').textContent=`16:9 · MP4 · ${project.scenes.length} 幕`;$('export-status').textContent='可通过上方步骤返回分镜或预览进行修改。';$('export-heading').textContent='让知识，变成自己的画面。';$('export-description').textContent='确认内容后开始导出。完成时会自动下载视频。';$('export-start').innerHTML='导出视频 <span>→</span>';$('export-start').dataset.complete='false';showScreen('export');
+}
 function selectWorkspaceScene(index){activeIndex=Math.max(0,Math.min(index,project.scenes.length-1));workspaceTime=workspaceOffset(activeIndex);renderShotTimeline();renderWorkspaceEditor();renderWorkspaceFrame(workspaceTime);document.querySelector(`.shot-card[data-shot-index="${activeIndex}"]`)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}
 function stopWorkspacePlayback(){workspacePlaying=false;cancelAnimationFrame(workspaceFrame);$('video-play').textContent='▶';}
 function playWorkspace(){if(workspacePlaying)return stopWorkspacePlayback();const total=workspaceDurations().reduce((a,b)=>a+b,0);if(workspaceTime>=total-.05)workspaceTime=0;workspacePlaying=true;workspaceStartedAt=performance.now()-workspaceTime/workspaceSpeed*1000;$('video-play').textContent='Ⅱ';const tick=now=>{if(!workspacePlaying)return;const next=(now-workspaceStartedAt)/1000*workspaceSpeed;if(next>=total){workspaceTime=total;renderWorkspaceFrame(total);stopWorkspacePlayback();return;}const old=activeIndex;renderWorkspaceFrame(next);if(old!==activeIndex){renderShotTimeline();renderWorkspaceEditor();}workspaceFrame=requestAnimationFrame(tick);};workspaceFrame=requestAnimationFrame(tick);}
@@ -386,6 +443,7 @@ function renderShotHistory(){const scene=currentScene(),list=$('shot-history-lis
 function loadProject(data, note = '') {
   if (stopPlayback) stopPlayback();
   cancelSpeechPrefetch(); hidePlayerProgress();
+  scenePhotoImages.clear(); photoSearchKey='';
   project = structuredClone(data); activeIndex = 0;
   previewTime=0;previewTotal=0;previewDurations=null;scrubbing=false;seekPreview=null;
   project.id ||= projectId(); project.createdAt ||= new Date().toISOString(); project.updatedAt ||= project.createdAt;
@@ -403,7 +461,49 @@ function loadProject(data, note = '') {
   $('workshop-heading-title').textContent = project.title || '编辑知识视频';
   $('workshop-duration-meta').textContent=`约 ${Math.round((project.scenes||[]).reduce((sum,scene)=>sum+(Number(scene.duration)||8),0))} 秒`;
   updateSummary(); renderCards(); updateScript(); redraw(); save(); message(note);
+  if (project.scenes.length) void prepareScenePhotos(project);
   if (project.scenes.length) void prefetchSpeech();
+}
+
+async function prepareScenePhotos(targetProject) {
+  const candidates=(targetProject.scenes||[]).filter(scene=>!scenePhotoImages.has(scene.id)).map(scene=>({scene,query:imageQueryForScene(scene,targetProject)})).filter(item=>item.query.length>=2);
+  if(!candidates.length)return;
+  const key=`${targetProject.id}:${candidates.map(item=>item.query).join('|')}`;
+  if(photoSearchKey===key)return;photoSearchKey=key;
+  try{
+    const response=await apiFetch('/api/video-lab/images/batch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({queries:candidates.map(item=>item.query)})});
+    const data=await response.json();if(!response.ok)throw new Error(data.error||'图片搜索不可用');
+    for(let index=0;index<candidates.length;index++){
+      if(project!==targetProject)return;
+      const {scene}=candidates[index],hits=data.results?.[index]?.results||[];
+      const best=hits.find(item=>Number(item.relevance)>=38)||hits[0];if(!best?.thumb)continue;
+      try{
+        const image=new Image();image.decoding='async';
+        image.src=`${getApiBase()}${best.thumb}`;await image.decode();
+        if(project!==targetProject)return;
+        scenePhotoImages.set(scene.id,{image,credit:{artist:best.artist,license:best.license,pageUrl:best.pageUrl,title:best.title}});
+      }catch{}
+    }
+    if(project===targetProject){redraw();renderShotTimeline();if(!$('view-video-workspace').hidden)renderWorkspaceFrame(workspaceTime);}
+  }catch(error){console.info('[KnowMotion] reference photos unavailable:',error.message);}
+}
+function imageQueryForScene(scene,targetProject){
+  const hint=String(scene.imageHint||'').trim();if(hint)return hint;
+  const context=`${targetProject.topic||''} ${scene.title||''} ${(scene.keywords||[]).join(' ')} ${(scene.bullets||[]).join(' ')}`;
+  const mappings=[
+    [/\bCPU\b|处理器|中央处理器/i,'CPU processor chip'],[/\bGPU\b|显卡|图形处理器/i,'GPU graphics card'],
+    [/天空|为什么天.*蓝|瑞利散射/i,'blue sky atmosphere Rayleigh scattering'],[/圆锥曲线|抛物线/i,'parabola conic section graph'],
+    [/DNA|双螺旋/i,'DNA double helix molecule'],[/光合作用|叶绿体/i,'photosynthesis chloroplast leaf'],
+    [/细胞|细胞膜/i,'animal cell microscope biology'],[/太阳系|行星|地球公转/i,'solar system planets NASA'],
+    [/水循环|蒸发|降水/i,'water cycle evaporation precipitation'],[/火山|岩浆/i,'volcano eruption geology'],
+    [/电路|电流|电压/i,'electric circuit battery wires'],[/牛顿.*定律|惯性/i,'Newton laws of motion experiment'],
+    [/概率|骰子|硬币/i,'probability dice coin'],[/函数|抛物线|二次/i,'quadratic function parabola graph'],
+    [/分数|分数线/i,'fraction visual mathematics'],[/几何|三角形|圆周/i,'geometry triangle circle diagram']
+  ];
+  for(const [pattern,query] of mappings)if(pattern.test(context))return query;
+  const english=context.match(/[A-Za-z][A-Za-z0-9 -]{2,50}/g)?.find(value=>value.trim().length>=3);
+  if(english)return `${english.trim()} educational photo`;
+  return context.replace(/\s+/g,' ').trim().slice(0,100);
 }
 
 function renderCreativeDirections() {
@@ -457,16 +557,16 @@ async function requestCreativeDirections({refresh=false}={}){
 async function useCreativeDirection(id){
   if(!project||generationTask||directorRequest)return;
   const direction=project.creativeDirections?.find(item=>item.id===id);if(!direction)return;
-  project.selectedDirectionId=direction.id;project.selectedDirection=structuredClone(direction);project.stage='storyboard';save();renderCreativeDirections();
+  project.selectedDirectionId=direction.id;project.selectedDirection=structuredClone(direction);project.stage='storyboard';project.directorError=false;project.flowMaxStep=1;save();renderCreativeDirections();
   const controller=new AbortController();directorRequest=controller;
   generationTask={topic:project.topic,startedAt:new Date().toISOString()};renderLibrary();
   $('generation-topic').textContent=`${project.topic} · ${direction.title}`;showScreen('generation');setBusy(true,'正在根据已选创意生成导演方案…');
   try{
     const response=await apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({topic:project.topic,audience:project.audience,style:project.style,targetDurationSec:project.targetDurationSec,references:(project.creativeReferences||[]).map(item=>item.kind==='image'?{kind:'image',imageDataUrl:item.dataUrl}:{kind:'text',text:item.text}),selectedDirection:direction})});
     const result=await response.json();if(!response.ok)throw new Error(result.error||'导演方案生成失败');
-    const base=structuredClone(project);result.project={...base,...result.project,id:base.id,stage:'storyboard',creativeDirections:base.creativeDirections,creativeHistory:base.creativeHistory,selectedDirectionId:direction.id,selectedDirection:direction,creativeReferences:base.creativeReferences,references:base.references,createdAt:base.createdAt};
+    const base=structuredClone(project);result.project={...base,...result.project,id:base.id,stage:'storyboard',directorError:false,flowMaxStep:2,creativeDirections:base.creativeDirections,creativeHistory:base.creativeHistory,selectedDirectionId:direction.id,selectedDirection:direction,creativeReferences:base.creativeReferences,references:base.references,createdAt:base.createdAt};
     loadProject(result.project,`已按「${direction.title}」生成 ${result.project.scenes.length} 幕导演方案。`);showScreen('workshop');
-  }catch(error){if(error.name!=='AbortError'){project.stage='creative';save();restoreCreativeProject();setCreativeLoading(false,error.message);notify(`导演方案生成失败：${error.message}`,true);}}
+  }catch(error){if(error.name!=='AbortError'){project.stage='creative';project.directorError=true;save();restoreCreativeProject();setCreativeLoading(false,error.message);notify(`导演方案生成失败：${error.message}`,true);}}
   finally{if(directorRequest===controller)directorRequest=null;generationTask=null;renderLibrary();setBusy(false);}
 }
 
@@ -952,8 +1052,14 @@ $('creative-list').addEventListener('click',event=>{const more=event.target.clos
 $('creative-list').addEventListener('click',event=>{if(event.target.closest('button'))return;const card=event.target.closest('.creative-card');if(!card||!project)return;project.selectedDirectionId=card.dataset.creativeId;renderCreativeDirections();save();});
 $('creative-refresh-btn').addEventListener('click',()=>requestCreativeDirections({refresh:true}));
 $('creative-retry-btn').addEventListener('click',()=>requestCreativeDirections({refresh:Boolean(project?.creativeDirections?.length)}));
-$('creative-back-btn').addEventListener('click',()=>{if(creativeRequest){creativeRequest.abort();creativeRequest=null;creativeRequestVersion++;}showScreen('home');});
-document.querySelectorAll('[data-flow-exit]').forEach(button=>button.addEventListener('click',()=>{if(playing||appBusy)return notify('正在处理视频，请等待导出完成。',true);showScreen('home');}));
+document.querySelectorAll('.flow-back').forEach(button=>button.addEventListener('click',returnToFlowHome));
+document.querySelectorAll('[data-step-target]').forEach(button=>button.addEventListener('click',()=>navigateFlowStep(Number(button.dataset.stepTarget))));
+document.querySelectorAll('[data-flow-nav]').forEach(nav=>nav.addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
+  const links=[...nav.querySelectorAll('[data-step-target]:not(:disabled)')];
+  const current=links.indexOf(document.activeElement);if(current<0)return;
+  event.preventDefault();links[(current+(event.key==='ArrowRight'?1:-1)+links.length)%links.length]?.focus();
+}));
 document.querySelector('[data-flow-primary="creative"]')?.addEventListener('click',()=>{
   const selectedCard=document.querySelector('.creative-card.selected');
   const button=selectedCard?.querySelector('[data-creative-use]')||document.querySelector('[data-creative-use]');
@@ -1004,8 +1110,6 @@ referenceInput.addEventListener('change',async()=>{
   }
 });
 $('resume-project-btn').addEventListener('click', () => { const p=storedProjects()[0]; if(p)openStoredProject(p.id); });
-$('workshop-back-btn').addEventListener('click', () => project?.creativeDirections?.length ? (renderCreativeDirections(),showScreen('creative')) : showScreen('home'));
-$('generation-back-btn').addEventListener('click', () => {if(directorRequest){directorRequest.abort();directorRequest=null;project.stage='creative';save();renderCreativeDirections();showScreen('creative');notify('已取消本次导演方案生成，已选创意仍保留。');}else showScreen('home');});
 document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>showScreen(btn.dataset.tab)));
 document.querySelectorAll('[data-open-home]').forEach(btn=>btn.addEventListener('click',startNewProject));
 document.querySelectorAll('[data-topic]').forEach(btn=>btn.addEventListener('click',()=>{$('topic').value=btn.dataset.topic;resizeTopic();updateComposerControls();$('topic').focus();window.scrollTo({top:0,behavior:'smooth'});}));
@@ -1084,11 +1188,7 @@ $('timeline-seek').addEventListener('pointercancel',()=>{scrubbing=false;});
 $('export-btn').addEventListener('click', () => playProject(true));
 $('open-video-workspace').addEventListener('click',openVideoWorkspace);
 function leaveWorkspaceFullscreen(){const card=$('video-stage-card');card.classList.remove('fullscreen-fallback');if(document.fullscreenElement===card)document.exitFullscreen().catch(()=>{});}
-$('workspace-back').addEventListener('click',()=>{stopWorkspacePlayback();leaveWorkspaceFullscreen();showScreen('home');});
-$('workspace-step-back').addEventListener('click',()=>{stopWorkspacePlayback();leaveWorkspaceFullscreen();renderCards();redraw();showTimeline(workspaceOffset(activeIndex),timelineScenes(),true);showScreen('workshop');});
-$('workspace-export').addEventListener('click',()=>{stopWorkspacePlayback();leaveWorkspaceFullscreen();$('export-title').textContent=project?.title||project?.topic||'知识视频';$('export-meta').textContent=`16:9 · MP4 · ${project?.scenes?.length||0} 幕`;$('export-status').textContent='分镜和旁白仍可返回工作台修改。';$('export-heading').textContent='让知识，变成自己的画面。';$('export-description').textContent='确认内容后开始导出。完成时会自动下载视频。';$('export-start').innerHTML='导出视频 <span>→</span>';$('export-start').dataset.complete='false';showScreen('export');});
-$('export-back').addEventListener('click',()=>{if(playing||appBusy)return notify('正在处理视频，请等待导出结束。',true);showScreen('videoWorkspace');});
-$('export-edit').addEventListener('click',()=>{if(playing||appBusy)return notify('正在处理视频，请等待导出结束。',true);showScreen('videoWorkspace');});
+$('workspace-export').addEventListener('click',openExportScreen);
 $('export-start').addEventListener('click',()=>{if($('export-start').dataset.complete==='true'){showScreen('library');return;}if(playing||appBusy)return;$('export-status').textContent='正在准备配音与录制…';playProject(true);});
 $('video-play').addEventListener('click',playWorkspace);
 $('video-replay').addEventListener('click',()=>{stopWorkspacePlayback();workspaceTime=0;renderWorkspaceFrame(0);playWorkspace();});

@@ -168,13 +168,13 @@
     </main>
 
     <main id="view-generation" class="screen generation-screen" hidden>
+      <button id="generation-back-btn" class="flow-back generation-home" type="button" aria-label="返回首页">‹</button>
       <section class="generation-card">
         <div class="generation-mark"><span class="generation-spinner"></span><span class="generation-clapper">▶</span></div>
         <h1>正在生成你的视频方案</h1>
         <p id="generation-topic" class="generation-topic"></p>
         <p class="generation-description">AI 正在整理讲解内容并规划分镜，请稍候。</p>
         <div class="generation-state"><span class="state-pulse"></span><span>正在生成分镜与旁白</span></div>
-        <button id="generation-back-btn" class="text-button" type="button">回到首页（生成仍会继续）</button>
       </section>
     </main>
 
@@ -183,9 +183,8 @@
         <header class="flow-header">
           <button id="creative-back-btn" class="flow-back" type="button" aria-label="返回首页">‹</button>
           <div class="flow-page-title">选择讲解方向</div>
-          <button class="flow-exit" type="button" data-flow-exit>退出</button>
         </header>
-        <nav class="creation-steps" aria-label="创作阶段"><span class="active"><b>1</b>选方向</span><i></i><span><b>2</b>分镜</span><i></i><span><b>3</b>预览</span><i></i><span><b>4</b>导出</span></nav>
+        <nav class="creation-steps" data-flow-nav aria-label="创作阶段"><button class="step-link" type="button" data-step-target="1"><b>1</b>选方向</button><i></i><button class="step-link" type="button" data-step-target="2"><b>2</b>分镜</button><i></i><button class="step-link" type="button" data-step-target="3"><b>3</b>预览</button><i></i><button class="step-link" type="button" data-step-target="4"><b>4</b>导出</button></nav>
         <header class="creative-heading">
           <div class="flow-intro"><h1>先选一种，让人想看的讲法。</h1><p>同一个知识点，可以有不同的打开方式。</p></div>
           <span id="creative-save-state" class="save-state">已保存在本机</span>
@@ -202,11 +201,10 @@
 
     <main id="view-workshop" class="screen workshop-screen" hidden>
       <header class="flow-header">
-        <button id="workshop-back-btn" class="flow-back" type="button" aria-label="返回创意">‹</button>
+        <button id="workshop-back-btn" class="flow-back" type="button" aria-label="返回首页">‹</button>
         <div class="flow-page-title">导演方案</div>
-        <button class="flow-exit" type="button" data-flow-exit>退出</button>
       </header>
-      <nav class="creation-steps workshop-steps" aria-label="创作阶段"><span class="done"><b>1</b>选方向</span><i></i><span class="active"><b>2</b>分镜</span><i></i><span><b>3</b>预览</span><i></i><span><b>4</b>导出</span></nav>
+      <nav class="creation-steps workshop-steps" data-flow-nav aria-label="创作阶段"><button class="step-link" type="button" data-step-target="1"><b>1</b>选方向</button><i></i><button class="step-link" type="button" data-step-target="2"><b>2</b>分镜</button><i></i><button class="step-link" type="button" data-step-target="3"><b>3</b>预览</button><i></i><button class="step-link" type="button" data-step-target="4"><b>4</b>导出</button></nav>
       <div class="workshop-heading">
         <div class="workshop-title"><span class="eyebrow">视频工坊</span><h1 id="workshop-heading-title">编辑知识视频</h1></div>
         <span id="workshop-save-state" class="save-state">已保存在本机</span>
@@ -233,9 +231,8 @@
       <header class="flow-header">
         <button id="workspace-back" class="flow-back" type="button" aria-label="返回首页">‹</button>
         <div class="flow-page-title">视频工作台</div>
-        <button id="workspace-step-back" class="flow-exit" type="button">返回上一步</button>
       </header>
-      <nav class="creation-steps video-workspace-steps" aria-label="创作阶段"><span class="done"><b>1</b>选方向</span><i></i><span class="done"><b>2</b>分镜</span><i></i><span class="active"><b>3</b>预览</span><i></i><span><b>4</b>导出</span></nav>
+      <nav class="creation-steps video-workspace-steps" data-flow-nav aria-label="创作阶段"><button class="step-link" type="button" data-step-target="1"><b>1</b>选方向</button><i></i><button class="step-link" type="button" data-step-target="2"><b>2</b>分镜</button><i></i><button class="step-link" type="button" data-step-target="3"><b>3</b>预览</button><i></i><button class="step-link" type="button" data-step-target="4"><b>4</b>导出</button></nav>
       <section class="video-workspace-shell">
         <header class="video-workspace-heading"><strong id="video-workspace-title">视频工作台</strong><span id="video-workspace-state" class="save-state">预览已同步</span></header>
         <div id="video-stage-card" class="video-stage-card">
@@ -250,9 +247,9 @@
     </main>
 
     <main id="view-export" class="screen export-screen" hidden>
-      <header class="flow-header"><button id="export-back" class="flow-back" type="button" aria-label="返回视频工作台">‹</button><div class="flow-page-title">导出视频</div><button class="flow-exit" type="button" data-flow-exit>退出</button></header>
-      <nav class="creation-steps" aria-label="创作阶段"><span class="done"><b>1</b>选方向</span><i></i><span class="done"><b>2</b>分镜</span><i></i><span class="done"><b>3</b>预览</span><i></i><span class="active"><b>4</b>导出</span></nav>
-      <section class="export-content"><div id="export-symbol" class="export-symbol">↓</div><h1 id="export-heading">让知识，变成自己的画面。</h1><p id="export-description">确认内容后开始导出。完成时会自动下载视频。</p><div class="export-summary"><strong id="export-title">知识视频</strong><span id="export-meta">16:9 · MP4</span></div><div id="export-status" class="export-status" role="status" aria-live="polite">分镜和旁白仍可返回工作台修改。</div><button id="export-edit" class="export-edit" type="button">返回工作台，继续编辑 ↗</button></section>
+      <header class="flow-header"><button id="export-back" class="flow-back" type="button" aria-label="返回首页">‹</button><div class="flow-page-title">导出视频</div></header>
+      <nav class="creation-steps" data-flow-nav aria-label="创作阶段"><button class="step-link" type="button" data-step-target="1"><b>1</b>选方向</button><i></i><button class="step-link" type="button" data-step-target="2"><b>2</b>分镜</button><i></i><button class="step-link" type="button" data-step-target="3"><b>3</b>预览</button><i></i><button class="step-link" type="button" data-step-target="4"><b>4</b>导出</button></nav>
+      <section class="export-content"><div id="export-symbol" class="export-symbol">↓</div><h1 id="export-heading">让知识，变成自己的画面。</h1><p id="export-description">确认内容后开始导出。完成时会自动下载视频。</p><div class="export-summary"><strong id="export-title">知识视频</strong><span id="export-meta">16:9 · MP4 · 0 幕</span></div><div id="export-status" class="export-status" role="status" aria-live="polite">可通过上方步骤返回分镜或预览进行修改。</div></section>
       <footer class="flow-bottom"><button id="export-start" class="flow-primary" type="button">导出视频 <span>→</span></button><small>导出进度取自真实配音、录制和转码过程</small></footer>
     </main>
 
