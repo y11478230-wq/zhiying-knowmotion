@@ -6,6 +6,8 @@
 
 输入一个知识问题，DeepSeek 生成可编辑的专业教学分镜与完整文字稿；本地模板绘制画面、中文神经语音或 Windows 本机语音配音，浏览器预览并导出带字幕的 MP4。
 
+![知映视频工坊：左侧逐幕编辑分镜，右侧实时预览，配音进度在播放器下方](docs/workspace.png)
+
 ## 启动
 
 要求：Windows、Node.js 24+、Python 3、FFmpeg，以及 Chrome 或 Edge。神经配音需要联网。
