@@ -36,11 +36,11 @@ void main(){
   target.xz=mat2(cos(tilt),-sin(tilt),sin(tilt),cos(tilt))*target.xz;
   float depth=7.7-target.z;
   gl_Position=vec4(target.x/(depth*max(uAspect,0.86))*1.55,target.y/depth*1.55,0.2+target.z*0.015,1.0);
-  gl_PointSize=clamp((1.0+seed*1.35+uGlow*2.5)*uPixelRatio*7.5/depth,1.0,9.0);
+  gl_PointSize=clamp((0.8+seed*0.55+uGlow*1.7)*uPixelRatio*7.5/depth,1.0,4.5);
   float core=exp(-r*3.6);
   float shimmer=0.72+0.28*sin(uTime*(0.5+seed)+seed*80.0);
   vColor=mix(vec3(0.17,0.62,0.40),vec3(0.87,1.0,0.83),clamp(core*0.8+thread*0.17+seed*0.24,0.0,1.0));
-  vAlpha=(0.20+0.42*core+0.16*max(thread,0.0))*shimmer*(0.34+0.66*uForm)*(1.0-uExit)*mix(1.0,0.21,uGlow);
+  vAlpha=(0.08+0.22*core+0.045*max(thread,0.0))*shimmer*(0.34+0.66*uForm)*(1.0-uExit)*mix(1.0,0.09,uGlow);
 }`;
 const fragmentSource = `
 precision mediump float;
@@ -105,3 +105,58 @@ function createParticleScene(canvas, { reducedMotion=false }={}) {
   } catch(error){if(buffer)gl.deleteBuffer(buffer);if(program)gl.deleteProgram(program);throw error;}
 }
 globalThis.createParticleScene = createParticleScene;
+
+// A crisp, moving point cloud for browsers where WebGL is unavailable.
+function createFallbackParticleScene(canvas, {reducedMotion=false}={}) {
+  const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)return null;
+  const mobile=matchMedia('(max-width:700px)').matches;
+  const cols=mobile?144:204,rows=mobile?72:92,groups=[[],[],[],[]];
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){
+    const seed=(((i*73856093)^(j*19349663))>>>0)%65521/65521;
+    const u=i/(cols-1)*2-1,v=j/(rows-1)*2-1;
+    groups[Math.min(3,Math.floor(seed*4))].push({u,v,seed});
+  }
+  let width=1,height=1,dpr=1,raf=0,last=0,disposed=false,pulse=-1,exit=0,pointer={x:10,y:10};
+  const resize=()=>{width=canvas.clientWidth||innerWidth;height=canvas.clientHeight||innerHeight;dpr=Math.min(devicePixelRatio||1,1.7);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);};
+  const observer=new ResizeObserver(resize);observer.observe(canvas);resize();
+  const move=e=>{const rect=canvas.getBoundingClientRect();pointer={x:(e.clientX-rect.left)/rect.width*2-1,y:(e.clientY-rect.top)/rect.height*2-1};};
+  const leave=()=>{pointer={x:10,y:10};};
+  const click=e=>{move(e);pulse=0;};
+  canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerleave',leave);canvas.addEventListener('click',click);
+  const start=performance.now(),colors=['rgba(116,218,158,.29)','rgba(181,245,181,.44)','rgba(225,255,221,.62)','rgba(92,184,139,.22)'];
+  function frame(now){
+    if(disposed)return;
+    raf=requestAnimationFrame(frame);
+    if(!reducedMotion&&now-last<30)return;
+    const dt=last?now-last:33;last=now;
+    const t=reducedMotion?2.7:(now-start)/1000,form=reducedMotion?1:Math.min(1,Math.max(0,(t-.15)/2.7));
+    if(pulse>=0){pulse+=dt/1200;if(pulse>1)pulse=-1;}
+    ctx.fillStyle='#020807';ctx.fillRect(0,0,width,height);
+    const spanX=width*.47,spanY=Math.min(height*.32,width*.44),centerY=height*.43;
+    for(let g=0;g<groups.length;g++){
+      ctx.fillStyle=colors[g];
+      for(const p of groups[g]){
+        const r=Math.abs(p.u),wing=Math.pow(Math.sin(r*1.65),.75);
+        let x=Math.sign(p.u)*(0.025+r*.96)*spanX;
+        let y=p.v*(.035+wing*.8)*spanY + Math.sin(r*8+t*.5)*r*11;
+        const wave=Math.sin(p.u*9+p.v*5+t*.8)*5+Math.sin(p.v*21-p.u*7+t*.45)*2;
+        x+=wave*.22;y+=wave;
+        const depth=.6+Math.sin(r*4+p.v*3+t*.3)*.18;
+        x*=depth+.4;y*=depth+.4;
+        const scatterX=Math.sin(p.seed*231)*width*.5,scatterY=Math.cos(p.seed*307)*height*.43;
+        x=x*form+scatterX*(1-form);y=y*form+scatterY*(1-form);
+        const px=width*.5+x,py=centerY+y;
+        const dx=(px-width*(pointer.x+1)*.5),dy=(py-height*(pointer.y+1)*.5);
+        const near=Math.exp(-(dx*dx+dy*dy)/(width*width*.025));
+        x+=dx*near*.11;y+=dy*near*.11;
+        if(pulse>=0){const distance=Math.hypot(dx,dy)/width;const ring=Math.exp(-Math.pow((distance-pulse*.55)*18,2))*(1-pulse);x+=dx*ring*.12;y+=dy*ring*.12;}
+        x+=Math.sign(x)*exit*width*.22;y+=y*exit*.3;
+        const size=(g===2?1.25:.85)*(mobile?1:1.1);
+        ctx.fillRect(width*.5+x,centerY+y,size,size);
+      }
+    }
+  }
+  raf=requestAnimationFrame(frame);
+  return {exit(){exit=1;},dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(raf);observer.disconnect();canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerleave',leave);canvas.removeEventListener('click',click);}};
+}
+globalThis.createFallbackParticleScene = createFallbackParticleScene;

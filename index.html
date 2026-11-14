@@ -21,8 +21,8 @@
 <body>
   <section id="brand-splash" class="brand-splash" aria-label="知映正在启动">
     <canvas id="particle-canvas" class="particle-canvas" aria-hidden="true"></canvas>
-    <div class="particle-fallback" aria-hidden="true"></div>
-    <div class="splash-brand"><span class="splash-brand-symbol" aria-hidden="true">◈</span><strong>知映</strong><small>KnowMotion</small><p>用 AI，让知识生动成片</p></div>
+    <canvas id="particle-fallback-canvas" class="particle-fallback-canvas" aria-hidden="true"></canvas>
+    <div class="splash-brand"><img class="splash-brand-symbol" src="/brand-camera.png" alt=""><strong>知映</strong><small>KnowMotion</small><p>用 AI，让知识生动成片</p></div>
     <div class="splash-progress" aria-hidden="true"><span></span></div>
     <button id="splash-skip" type="button">跳过动画</button>
   </section>
@@ -298,7 +298,7 @@
   </div>
 
   <dialog id="history-dialog" class="drawer-dialog" aria-labelledby="history-title">
-    <aside class="history-drawer"><header class="drawer-header"><div class="drawer-brand"><span class="brand-mark small-mark">知</span><strong>知映</strong></div><button id="history-close-btn" class="icon-button" type="button" aria-label="关闭历史">×</button></header><button id="new-project-btn" class="new-chat-button" type="button"><span>＋</span>新建创作</button><label class="history-search"><span>⌕</span><input id="history-search-input" type="search" placeholder="搜索主题和作品…" autocomplete="off"></label><div class="history-title-row"><h2 id="history-title">创作历史</h2><span>本机</span></div><div id="history-list" class="history-list"></div><footer class="drawer-footer"><button id="clear-history-btn" class="text-button" type="button">清空历史记录</button><button id="history-profile-btn" class="drawer-profile" type="button"><span class="avatar-small">我</span><span>本机创作者</span><span>›</span></button></footer></aside>
+    <aside class="history-drawer"><header class="drawer-header"><div class="drawer-brand"><span class="brand-mark small-mark brand-mark-camera"><img src="/brand-camera.png" alt=""></span><strong>知映</strong></div><button id="history-close-btn" class="icon-button" type="button" aria-label="关闭历史">×</button></header><button id="new-project-btn" class="new-chat-button" type="button"><span>＋</span>新建创作</button><label class="history-search"><span>⌕</span><input id="history-search-input" type="search" placeholder="搜索主题和作品…" autocomplete="off"></label><div class="history-title-row"><h2 id="history-title">创作历史</h2><span>本机</span></div><div id="history-list" class="history-list"></div><footer class="drawer-footer"><button id="clear-history-btn" class="text-button" type="button">清空历史记录</button><button id="history-profile-btn" class="drawer-profile" type="button"><span class="avatar-small">我</span><span>本机创作者</span><span>›</span></button></footer></aside>
   </dialog>
   <dialog id="shot-history-dialog" class="app-dialog" aria-labelledby="shot-history-title"><section class="dialog-card shot-history-dialog"><header class="dialog-header"><div><span class="eyebrow">SCENE VERSIONS</span><h2 id="shot-history-title">镜头版本历史</h2></div><button id="shot-history-close" class="dialog-close" type="button">×</button></header><div id="shot-history-list" class="shot-history-list"></div></section></dialog>
 

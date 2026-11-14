@@ -34,10 +34,15 @@
   };
 
   document.getElementById('splash-skip').addEventListener('click', finishSplash);
-  if (reduced) { splash.classList.add('fallback', 'brand-visible'); later(finishSplash, 500); }
+  const startFallback = () => {
+    splash.classList.add('fallback');
+    try { scene = globalThis.createFallbackParticleScene?.(document.getElementById('particle-fallback-canvas'), {reducedMotion:reduced}) || null; }
+    catch (error) { console.warn('Canvas 粒子场不可用。', error); }
+  };
+  if (reduced) { startFallback(); splash.classList.add('brand-visible'); later(finishSplash, 500); }
   else {
-    try { scene = globalThis.createParticleScene?.(document.getElementById('particle-canvas')); if (!scene) splash.classList.add('fallback'); }
-    catch (error) { console.warn('粒子场不可用，已使用静态视觉。', error); splash.classList.add('fallback'); }
+    try { scene = globalThis.createParticleScene?.(document.getElementById('particle-canvas')); if (!scene) startFallback(); }
+    catch (error) { console.warn('WebGL 不可用，已切换 Canvas 粒子场。', error); startFallback(); }
     later(() => splash.classList.add('brand-visible'), 3050);
     later(finishSplash, 5600);
   }
